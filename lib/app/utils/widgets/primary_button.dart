@@ -61,8 +61,8 @@ class PrimaryButton extends StatelessWidget {
               stops: [0.0, 1.0],
               colors: enabled
                   ? <Color>[
-                      reverse ? AppColors.white : AppColors.primaryLight,
-                      reverse ? AppColors.white : AppColors.primaryLight
+                      reverse ? AppColors.white : AppColors.primaryDark,
+                      reverse ? AppColors.white : AppColors.primaryDark
                     ]
                   : <Color>[AppColors.gray, AppColors.gray],
             ),
@@ -87,7 +87,9 @@ class PrimaryButton extends StatelessWidget {
                   Text(
                     title.toString(),
                     style: Theme.of(context).textTheme.button?.copyWith(
-                        color: reverse ? AppColors.primaryLight : null),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                        color: reverse ? AppColors.primaryDark : Colors.white),
                   )),
         ),
       ),
