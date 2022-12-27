@@ -46,13 +46,38 @@ class $LibAppResourcesImagesGen {
   AssetGenImage get imgError =>
       const AssetGenImage('lib/app/resources/images/img_error.png');
 
+  /// File path: lib/app/resources/images/img_login_ilust.png
+  AssetGenImage get imgLoginIlust =>
+      const AssetGenImage('lib/app/resources/images/img_login_ilust.png');
+
+  /// File path: lib/app/resources/images/img_logo.png
+  AssetGenImage get imgLogo =>
+      const AssetGenImage('lib/app/resources/images/img_logo.png');
+
+  /// File path: lib/app/resources/images/img_splashbg.png
+  AssetGenImage get imgSplashbg =>
+      const AssetGenImage('lib/app/resources/images/img_splashbg.png');
+
+  /// File path: lib/app/resources/images/regis-success.png
+  AssetGenImage get regisSuccess =>
+      const AssetGenImage('lib/app/resources/images/regis-success.png');
+
   /// File path: lib/app/resources/images/user_placeholder.png
   AssetGenImage get userPlaceholder =>
       const AssetGenImage('lib/app/resources/images/user_placeholder.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [emptyStateCode, icLogoSuitcoreMain, imgEmpty, imgError, userPlaceholder];
+  List<AssetGenImage> get values => [
+        emptyStateCode,
+        icLogoSuitcoreMain,
+        imgEmpty,
+        imgError,
+        imgLoginIlust,
+        imgLogo,
+        imgSplashbg,
+        regisSuccess,
+        userPlaceholder
+      ];
 }
 
 class Assets {

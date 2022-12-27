@@ -35,6 +35,7 @@ dependencies:
   #shared_preferences: ^2.0.7
   flutter_native_splash: ^2.2.8
   device_preview: 
+  form_builder_validators: ^8.3.0
   flutter: 
     sdk: flutter
 

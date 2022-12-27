@@ -1,23 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 
 class RegisterController extends GetxController {
   //TODO: Implement RegisterController
-
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
+  final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
+  List<String> genderOptions = ['Male', 'Female'];
+  List<String> statusOptions = ['Student', 'Alumni', 'Staff', 'Other'];
+  bool isAggree = false;
 }
