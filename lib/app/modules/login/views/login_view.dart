@@ -25,6 +25,12 @@ class LoginView extends GetView<LoginController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                width: 100.w,
+                child: AppImages.imgLoginIlust.image(
+                  height: 250,
+                ),
+              ),
               const SizedBox(
                 height: 30,
               ),
@@ -78,51 +84,73 @@ class LoginView extends GetView<LoginController> {
                   ),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Container(
-          height: 150,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const PrimaryButton(
-                title: 'Done',
-                borderRadius: 10,
-              ),
               const SizedBox(
-                height: 24,
+                height: 16,
               ),
-              Container(
-                width: 100.w,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Do not have an Account?',
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: AppColors.black,
-                          ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Get.toNamed(Routes.REGISTER);
-                      },
-                      child: Text(
-                        ' Sign Up',
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                              color: AppColors.primaryLight,
-                            ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  height: 150,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      PrimaryButton(
+                        title: 'Done',
+                        borderRadius: 10,
+                        onPressed: () {
+                          if (controller.emailC.text.isNotEmpty &&
+                              controller.passC.text.isNotEmpty) {
+                            controller.login();
+                          } else {
+                            Get.snackbar(
+                              'Error',
+                              'Email or password must be filled',
+                              backgroundColor: AppColors.error,
+                              colorText: AppColors.white,
+                            );
+                          }
+                        },
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 24,
+                      ),
+                      Container(
+                        width: 100.w,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Do not have an Account?',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                    color: AppColors.black,
+                                  ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Get.toNamed(Routes.REGISTER);
+                              },
+                              child: Text(
+                                ' Sign Up',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .copyWith(
+                                      color: AppColors.primaryLight,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 30,
               ),
             ],
           ),

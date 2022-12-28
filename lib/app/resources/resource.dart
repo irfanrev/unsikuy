@@ -54,7 +54,7 @@ class AppColors {
   static const shadesPrimaryDark100 = Color(0xFF009490);
 
   // from suitcore
-  static const colorSecondary = Colors.deepOrangeAccent;
+  static const colorSecondary = Colors.teal;
   static const colorAccent = Colors.white;
   static const black = Colors.black;
   static const white = Colors.white;

@@ -48,8 +48,8 @@ class RegisterView extends GetView<RegisterController> {
                   height: 24,
                 ),
                 FormRegister(
-                  title: 'Full name',
-                  name: 'fullname',
+                  title: 'Username',
+                  name: 'username',
                   hint: 'Enter your name',
                 ),
                 const SizedBox(
@@ -188,10 +188,35 @@ class RegisterView extends GetView<RegisterController> {
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: 24,
+                ),
+                FormRegister(
+                  title: 'Password',
+                  name: 'password',
+                  hint: 'Enter password',
+                  sufix: controller.isObscure = true,
+                  textInputType: TextInputType.visiblePassword,
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                FormRegister(
+                  title: 'Password Confirmation',
+                  name: 'password_confirm',
+                  hint: 'Re-enter password',
+                  sufix: controller.isObscure = true,
+                  textInputType: TextInputType.visiblePassword,
+                ),
                 FormBuilderCheckbox(
                   name: 'tnc',
                   title: Text('I aggree with the Terms and Conditions.'),
-                  decoration: InputDecoration(
+                  initialValue: controller.isAggree,
+                  onChanged: (value) {
+                    controller.isAggree = !controller.isAggree;
+                    controller.update();
+                  },
+                  decoration: const InputDecoration(
                     filled: false,
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide.none, //<-- SEE HERE
@@ -205,9 +230,23 @@ class RegisterView extends GetView<RegisterController> {
                   height: 20,
                 ),
                 PrimaryButton(
-                  title: 'Done',
+                  child: controller.isLoading == true
+                      ? Center(child: CircularProgressIndicator())
+                      : Text(
+                          'Done',
+                          style: Theme.of(context).textTheme.button?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
                   onPressed: () {
-                    Get.to(RegisterSuccess());
+                    if (controller.formKey.currentState!.saveAndValidate() &&
+                        controller.isAggree == true &&
+                        controller.formKey.currentState?.value['password'] ==
+                            controller.formKey.currentState
+                                ?.value['password_confirm']) {
+                      controller.register();
+                    }
                   },
                 ),
                 const SizedBox(

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "597615739121",
+    "project_id": "unsika-connect",
+    "storage_bucket": "unsika-connect.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597615739121:android:c20b3b1312d4211d0e2950",
+        "android_client_info": {
+          "package_name": "com.unsikuyapps.unsikuy_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597615739121-igeqp00lsql4n8hhrsmf96muuqsrqoks.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNXAkajvd2vOSGLFVWOWQXRH220etxx50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597615739121-igeqp00lsql4n8hhrsmf96muuqsrqoks.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
