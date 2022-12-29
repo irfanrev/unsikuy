@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/utils/widgets/bottom_sheet_helper.dart';
 import 'package:unsikuy_app/app/utils/widgets/form/form_image_picker.dart';
@@ -42,6 +43,9 @@ class UploadView extends GetView<UploadController> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              controller.isDismiss == true
+                  ? const LinearProgressIndicator()
+                  : Container(),
               Row(
                 children: [
                   Container(
@@ -61,9 +65,10 @@ class UploadView extends GetView<UploadController> {
                     width: 12,
                   ),
                   Text(controller.username.toString(),
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                            color: AppColors.textColour70,
-                          ))
+                      style:
+                          Theme.of(context).textTheme.displayMedium?.copyWith(
+                                color: AppColors.textColour70,
+                              ))
                 ],
               ),
               const SizedBox(
@@ -85,7 +90,7 @@ class UploadView extends GetView<UploadController> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                         width: 1, color: AppColors.primaryLight), //<-- SEE HERE
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -97,11 +102,39 @@ class UploadView extends GetView<UploadController> {
                 height: 18,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  GetBuilder<UploadController>(
+                      init: UploadController(),
+                      builder: (value) {
+                        return Visibility(
+                          visible: controller.file != null,
+                          child: Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                  width: 1.0, color: AppColors.grey.shade300),
+                            ),
+                            child: controller.file != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.memory(
+                                      controller.file!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                        );
+                      }),
+                  const SizedBox(
+                    width: 22,
+                  ),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         CupertinoIcons.photo_on_rectangle,
                         size: 32,
                         color: AppColors.textColour50,
@@ -116,7 +149,8 @@ class UploadView extends GetView<UploadController> {
                             content: Column(
                               children: [
                                 ListTile(
-                                  leading: Icon(CupertinoIcons.photo_camera),
+                                  leading:
+                                      const Icon(CupertinoIcons.photo_camera),
                                   title: Text(
                                     'Take a Photo',
                                     style:
@@ -124,6 +158,7 @@ class UploadView extends GetView<UploadController> {
                                   ),
                                   onTap: () {
                                     controller.chooseCamera();
+                                    Get.back();
                                   },
                                 ),
                                 ListTile(
@@ -136,6 +171,7 @@ class UploadView extends GetView<UploadController> {
                                   ),
                                   onTap: () {
                                     controller.chooseGallery();
+                                    Get.back();
                                   },
                                 ),
                               ],
@@ -145,43 +181,36 @@ class UploadView extends GetView<UploadController> {
                         child: Text('Add Images',
                             style: Theme.of(context)
                                 .textTheme
-                                .headline6!
-                                .copyWith(color: AppColors.textColour50)),
+                                .headline5!
+                                .copyWith(color: AppColors.textColour80)),
                       ),
                     ],
                   ),
-                  Visibility(
-                    visible: controller.file?.isNotEmpty ?? false,
-                    child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          CupertinoIcons.check_mark_circled,
-                          size: 28,
-                          color: AppColors.primaryLight,
-                        )),
+                  const SizedBox(
+                    width: 16,
                   ),
                 ],
               ),
               const SizedBox(
                 height: 46,
               ),
-              PrimaryButton(
-                child: controller.isDismiss == true
-                    ? Center(child: CircularProgressIndicator())
-                    : Text(
-                        'Upload',
-                        style: Theme.of(context).textTheme.button?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                            color: Colors.white),
-                      ),
-                onPressed: () {
-                  controller.upload();
-                  //controller.formKey.currentState?.reset();
-                },
-              )
+              Obx(() {
+                return PrimaryButton(
+                  child: controller.isDismiss.value == true
+                      ? Center(child: CircularProgressIndicator())
+                      : Text(
+                          'Upload',
+                          style: Theme.of(context).textTheme.button?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
+                  onPressed: () {
+                    controller.upload();
+                    //controller.formKey.currentState?.reset();
+                  },
+                );
+              }),
             ],
           ),
         ),

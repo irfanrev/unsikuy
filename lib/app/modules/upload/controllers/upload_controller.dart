@@ -22,7 +22,7 @@ class UploadController extends GetxController {
   final TextEditingController desc = TextEditingController();
   var username;
   var photoUrl;
-  bool isDismiss = false;
+  RxBool isDismiss = false.obs;
 
   Uint8List? file;
 
@@ -74,7 +74,7 @@ class UploadController extends GetxController {
 
   Future upload() async {
     try {
-      isDismiss = true;
+      isDismiss.value = true;
       String photo = await uploadImageToStorage('post', file!, true);
 
       String postId = Uuid().v1();
@@ -88,13 +88,18 @@ class UploadController extends GetxController {
         profImg: photoUrl,
         like: [],
       );
-      _firestore.collection('posts').doc(postId).set(post.toJson());
+      await _firestore.collection('posts').doc(postId).set(post.toJson());
       showNotif('Success', 'Data is Posted!');
+      resetImage();
       desc.text = '';
-      isDismiss = false;
+      isDismiss.value = false;
     } catch (e) {
       showError('Error', e.toString());
     }
+  }
+
+  resetImage() {
+    file = null;
   }
 }
 
