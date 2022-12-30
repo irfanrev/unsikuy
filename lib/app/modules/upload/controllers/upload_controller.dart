@@ -62,7 +62,7 @@ class UploadController extends GetxController {
 
     if (isPost) {
       String id = Uuid().v1();
-      ref.child(id);
+      ref = ref.child(id);
     }
 
     UploadTask uploadTask = ref.putData(file);
@@ -95,6 +95,7 @@ class UploadController extends GetxController {
       isDismiss.value = false;
     } catch (e) {
       showError('Error', e.toString());
+      isDismiss.value = false;
     }
   }
 

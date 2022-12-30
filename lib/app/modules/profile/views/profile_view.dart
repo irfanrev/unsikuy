@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -13,11 +14,20 @@ class ProfileView extends GetView<ProfileController> {
         title: const Text('ProfileView'),
         centerTitle: true,
       ),
-      body: Center(
-        child: Text(
-          'ProfileView is working',
-          style: TextStyle(fontSize: 20),
-        ),
+      body: Column(
+        children: [
+          IconButton(
+              onPressed: () {
+                controller.logout();
+              },
+              icon: Icon(CupertinoIcons.download_circle)),
+          Center(
+            child: Text(
+              'Logout',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+        ],
       ),
     );
   }

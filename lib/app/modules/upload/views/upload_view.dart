@@ -43,9 +43,6 @@ class UploadView extends GetView<UploadController> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              controller.isDismiss == true
-                  ? const LinearProgressIndicator()
-                  : Container(),
               Row(
                 children: [
                   Container(
@@ -112,6 +109,7 @@ class UploadView extends GetView<UploadController> {
                           child: Container(
                             width: 150,
                             height: 150,
+                            margin: const EdgeInsets.only(right: 22),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
@@ -129,9 +127,6 @@ class UploadView extends GetView<UploadController> {
                           ),
                         );
                       }),
-                  const SizedBox(
-                    width: 22,
-                  ),
                   Row(
                     children: [
                       const Icon(

@@ -52,7 +52,7 @@ class HomeView extends StatelessWidget {
                     label: 'Connect',
                   ),
                   _bottomNavigationBarItem(
-                    icon: CupertinoIcons.upload_circle,
+                    icon: CupertinoIcons.add_circled,
                     label: 'Post',
                   ),
                   _bottomNavigationBarItem(
