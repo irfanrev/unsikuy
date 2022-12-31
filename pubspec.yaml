@@ -33,6 +33,7 @@ dependencies:
   firebase_storage: 11.0.9
   uuid: 3.0.7
   intl: ^0.17.0
+  lottie: 
   flutter: 
     sdk: flutter
 

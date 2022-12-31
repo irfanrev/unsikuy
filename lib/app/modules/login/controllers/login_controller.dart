@@ -12,20 +12,21 @@ class LoginController extends GetxController {
   final TextEditingController emailC = TextEditingController();
   final TextEditingController passC = TextEditingController();
   bool isSecure = true;
-  bool isLoading = false;
+  RxBool isLoading = false.obs;
 
   Stream<User?> get streamAuthState => _auth.authStateChanges();
 
   GetStorage box = GetStorage();
 
   Future login() async {
-    isLoading = true;
+    isLoading.value = true;
     try {
       await _auth.signInWithEmailAndPassword(
           email: emailC.text, password: passC.text);
       box.write('token', emailC.text);
       print(box.read('token').toString());
       Get.offAllNamed(Routes.HOME);
+      isLoading.value = false;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showError('Error', 'No user found for that email.');
@@ -34,8 +35,9 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       showError('Error', 'Something error');
+      isLoading.value = false;
     }
-    isLoading = false;
+    isLoading.value = false;
   }
 }
 

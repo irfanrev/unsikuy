@@ -130,7 +130,10 @@ class PostView extends GetView<PostController> {
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+            stream: FirebaseFirestore.instance
+                .collection('posts')
+                .orderBy('published_at', descending: true)
+                .snapshots(),
             builder: (context,
                 AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {

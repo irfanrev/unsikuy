@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:unsikuy_app/app/modules/post/views/post_comment.dart';
 
 import '../modules/chats/bindings/chats_binding.dart';
 import '../modules/chats/views/chats_view.dart';
@@ -69,6 +70,10 @@ class AppPages {
       name: _Paths.PEOPLE,
       page: () => const PeopleView(),
       binding: PeopleBinding(),
+    ),
+    GetPage(
+      name: _Paths.COMMENT,
+      page: () => const PostComment(),
     ),
   ];
 }

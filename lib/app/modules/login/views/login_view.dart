@@ -94,23 +94,36 @@ class LoginView extends GetView<LoginController> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      PrimaryButton(
-                        title: 'Done',
-                        borderRadius: 10,
-                        onPressed: () {
-                          if (controller.emailC.text.isNotEmpty &&
-                              controller.passC.text.isNotEmpty) {
-                            controller.login();
-                          } else {
-                            Get.snackbar(
-                              'Error',
-                              'Email or password must be filled',
-                              backgroundColor: AppColors.error,
-                              colorText: AppColors.white,
-                            );
-                          }
-                        },
-                      ),
+                      Obx(() {
+                        return PrimaryButton(
+                          child: controller.isLoading.value == true
+                              ? Center(child: CircularProgressIndicator())
+                              : Text(
+                                  'Done',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .button
+                                      ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 18,
+                                          color: Colors.white),
+                                ),
+                          borderRadius: 10,
+                          onPressed: () {
+                            if (controller.emailC.text.isNotEmpty &&
+                                controller.passC.text.isNotEmpty) {
+                              controller.login();
+                            } else {
+                              Get.snackbar(
+                                'Error',
+                                'Email or password must be filled',
+                                backgroundColor: AppColors.error,
+                                colorText: AppColors.white,
+                              );
+                            }
+                          },
+                        );
+                      }),
                       const SizedBox(
                         height: 24,
                       ),

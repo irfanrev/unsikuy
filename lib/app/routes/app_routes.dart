@@ -12,6 +12,7 @@ abstract class Routes {
   static const CHATS = _Paths.CHATS;
   static const UPLOAD = _Paths.UPLOAD;
   static const PEOPLE = _Paths.PEOPLE;
+  static const COMMENT = _Paths.COMMENT;
 }
 
 abstract class _Paths {
@@ -25,4 +26,5 @@ abstract class _Paths {
   static const CHATS = '/chats';
   static const UPLOAD = '/upload';
   static const PEOPLE = '/people';
+  static const COMMENT = '/comment';
 }
