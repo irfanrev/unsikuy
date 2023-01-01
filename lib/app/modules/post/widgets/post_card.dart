@@ -29,6 +29,13 @@ class _PostCardItemState extends State<PostCardItem> {
     print('init post');
   }
 
+  @override
+  void dispose() {
+    getCommentLength();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   void getCommentLength() async {
     try {
       QuerySnapshot qSnap = await FirebaseFirestore.instance
@@ -41,7 +48,9 @@ class _PostCardItemState extends State<PostCardItem> {
     } catch (e) {
       print(e);
     }
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override

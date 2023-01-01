@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
 import 'package:unsikuy_app/app/utils/widgets/primary_button.dart';
@@ -19,8 +20,10 @@ class RegisterSuccess extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppImages.regisSuccess.image(
-                  width: 200,
+                Container(
+                  width: 260,
+                  child: Lottie.asset(
+                      'lib/app/resources/images/register-success.json'),
                 ),
                 const SizedBox(
                   height: 24,

@@ -60,7 +60,7 @@ class HomeView extends StatelessWidget {
                     label: 'Chat',
                   ),
                   _bottomNavigationBarItem(
-                    icon: CupertinoIcons.person,
+                    icon: CupertinoIcons.person_crop_circle,
                     label: 'Profile',
                   )
                 ],

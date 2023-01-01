@@ -11,16 +11,22 @@ class RegisterController extends GetxController {
   //TODO: Implement RegisterController
   final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
   List<String> genderOptions = ['Male', 'Female'];
-  List<String> statusOptions = ['Student', 'Alumni', 'Staff', 'Other'];
+  List<String> statusOptions = [
+    'Student',
+    'Alumni',
+    'Lecturer',
+    'Staff',
+    'Other'
+  ];
   bool isAggree = false;
   bool isObscure = false;
-  bool isLoading = false;
+  RxBool isLoading = false.obs;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   Future register() async {
-    isLoading = true;
+    isLoading.value = true;
     try {
       UserCredential cred = await _auth.createUserWithEmailAndPassword(
           email: formKey.currentState?.value['email'],
@@ -44,7 +50,7 @@ class RegisterController extends GetxController {
           .collection('users')
           .doc(cred.user!.uid)
           .set(user.toJson());
-      isLoading = false;
+      isLoading.value = false;
       Get.offAll(RegisterSuccess());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -52,9 +58,11 @@ class RegisterController extends GetxController {
       } else if (e.code == 'email-already-in-use') {
         showError('Error', 'The account already exists for that email.');
       }
+      isLoading.value = false;
     } catch (e) {
       Get.snackbar('Error', 'Some error occurred');
     }
+    isLoading.value = false;
   }
 }
 

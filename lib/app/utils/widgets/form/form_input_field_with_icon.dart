@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:unsikuy_app/app/resources/resource.dart';
 
 class FormInputFieldWithIcon extends StatelessWidget {
   FormInputFieldWithIcon(
@@ -12,7 +14,8 @@ class FormInputFieldWithIcon extends StatelessWidget {
       this.minLines = 1,
       this.maxLines,
       this.onChanged,
-      this.onSaved});
+      this.onSaved,
+      this.onCompleted});
 
   final TextEditingController controller;
   final IconData? iconPrefix;
@@ -25,15 +28,36 @@ class FormInputFieldWithIcon extends StatelessWidget {
   final int? maxLines;
   final void Function(String)? onChanged;
   final void Function(String?)? onSaved;
+  final void Function(String?)? onCompleted;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(
+        prefixIcon: Icon(
+          CupertinoIcons.search,
+          color: AppColors.grey.shade400,
+        ),
         filled: true,
         //prefixIcon: Icon(iconPrefix),
         hintText: labelText,
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            width: 1.0,
+            color: AppColors.grey.shade300,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+              width: 1, color: AppColors.primaryLight), //<-- SEE HERE
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
+      style: Theme.of(context).textTheme.bodyText1,
       enabled: enabled,
       controller: controller,
       onSaved: onSaved,
@@ -43,6 +67,7 @@ class FormInputFieldWithIcon extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       validator: validator,
+      onFieldSubmitted: onCompleted,
     );
   }
 }

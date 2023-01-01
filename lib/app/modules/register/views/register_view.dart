@@ -48,7 +48,7 @@ class RegisterView extends GetView<RegisterController> {
                   height: 24,
                 ),
                 FormRegister(
-                  title: 'Username',
+                  title: 'Full Name',
                   name: 'username',
                   hint: 'Enter your name',
                 ),
@@ -229,26 +229,31 @@ class RegisterView extends GetView<RegisterController> {
                 const SizedBox(
                   height: 20,
                 ),
-                PrimaryButton(
-                  child: controller.isLoading == true
-                      ? Center(child: CircularProgressIndicator())
-                      : Text(
-                          'Done',
-                          style: Theme.of(context).textTheme.button?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18,
-                              color: Colors.white),
-                        ),
-                  onPressed: () {
-                    if (controller.formKey.currentState!.saveAndValidate() &&
-                        controller.isAggree == true &&
-                        controller.formKey.currentState?.value['password'] ==
-                            controller.formKey.currentState
-                                ?.value['password_confirm']) {
-                      controller.register();
-                    }
-                  },
-                ),
+                Obx(() => PrimaryButton(
+                      child: controller.isLoading.value == true
+                          ? Center(child: CircularProgressIndicator())
+                          : Text(
+                              'Done',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .button
+                                  ?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 18,
+                                      color: Colors.white),
+                            ),
+                      onPressed: () {
+                        if (controller.formKey.currentState!
+                                .saveAndValidate() &&
+                            controller.isAggree == true &&
+                            controller
+                                    .formKey.currentState?.value['password'] ==
+                                controller.formKey.currentState
+                                    ?.value['password_confirm']) {
+                          controller.register();
+                        }
+                      },
+                    )),
                 const SizedBox(
                   height: 12,
                 ),

@@ -50,7 +50,7 @@ class CommentCard extends StatelessWidget {
                     children: [
                       Text(
                         snap['username'],
-                        style: Theme.of(context).textTheme.headline2!.copyWith(
+                        style: Theme.of(context).textTheme.headline5!.copyWith(
                               color: AppColors.textColour80,
                               fontWeight: FontWeight.bold,
                             ),
