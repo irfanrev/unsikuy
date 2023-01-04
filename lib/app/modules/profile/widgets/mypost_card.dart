@@ -8,19 +8,18 @@ import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
-import 'package:unsikuy_app/app/theme/app_theme.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
 
-class PostCardItem extends StatefulWidget {
+class MyPostCard extends StatefulWidget {
   final snap;
   final PostController controller;
-  PostCardItem({super.key, required this.snap, required this.controller});
+  MyPostCard({super.key, required this.snap, required this.controller});
 
   @override
-  State<PostCardItem> createState() => _PostCardItemState();
+  State<MyPostCard> createState() => _MyPostCardState();
 }
 
-class _PostCardItemState extends State<PostCardItem> {
+class _MyPostCardState extends State<MyPostCard> {
   int lengthOfComment = 0;
   @override
   void initState() {

@@ -80,6 +80,31 @@ class PostController extends GetxController {
     }
   }
 
+  Future<void> connectUser(String uuid, String connectId) async {
+    try {
+      DocumentSnapshot snap =
+          await _firestore.collection('users').doc(uuid).get();
+      List connecters = (snap.data()! as dynamic)['connecters'];
+      if (connecters.contains(connectId)) {
+        await _firestore.collection('users').doc(connectId).update({
+          'connecters': FieldValue.arrayRemove([uuid])
+        });
+        await _firestore.collection('users').doc(uuid).update({
+          'connecters': FieldValue.arrayRemove([connectId])
+        });
+      } else {
+        await _firestore.collection('users').doc(connectId).update({
+          'connecters': FieldValue.arrayUnion([uuid])
+        });
+        await _firestore.collection('users').doc(uuid).update({
+          'connecters': FieldValue.arrayUnion([connectId])
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> deletePost(String postId) async {
     try {
       await _firestore.collection('posts').doc(postId).delete();

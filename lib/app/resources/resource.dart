@@ -5,9 +5,9 @@ import 'package:unsikuy_app/gen/assets.gen.dart' as asset;
 final AppImages = asset.Assets.lib.app.resources.images;
 
 class AppColors {
-  static const appBar = Color(0xFF00BCB4);
-  static const primaryLight = Color(0xFF00BCB4);
-  static const primaryDark = Color(0xFF009490);
+  static const appBar = Color(0xFF00B4D8);
+  static const primaryLight = Color(0xFF00B4D8);
+  static const primaryDark = Color(0xFF00768D);
   static const primaryOrange = Color(0xFFFF9933);
   static const buttonAlt = Color(0xFFF5AC07);
   static const dangerMain = Color(0xFFEC1C24);

@@ -13,6 +13,9 @@ abstract class Routes {
   static const UPLOAD = _Paths.UPLOAD;
   static const PEOPLE = _Paths.PEOPLE;
   static const COMMENT = _Paths.COMMENT;
+  static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
+  static const UPDATE_PROFILE = _Paths.update_profile;
+  static const UPDATE_BIO = _Paths.update_bio;
 }
 
 abstract class _Paths {
@@ -27,4 +30,7 @@ abstract class _Paths {
   static const UPLOAD = '/upload';
   static const PEOPLE = '/people';
   static const COMMENT = '/comment';
+  static const EDIT_PROFILE = '/edit-profile';
+  static const update_profile = '/update-profile';
+  static const update_bio = '/update-bio';
 }

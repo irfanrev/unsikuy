@@ -30,7 +30,7 @@ class RegisterView extends GetView<RegisterController> {
                   height: 24,
                 ),
                 Text(
-                  'Sign Up',
+                  'Register',
                   style: Theme.of(context).textTheme.headline4!.copyWith(
                         color: AppColors.black,
                         fontWeight: FontWeight.w800,
@@ -210,7 +210,13 @@ class RegisterView extends GetView<RegisterController> {
                 ),
                 FormBuilderCheckbox(
                   name: 'tnc',
-                  title: Text('I aggree with the Terms and Conditions.'),
+                  title: Text(
+                    'I aggree with the Terms and Conditions.',
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                          color: AppColors.primaryLight,
+                          fontSize: 15,
+                        ),
+                  ),
                   initialValue: controller.isAggree,
                   onChanged: (value) {
                     controller.isAggree = !controller.isAggree;
@@ -231,7 +237,10 @@ class RegisterView extends GetView<RegisterController> {
                 ),
                 Obx(() => PrimaryButton(
                       child: controller.isLoading.value == true
-                          ? Center(child: CircularProgressIndicator())
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              color: AppColors.white,
+                            ))
                           : Text(
                               'Done',
                               style: Theme.of(context)

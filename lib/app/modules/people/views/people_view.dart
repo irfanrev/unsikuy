@@ -42,6 +42,7 @@ class PeopleView extends GetView<PeopleController> {
                     onCompleted: (value) {
                       if (value != '') {
                         controller.isSearch = true;
+                        controller.parsingStatus = '';
                         controller.update();
                         print(value.toString());
                       } else {
@@ -73,7 +74,10 @@ class PeopleView extends GetView<PeopleController> {
                             future: FirebaseFirestore.instance
                                 .collection("users")
                                 .where("username",
-                                    isLessThan: controller.searchC.text)
+                                    isGreaterThanOrEqualTo:
+                                        controller.searchC.text)
+                                .where('username',
+                                    isLessThan: controller.searchC.text + 'z')
                                 .orderBy("username", descending: true)
                                 .get(),
                             builder: (context, snapshot) {
@@ -91,7 +95,55 @@ class PeopleView extends GetView<PeopleController> {
                                   });
                             }),
                       )
-                    : Text('data')),
+                    : (controller.parsingStatus == '')
+                        ? Container(
+                            width: 100.w,
+                            child: FutureBuilder(
+                                future: FirebaseFirestore.instance
+                                    .collection("users")
+                                    .get(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return LoadingOverlay();
+                                  }
+                                  return ListView.builder(
+                                      itemCount: (snapshot.data! as dynamic)
+                                          .docs
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        return UserCard(
+                                          snap: (snapshot.data! as dynamic)
+                                              .docs[index],
+                                        );
+                                      });
+                                }),
+                          )
+                        : Container(
+                            width: 100.w,
+                            child: FutureBuilder(
+                                future: FirebaseFirestore.instance
+                                    .collection("users")
+                                    .where('username',
+                                        isEqualTo: controller.getResult)
+                                    .get(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return LoadingOverlay();
+                                  }
+                                  return ListView.builder(
+                                      itemCount: (snapshot.data! as dynamic)
+                                          .docs
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        return UserCard(
+                                          snap: (snapshot.data! as dynamic)
+                                              .docs[index],
+                                        );
+                                      });
+                                }),
+                          )),
           ],
         ),
       ),

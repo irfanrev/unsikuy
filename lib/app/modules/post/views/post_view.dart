@@ -97,7 +97,10 @@ class PostView extends GetView<PostController> {
       appBar: AppBar(
         title: Text(
           'Unsika Connect',
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context)
+              .textTheme
+              .headline2!
+              .copyWith(color: AppColors.textColour80),
         ),
         actions: [
           IconButton(
@@ -119,36 +122,27 @@ class PostView extends GetView<PostController> {
           ),
         ],
       ),
-      body: StateHandleWidget(
-        emptyImage: AppImages.imgEmpty.image().image,
-        errorImage: AppImages.imgError.image().image,
-        loadingView: const Center(
-          child: CircularProgressIndicator(),
-        ),
-        emptyTitle: 'Post is empty!',
-        errorTitle: 'Something when wrong!',
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('posts')
-                .orderBy('published_at', descending: true)
-                .snapshots(),
-            builder: (context,
-                AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return LoadingOverlay();
-              }
-              return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    return PostCardItem(
-                      snap: snapshot.data!.docs[index].data(),
-                      controller: controller,
-                    );
-                  });
-            },
-          ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('posts')
+              .orderBy('published_at', descending: true)
+              .snapshots(),
+          builder: (context,
+              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return LoadingOverlay();
+            }
+            return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  return PostCardItem(
+                    snap: snapshot.data!.docs[index].data(),
+                    controller: controller,
+                  );
+                });
+          },
         ),
       ),
     );

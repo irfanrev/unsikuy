@@ -192,7 +192,10 @@ class UploadView extends GetView<UploadController> {
               Obx(() {
                 return PrimaryButton(
                   child: controller.isDismiss.value == true
-                      ? Center(child: CircularProgressIndicator())
+                      ? Center(
+                          child: CircularProgressIndicator(
+                          color: AppColors.white,
+                        ))
                       : Text(
                           'Upload',
                           style: Theme.of(context).textTheme.button?.copyWith(

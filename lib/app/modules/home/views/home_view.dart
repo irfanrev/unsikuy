@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,7 +26,9 @@ class HomeView extends StatelessWidget {
                   PeopleView(),
                   UploadView(),
                   ChatsView(),
-                  ProfileView(),
+                  ProfileView(
+                    uuid: FirebaseAuth.instance.currentUser!.uid,
+                  ),
                 ],
               ),
             ),

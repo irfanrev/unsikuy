@@ -35,11 +35,9 @@ class LoginView extends GetView<LoginController> {
                 height: 30,
               ),
               Text(
-                'Sign In',
-                style: Theme.of(context).textTheme.headline4!.copyWith(
+                'Login',
+                style: Theme.of(context).textTheme.headline3!.copyWith(
                       color: AppColors.black,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 20,
                     ),
               ),
               const SizedBox(
@@ -55,6 +53,7 @@ class LoginView extends GetView<LoginController> {
               CustomizeTextField(
                 textEditingController: controller.emailC,
                 titleText: 'Email',
+                textStyle: Theme.of(context).textTheme.bodyText1,
               ),
               const SizedBox(
                 height: 20,
@@ -63,6 +62,7 @@ class LoginView extends GetView<LoginController> {
                 textEditingController: controller.passC,
                 titleText: 'Password',
                 isObscure: controller.isSecure,
+                textStyle: Theme.of(context).textTheme.bodyText1,
                 onPressed: () {
                   controller.isSecure = false;
                   controller.update();
@@ -71,19 +71,19 @@ class LoginView extends GetView<LoginController> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                width: 100.w,
-                child: InkWell(
-                  onTap: () {},
-                  child: Text(
-                    'Forgot Password?',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: AppColors.primaryLight,
-                        ),
-                    textAlign: TextAlign.end,
-                  ),
-                ),
-              ),
+              // Container(
+              //   width: 100.w,
+              //   child: InkWell(
+              //     onTap: () {},
+              //     child: Text(
+              //       'Forgot Password?',
+              //       style: Theme.of(context).textTheme.bodyText1!.copyWith(
+              //             color: AppColors.primaryLight,
+              //           ),
+              //       textAlign: TextAlign.end,
+              //     ),
+              //   ),
+              // ),
               const SizedBox(
                 height: 16,
               ),
@@ -97,7 +97,10 @@ class LoginView extends GetView<LoginController> {
                       Obx(() {
                         return PrimaryButton(
                           child: controller.isLoading.value == true
-                              ? Center(child: CircularProgressIndicator())
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                  color: AppColors.white,
+                                ))
                               : Text(
                                   'Done',
                                   style: Theme.of(context)

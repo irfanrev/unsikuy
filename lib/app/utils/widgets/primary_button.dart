@@ -61,8 +61,8 @@ class PrimaryButton extends StatelessWidget {
               stops: [0.0, 1.0],
               colors: enabled
                   ? <Color>[
-                      reverse ? AppColors.white : AppColors.primaryDark,
-                      reverse ? AppColors.white : AppColors.primaryDark
+                      reverse ? AppColors.white : AppColors.primaryLight,
+                      reverse ? AppColors.white : AppColors.primaryLight
                     ]
                   : <Color>[AppColors.gray, AppColors.gray],
             ),

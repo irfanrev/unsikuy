@@ -30,6 +30,9 @@ class $LibAppResourcesGen {
 class $LibAppResourcesImagesGen {
   const $LibAppResourcesImagesGen();
 
+  /// File path: lib/app/resources/images/delete-post.json
+  String get deletePost => 'lib/app/resources/images/delete-post.json';
+
   /// File path: lib/app/resources/images/empty_state_code.png
   AssetGenImage get emptyStateCode =>
       const AssetGenImage('lib/app/resources/images/empty_state_code.png');
@@ -58,16 +61,28 @@ class $LibAppResourcesImagesGen {
   AssetGenImage get imgSplashbg =>
       const AssetGenImage('lib/app/resources/images/img_splashbg.png');
 
+  /// File path: lib/app/resources/images/placeholder.png
+  AssetGenImage get placeholder =>
+      const AssetGenImage('lib/app/resources/images/placeholder.png');
+
   /// File path: lib/app/resources/images/regis-success.png
   AssetGenImage get regisSuccess =>
       const AssetGenImage('lib/app/resources/images/regis-success.png');
+
+  /// File path: lib/app/resources/images/register-success.json
+  String get registerSuccess =>
+      'lib/app/resources/images/register-success.json';
+
+  /// File path: lib/app/resources/images/success.json
+  String get success => 'lib/app/resources/images/success.json';
 
   /// File path: lib/app/resources/images/user_placeholder.png
   AssetGenImage get userPlaceholder =>
       const AssetGenImage('lib/app/resources/images/user_placeholder.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [
+  List<dynamic> get values => [
+        deletePost,
         emptyStateCode,
         icLogoSuitcoreMain,
         imgEmpty,
@@ -75,7 +90,10 @@ class $LibAppResourcesImagesGen {
         imgLoginIlust,
         imgLogo,
         imgSplashbg,
+        placeholder,
         regisSuccess,
+        registerSuccess,
+        success,
         userPlaceholder
       ];
 }

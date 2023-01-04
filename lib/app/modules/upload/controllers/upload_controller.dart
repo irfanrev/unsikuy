@@ -75,24 +75,43 @@ class UploadController extends GetxController {
   Future upload() async {
     try {
       isDismiss.value = true;
-      String photo = await uploadImageToStorage('post', file!, true);
 
-      String postId = Uuid().v1();
-      Post post = Post(
-        postId: postId,
-        username: username,
-        description: desc.text,
-        publishedAt: DateTime.now(),
-        uuid: _auth.currentUser!.uid,
-        postUrl: photo,
-        profImg: photoUrl,
-        like: [],
-      );
-      await _firestore.collection('posts').doc(postId).set(post.toJson());
-      showNotif('Success', 'Data is Posted!');
-      resetImage();
-      desc.text = '';
-      isDismiss.value = false;
+      if (file != null) {
+        String photo = await uploadImageToStorage('post', file!, true);
+
+        String postId = Uuid().v1();
+        Post post = Post(
+          postId: postId,
+          username: username,
+          description: desc.text,
+          publishedAt: DateTime.now(),
+          uuid: _auth.currentUser!.uid,
+          postUrl: photo,
+          profImg: photoUrl,
+          like: [],
+        );
+        await _firestore.collection('posts').doc(postId).set(post.toJson());
+        showNotif('Success', 'Data is Posted!');
+        resetImage();
+        desc.text = '';
+        isDismiss.value = false;
+      } else {
+        String postId = Uuid().v1();
+        Post post = Post(
+          postId: postId,
+          username: username,
+          description: desc.text,
+          publishedAt: DateTime.now(),
+          uuid: _auth.currentUser!.uid,
+          postUrl: '',
+          profImg: photoUrl,
+          like: [],
+        );
+        await _firestore.collection('posts').doc(postId).set(post.toJson());
+        showNotif('Success', 'Data is Posted!');
+        desc.text = '';
+        isDismiss.value = false;
+      }
     } catch (e) {
       showError('Error', e.toString());
       isDismiss.value = false;
