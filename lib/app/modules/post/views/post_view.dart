@@ -7,6 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/post/widgets/post_card.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
+import 'package:unsikuy_app/app/routes/app_pages.dart';
 import 'package:unsikuy_app/app/utils/widgets/loading_overlay.dart';
 import 'package:unsikuy_app/app/utils/widgets/sm_app_bar.dart';
 import 'package:unsikuy_app/app/utils/widgets/state_handle_widget.dart';
@@ -104,7 +105,9 @@ class PostView extends GetView<PostController> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.toNamed(Routes.SEARCH);
+            },
             icon: Icon(
               CupertinoIcons.search,
               color: AppColors.primaryDark,

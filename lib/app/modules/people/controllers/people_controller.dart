@@ -7,6 +7,7 @@ class PeopleController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   bool isSearch = false;
+  var isConnecters;
   var getResult;
   var parsingStatus;
 

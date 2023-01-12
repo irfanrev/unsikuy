@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,7 @@ import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/people/widgets/status_list.dart';
 import 'package:unsikuy_app/app/modules/people/widgets/user_card.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
+import 'package:unsikuy_app/app/routes/app_pages.dart';
 import 'package:unsikuy_app/app/utils/widgets/form/form_input_field_with_icon.dart';
 import 'package:unsikuy_app/app/utils/widgets/loading_overlay.dart';
 
@@ -44,6 +46,7 @@ class PeopleView extends GetView<PeopleController> {
                         controller.isSearch = true;
                         controller.parsingStatus = '';
                         controller.update();
+
                         print(value.toString());
                       } else {
                         controller.isSearch = false;
@@ -95,7 +98,7 @@ class PeopleView extends GetView<PeopleController> {
                                   });
                             }),
                       )
-                    : (controller.parsingStatus == '')
+                    : controller.parsingStatus == null
                         ? Container(
                             width: 100.w,
                             child: FutureBuilder(
@@ -116,6 +119,9 @@ class PeopleView extends GetView<PeopleController> {
                                           snap: (snapshot.data! as dynamic)
                                               .docs[index],
                                         );
+                                        // return Text((snapshot.data! as dynamic)
+                                        //     .docs[index]['username']
+                                        //     .toString());
                                       });
                                 }),
                           )
@@ -124,8 +130,6 @@ class PeopleView extends GetView<PeopleController> {
                             child: FutureBuilder(
                                 future: FirebaseFirestore.instance
                                     .collection("users")
-                                    .where('username',
-                                        isEqualTo: controller.getResult)
                                     .get(),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
@@ -141,6 +145,9 @@ class PeopleView extends GetView<PeopleController> {
                                           snap: (snapshot.data! as dynamic)
                                               .docs[index],
                                         );
+                                        // return Text((snapshot.data! as dynamic)
+                                        //     .docs[index]['username']
+                                        //     .toString());
                                       });
                                 }),
                           )),

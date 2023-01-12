@@ -8,18 +8,16 @@ import 'package:unsikuy_app/app/routes/app_pages.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
 import 'package:get/get.dart';
 
-class UserCard extends StatelessWidget {
-  final snap;
-  const UserCard({super.key, required this.snap});
+class UserCardChat extends StatelessWidget {
+  const UserCardChat({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.find<PeopleController>();
     return InkWell(
       onTap: () {
-        Get.to(ProfileView(
-          uuid: snap['uuid'] ?? '',
-        ));
+        Get.toNamed(Routes.CHAT_ROOM);
       },
       child: Container(
         width: 100.w,
@@ -41,7 +39,6 @@ class UserCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 shapeImage: ShapeImage.oval,
                 placeholder: AppImages.userPlaceholder.image().image,
-                image: snap['photoUrl'] ?? '',
               ),
             ),
             const SizedBox(
@@ -52,7 +49,7 @@ class UserCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    snap['username'] ?? '',
+                    'irfan',
                     style: Theme.of(context).textTheme.headline5!.copyWith(
                           color: AppColors.textColour80,
                         ),
@@ -60,23 +57,24 @@ class UserCard extends StatelessWidget {
                   const SizedBox(
                     height: 4,
                   ),
-                  Visibility(
-                    visible: snap['bio'] != '',
-                    child: Text(
-                      snap['bio'],
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: AppColors.textColour50,
-                          overflow: TextOverflow.ellipsis),
-                    ),
-                  ),
                   Text(
-                    snap['status'] ?? '',
+                    'Student',
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: AppColors.shadesPrimaryDark60,
                         ),
                   ),
                 ],
               ),
+            ),
+
+            Text(
+              '19.00',
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    color: AppColors.textColour70,
+                  ),
+            ),
+            const SizedBox(
+              width: 16,
             ),
             // Visibility(
             //   visible: snap['uuid'] != FirebaseAuth.instance.currentUser!.uid,

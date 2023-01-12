@@ -37,12 +37,19 @@ class UploadView extends GetView<UploadController> {
 
     return SMAppBar(
       showLeading: false,
-      title: 'Post',
+      title: 'Sharing',
+      titleStyle: Theme.of(context)
+          .textTheme
+          .headline2!
+          .copyWith(color: AppColors.textColour80),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
           child: Column(
             children: [
+              const SizedBox(
+                height: 12,
+              ),
               Row(
                 children: [
                   Container(
@@ -61,11 +68,35 @@ class UploadView extends GetView<UploadController> {
                   const SizedBox(
                     width: 12,
                   ),
-                  Text(controller.username.toString(),
-                      style:
-                          Theme.of(context).textTheme.displayMedium?.copyWith(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(controller.username.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium
+                              ?.copyWith(
                                 color: AppColors.textColour70,
-                              ))
+                              )),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                              width: 0.8, color: AppColors.grey.shade300),
+                        ),
+                        child: Text('Public',
+                            style:
+                                Theme.of(context).textTheme.bodyText2?.copyWith(
+                                      color: AppColors.textColour70,
+                                    )),
+                      ),
+                    ],
+                  )
                 ],
               ),
               const SizedBox(

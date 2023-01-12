@@ -20,6 +20,7 @@ class User {
     this.createdAt,
     this.updatedAt,
     this.uuid,
+    this.chats,
   });
 
   String? username;
@@ -32,6 +33,7 @@ class User {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? uuid;
+  List<ChatUser>? chats;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         username: json["username"] == null ? null : json["username"],
@@ -61,5 +63,33 @@ class User {
         "created_at": createdAt == null ? null : createdAt?.toIso8601String(),
         "updated_at": updatedAt == null ? null : updatedAt?.toIso8601String(),
         "uuid": uuid == null ? null : uuid,
+      };
+}
+
+class ChatUser {
+  ChatUser({
+    this.connection,
+    this.chatId,
+    this.lastTime,
+    this.total_unread,
+  });
+
+  String? connection;
+  String? chatId;
+  String? lastTime;
+  int? total_unread;
+
+  factory ChatUser.fromJson(Map<String, dynamic> json) => ChatUser(
+        connection: json["connection"],
+        chatId: json["chat_id"],
+        lastTime: json["lastTime"],
+        total_unread: json["total_unread"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "connection": connection,
+        "chat_id": chatId,
+        "lastTime": lastTime,
+        "total_unread": total_unread,
       };
 }

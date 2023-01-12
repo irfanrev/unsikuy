@@ -32,24 +32,36 @@ class RegisterController extends GetxController {
           email: formKey.currentState?.value['email'],
           password: formKey.currentState?.value['password']);
 
-      model.User user = model.User(
-        username: formKey.currentState?.value['username'],
-        email: formKey.currentState?.value['email'],
-        phone: formKey.currentState?.value['phone'],
-        gender: formKey.currentState?.value['gender'],
-        status: formKey.currentState?.value['status'],
-        bio: '',
-        photoUrl:
-            'https://firebasestorage.googleapis.com/v0/b/unsika-connect.appspot.com/o/user_placeholder.png?alt=media&token=d78dc4cb-0e08-4023-bc8d-6a361c4cd461',
-        uuid: cred.user!.uid,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+      // model.User user = model.User(
+      //   username: formKey.currentState?.value['username'],
+      //   email: formKey.currentState?.value['email'],
+      //   phone: formKey.currentState?.value['phone'],
+      //   gender: formKey.currentState?.value['gender'],
+      //   status: formKey.currentState?.value['status'],
+      //   bio: '',
+      //   photoUrl:
+      //       'https://firebasestorage.googleapis.com/v0/b/unsika-connect.appspot.com/o/user_placeholder.png?alt=media&token=d78dc4cb-0e08-4023-bc8d-6a361c4cd461',
+      //   uuid: cred.user!.uid,
+      //   createdAt: DateTime.now(),
+      //   updatedAt: DateTime.now(),
+      //   chats: [],
+      // );
 
-      await _firebaseFirestore
-          .collection('users')
-          .doc(cred.user!.uid)
-          .set(user.toJson());
+      await _firebaseFirestore.collection('users').doc(cred.user!.uid).set({
+        "username": formKey.currentState?.value['username'],
+        "email": formKey.currentState?.value['email'],
+        "phone": formKey.currentState?.value['phone'],
+        "gender": formKey.currentState?.value['gender'],
+        "status": formKey.currentState?.value['status'],
+        "bio": '',
+        "photoUrl":
+            'https://firebasestorage.googleapis.com/v0/b/unsika-connect.appspot.com/o/user_placeholder.png?alt=media&token=d78dc4cb-0e08-4023-bc8d-6a361c4cd461',
+        "uuid": cred.user!.uid,
+        "createdAt": DateTime.now(),
+        "updatedAt": DateTime.now(),
+        "connecters": [],
+        "chats": [],
+      });
       isLoading.value = false;
       Get.offAll(RegisterSuccess());
     } on FirebaseAuthException catch (e) {

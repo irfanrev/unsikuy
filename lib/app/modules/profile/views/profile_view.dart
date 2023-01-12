@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:unsikuy_app/app/controllers/auth_controller.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/views/edit_profile_view.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/modules/post/widgets/post_card.dart';
+import 'package:unsikuy_app/app/modules/profile/views/view_avatar.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
@@ -71,7 +73,7 @@ class _ProfileViewState extends State<ProfileView> {
   @override
   Widget build(BuildContext context) {
     final c = Get.put(PostController());
-
+    final authC = Get.find<AuthController>();
     return isLoading
         ? LoadingOverlay()
         : Scaffold(
@@ -99,31 +101,19 @@ class _ProfileViewState extends State<ProfileView> {
                         children: [
                           InkWell(
                             onTap: () {
-                              Get.defaultDialog(
-                                title: '',
-                                content: Container(
-                                  width: 300,
-                                  height: 300,
-                                  child: ImageLoad(
-                                    shapeImage: ShapeImage.oval,
-                                    placeholder:
-                                        AppImages.userPlaceholder.image().image,
-                                    image: userData['photoUrl'],
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
+                              Get.to(ViewAvatar(
+                                photo: userData['photoUrl'],
+                              ));
                             },
                             child: Container(
-                              width: 67,
-                              height: 67,
+                              width: 90,
+                              height: 90,
                               child: ImageLoad(
-                                shapeImage: ShapeImage.oval,
-                                placeholder:
-                                    AppImages.userPlaceholder.image().image,
-                                image: userData['photoUrl'],
-                                fit: BoxFit.cover,
-                              ),
+                                  shapeImage: ShapeImage.oval,
+                                  placeholder:
+                                      AppImages.userPlaceholder.image().image,
+                                  image: userData['photoUrl'],
+                                  fit: BoxFit.cover),
                             ),
                           ),
                           const SizedBox(
@@ -135,7 +125,7 @@ class _ProfileViewState extends State<ProfileView> {
                               children: [
                                 Text(
                                   userData['username'],
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headline4,
                                 ),
                                 const SizedBox(
                                   height: 4,
@@ -150,12 +140,38 @@ class _ProfileViewState extends State<ProfileView> {
                           Visibility(
                             visible: widget.uuid !=
                                 FirebaseAuth.instance.currentUser!.uid,
-                            child: Icon(
-                              CupertinoIcons.chat_bubble,
-                              size: 28,
-                              color: AppColors.grey.shade500,
+                            child: InkWell(
+                              onTap: () {
+                                authC.addNewConnection(userData['email']);
+                              },
+                              child: Icon(
+                                CupertinoIcons.chat_bubble,
+                                size: 28,
+                                color: AppColors.primaryLight,
+                              ),
                             ),
                           ),
+                          // InkWell(
+                          //   onTap: () {},
+                          //   child: Container(
+                          //     decoration: BoxDecoration(
+                          //         borderRadius: BorderRadius.circular(10),
+                          //         color: AppColors.primaryLight),
+                          //     padding: EdgeInsets.symmetric(
+                          //         horizontal: 10, vertical: 6),
+                          //     child: Center(
+                          //       child: Text(
+                          //         'Message',
+                          //         style: Theme.of(context)
+                          //             .textTheme
+                          //             .headline6!
+                          //             .copyWith(
+                          //               color: AppColors.white,
+                          //             ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

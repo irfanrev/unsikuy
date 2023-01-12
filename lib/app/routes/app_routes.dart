@@ -16,6 +16,8 @@ abstract class Routes {
   static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
   static const UPDATE_PROFILE = _Paths.update_profile;
   static const UPDATE_BIO = _Paths.update_bio;
+  static const CHAT_ROOM = _Paths.CHAT_ROOM;
+  static const SEARCH = _Paths.SEARCH;
 }
 
 abstract class _Paths {
@@ -33,4 +35,6 @@ abstract class _Paths {
   static const EDIT_PROFILE = '/edit-profile';
   static const update_profile = '/update-profile';
   static const update_bio = '/update-bio';
+  static const CHAT_ROOM = '/chat-room';
+  static const SEARCH = '/search';
 }

@@ -1,11 +1,13 @@
 import 'package:get/get.dart';
-import 'package:unsikuy_app/app/modules/edit_profile/views/update_bio.dart';
-import 'package:unsikuy_app/app/modules/edit_profile/views/update_profile.dart';
 
+import '../modules/chat_room/bindings/chat_room_binding.dart';
+import '../modules/chat_room/views/chat_room_view.dart';
 import '../modules/chats/bindings/chats_binding.dart';
 import '../modules/chats/views/chats_view.dart';
 import '../modules/edit_profile/bindings/edit_profile_binding.dart';
 import '../modules/edit_profile/views/edit_profile_view.dart';
+import '../modules/edit_profile/views/update_bio.dart';
+import '../modules/edit_profile/views/update_profile.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -19,6 +21,8 @@ import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
+import '../modules/search/bindings/search_binding.dart';
+import '../modules/search/views/search_view.dart';
 import '../modules/upload/bindings/upload_binding.dart';
 import '../modules/upload/views/upload_view.dart';
 import '../utils/widgets/loading_view.dart';
@@ -91,6 +95,16 @@ class AppPages {
     GetPage(
       name: _Paths.update_bio,
       page: () => const UpdateBio(),
+    ),
+    GetPage(
+      name: _Paths.CHAT_ROOM,
+      page: () => const ChatRoomView(),
+      binding: ChatRoomBinding(),
+    ),
+    GetPage(
+      name: _Paths.SEARCH,
+      page: () => const SearchView(),
+      binding: SearchBinding(),
     ),
   ];
 }
