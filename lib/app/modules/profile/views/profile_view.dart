@@ -142,7 +142,8 @@ class _ProfileViewState extends State<ProfileView> {
                                 FirebaseAuth.instance.currentUser!.uid,
                             child: InkWell(
                               onTap: () {
-                                authC.addNewConnection(userData['email']);
+                                authC.addNewConnection(
+                                    userData['email'], userData['uuid']);
                               },
                               child: Icon(
                                 CupertinoIcons.chat_bubble,

@@ -11,64 +11,68 @@ class AuthController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   UserCredential? userCredential;
-  User? currentUserNow;
+  // User? currentUserNow;
 
   //initial variable
 
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    getUsersData();
-    super.onInit();
-  }
+  // @override
+  // void onInit() {
+  //   // TODO: implement onInit
+  //   getUsersData();
+  //   super.onInit();
+  // }
 
-  Future getUsersData() async {
-    User currentUser = auth.currentUser!;
+  // Future getUsersData() async {
+  //   User currentUser = auth.currentUser!;
 
-    DocumentSnapshot userData =
-        await firestore.collection('users').doc(currentUser.uid).get();
+  //   DocumentSnapshot userData =
+  //       await firestore.collection('users').doc(currentUser.uid).get();
 
-    currentUserNow = auth.currentUser!;
-  }
+  //   currentUserNow = auth.currentUser!;
+  // }
 
-  void addNewConnection(String friendEmail) async {
+  void addNewConnection(String friendEmail, String uuid) async {
     try {
       String date = DateTime.now().toString();
       bool flagNewConnection = false;
       CollectionReference chats = firestore.collection('chats');
       CollectionReference users = firestore.collection('users');
-
-      final docUser = await users.doc(currentUserNow!.uid).get();
-      final docChats =
-          (docUser.data() as Map<String, dynamic>)['chats'] as List;
       var chat_id;
+      //TOTO : Fixing chats collection
 
-      if (docChats != null) {
-        docChats.forEach((singleChat) {
-          if (singleChat['connection'] == friendEmail) {
-            chat_id = singleChat['chat_id'];
-          }
-        });
+      final docChats = await users
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('chats')
+          .get();
 
-        if (chat_id != null) {
+      if (docChats.docs.length != 0) {
+        // udah ada data
+        final checkConnection = await users
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('chats')
+            .where('connection', isEqualTo: friendEmail)
+            .get();
+        if (checkConnection.docs.length != 0) {
           flagNewConnection = false;
-          // Get.toNamed(Routes.CHAT_ROOM, arguments: chat_id);
+          //ambil chat id dari colletion
+          chat_id = checkConnection.docs[0].id;
         } else {
           flagNewConnection = true;
         }
       } else {
+        // belum ada data, buat baru!
         flagNewConnection = true;
       }
 
       if (flagNewConnection) {
         final chatDocs = await chats.where("connection", whereIn: [
           [
-            currentUserNow!.email,
+            FirebaseAuth.instance.currentUser!.email,
             friendEmail,
           ],
           [
             friendEmail,
-            currentUserNow!.email,
+            FirebaseAuth.instance.currentUser!.email,
           ],
         ]).get();
 
@@ -79,40 +83,97 @@ class AuthController extends GetxController {
               (chatDocs.docs[0].data() as Map<String, dynamic>);
 
           // Cek dan tambah chat
-          docChats.add({
+
+          await users
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('chats')
+              .doc(chatDataId)
+              .set({
             "connection": friendEmail,
-            "chat_id": chatDataId,
             'lastTime': chatData['lastTime'],
+            "uuid": uuid,
             "total_unread": 0,
           });
-
-          await users.doc(currentUserNow!.uid).update({"chats": docChats});
 
           chat_id = chatDataId;
         } else {
           // buat baru
           final newChatDoc = await chats.add({
             "connection": [
-              currentUserNow!.email,
+              FirebaseAuth.instance.currentUser!.email,
               friendEmail,
             ],
-            "chat": [],
           });
 
-          docChats.add({
+          await chats.doc(newChatDoc.id).collection('chat');
+
+          await users
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('chats')
+              .doc(newChatDoc.id)
+              .set({
             "connection": friendEmail,
-            "chat_id": newChatDoc.id,
             'lastTime': date,
+            "uuid": uuid,
             "total_unread": 0,
           });
-
-          await users.doc(currentUserNow!.uid).update({"chats": docChats});
 
           chat_id = newChatDoc.id;
         }
       }
+
+      final updateStatusChat = await chats
+          .doc(chat_id)
+          .collection('chat')
+          .where('isRead', isEqualTo: false)
+          .where('penerima',
+              isEqualTo: FirebaseAuth.instance.currentUser!.email)
+          .get();
+
+      updateStatusChat.docs.forEach((element) async {
+        await chats.doc(chat_id).collection('chat').doc(element.id).update({
+          'isRead': true,
+        });
+      });
+
+      await users
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('chats')
+          .doc(chat_id)
+          .update({
+        'total_unread': 0,
+      });
+
       print(chat_id);
-      Get.toNamed(Routes.CHAT_ROOM, arguments: chat_id);
+      Get.toNamed(Routes.CHAT_ROOM, arguments: {
+        'chat_id': chat_id,
+        'friendEmail': friendEmail,
+        'uuid': uuid,
+      });
+
+      // fixing diatas
+
+      // final docUser = await users.doc(currentUserNow!.uid).get();
+      // final docChats =
+      //     (docUser.data() as Map<String, dynamic>)['chats'] as List;
+
+      // if (docChats != null) {
+      //   docChats.forEach((singleChat) {
+      //     if (singleChat['connection'] == friendEmail) {
+      //       chat_id = singleChat['chat_id'];
+      //     }
+      //   });
+
+      //   if (chat_id != null) {
+      //     flagNewConnection = false;
+      //     // Get.toNamed(Routes.CHAT_ROOM, arguments: chat_id);
+      //   } else {
+      //     flagNewConnection = true;
+      //   }
+      // } else {
+      //   flagNewConnection = true;
+      // }
+
     } catch (e) {
       print(e);
     }

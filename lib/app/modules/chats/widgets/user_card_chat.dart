@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:unsikuy_app/app/modules/chats/controllers/chats_controller.dart';
 import 'package:unsikuy_app/app/modules/people/controllers/people_controller.dart';
 import 'package:unsikuy_app/app/modules/profile/views/profile_view.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
@@ -9,15 +10,26 @@ import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
 import 'package:get/get.dart';
 
 class UserCardChat extends StatelessWidget {
-  const UserCardChat({
-    super.key,
-  });
+  final data;
+  final totalUnread;
+  final ChatsController controller;
+  const UserCardChat(
+      {super.key,
+      required this.data,
+      required this.totalUnread,
+      required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.toNamed(Routes.CHAT_ROOM);
+        controller.goToChatRoom(
+          FirebaseAuth.instance.currentUser!.email.toString(),
+          FirebaseAuth.instance.currentUser!.uid,
+          totalUnread.id,
+          totalUnread['connection'],
+          totalUnread['uuid'],
+        );
       },
       child: Container(
         width: 100.w,
@@ -33,12 +45,13 @@ class UserCardChat extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: 60,
+              height: 60,
               child: ImageLoad(
                 fit: BoxFit.cover,
                 shapeImage: ShapeImage.oval,
                 placeholder: AppImages.userPlaceholder.image().image,
+                image: data['photoUrl'],
               ),
             ),
             const SizedBox(
@@ -49,7 +62,7 @@ class UserCardChat extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'irfan',
+                    data['username'],
                     style: Theme.of(context).textTheme.headline5!.copyWith(
                           color: AppColors.textColour80,
                         ),
@@ -58,7 +71,7 @@ class UserCardChat extends StatelessWidget {
                     height: 4,
                   ),
                   Text(
-                    'Student',
+                    data['status'],
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: AppColors.shadesPrimaryDark60,
                         ),
@@ -67,11 +80,18 @@ class UserCardChat extends StatelessWidget {
               ),
             ),
 
-            Text(
-              '19.00',
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                    color: AppColors.textColour70,
-                  ),
+            SizedBox(
+              child: totalUnread['total_unread'] == 0
+                  ? SizedBox()
+                  : Chip(
+                      backgroundColor: AppColors.primaryLight,
+                      label: Text(
+                        totalUnread['total_unread'].toString(),
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                              color: AppColors.white,
+                            ),
+                      ),
+                    ),
             ),
             const SizedBox(
               width: 16,

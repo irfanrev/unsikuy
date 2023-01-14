@@ -60,8 +60,14 @@ class RegisterController extends GetxController {
         "createdAt": DateTime.now(),
         "updatedAt": DateTime.now(),
         "connecters": [],
-        "chats": [],
+        // "chats": [],
       });
+
+      _firebaseFirestore
+          .collection('users')
+          .doc(cred.user!.uid)
+          .collection('chats');
+
       isLoading.value = false;
       Get.offAll(RegisterSuccess());
     } on FirebaseAuthException catch (e) {
