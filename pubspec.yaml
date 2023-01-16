@@ -36,8 +36,11 @@ dependencies:
   lottie: any
   avatar_glow: 2.0.2
   chat_bubbles: ^1.4.0
-  image_cropper: 
-  flutter_image_compress:
+  image_cropper: any
+  flutter_image_compress: any
+  emoji_picker_flutter: 1.5.2
+  flutter_linkify: ^5.0.2
+  url_launcher: 6.1.7
   flutter: 
     sdk: flutter
 

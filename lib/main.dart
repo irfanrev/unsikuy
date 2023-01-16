@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
     return Sizer(builder: (context, orientation, deviceType) {
       GetStorage box = GetStorage();
       final authC = Get.put(AuthController(), permanent: true);
+      final profC = Get.put(AuthController(), permanent: true);
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         // translations: AppTranslation(),

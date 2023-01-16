@@ -17,6 +17,8 @@ import '../modules/people/views/people_view.dart';
 import '../modules/post/bindings/post_binding.dart';
 import '../modules/post/views/post_comment.dart';
 import '../modules/post/views/post_view.dart';
+import '../modules/post_detail/bindings/post_detail_binding.dart';
+import '../modules/post_detail/views/post_detail_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
 import '../modules/register/bindings/register_binding.dart';
@@ -105,6 +107,11 @@ class AppPages {
       name: _Paths.SEARCH,
       page: () => const SearchView(),
       binding: SearchBinding(),
+    ),
+    GetPage(
+      name: _Paths.POST_DETAIL,
+      page: () => const PostDetailView(),
+      binding: PostDetailBinding(),
     ),
   ];
 }

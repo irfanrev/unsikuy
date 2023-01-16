@@ -33,15 +33,7 @@ class UserCardChat extends StatelessWidget {
       },
       child: Container(
         width: 100.w,
-        padding: EdgeInsets.symmetric(vertical: 16),
-        margin: EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: AppColors.grey.shade200),
-          ),
-          //borderRadius: BorderRadius.circular(12),
-          //border: Border.all(color: AppColors.grey.shade300, width: 0.5),
-        ),
+        margin: EdgeInsets.only(bottom: 22),
         child: Row(
           children: [
             Container(
@@ -79,7 +71,6 @@ class UserCardChat extends StatelessWidget {
                 ],
               ),
             ),
-
             SizedBox(
               child: totalUnread['total_unread'] == 0
                   ? SizedBox()
@@ -96,51 +87,6 @@ class UserCardChat extends StatelessWidget {
             const SizedBox(
               width: 16,
             ),
-            // Visibility(
-            //   visible: snap['uuid'] != FirebaseAuth.instance.currentUser!.uid,
-            //   child: snap['connecters']
-            //           .contains(FirebaseAuth.instance.currentUser!.uid)
-            //       ? InkWell(
-            //           onTap: () {},
-            //           child: Container(
-            //             decoration: BoxDecoration(
-            //                 borderRadius: BorderRadius.circular(10),
-            //                 border: Border.all(
-            //                     width: 0.8, color: AppColors.grey.shade300),
-            //                 color: AppColors.grey.shade100),
-            //             padding:
-            //                 EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            //             child: Center(
-            //               child: Text(
-            //                 'Disconnect',
-            //                 style:
-            //                     Theme.of(context).textTheme.headline6!.copyWith(
-            //                           color: AppColors.textColour50,
-            //                         ),
-            //               ),
-            //             ),
-            //           ),
-            //         )
-            //       : InkWell(
-            //           onTap: () {},
-            //           child: Container(
-            //             decoration: BoxDecoration(
-            //                 borderRadius: BorderRadius.circular(10),
-            //                 color: AppColors.primaryLight),
-            //             padding:
-            //                 EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            //             child: Center(
-            //               child: Text(
-            //                 'Connect',
-            //                 style:
-            //                     Theme.of(context).textTheme.headline6!.copyWith(
-            //                           color: AppColors.white,
-            //                         ),
-            //               ),
-            //             ),
-            //           ),
-            //         ),
-            // ),
           ],
         ),
       ),

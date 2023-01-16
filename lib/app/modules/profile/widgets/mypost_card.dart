@@ -200,9 +200,10 @@ class _MyPostCardState extends State<MyPostCard> {
                   InkWell(
                       onTap: () {
                         widget.controller.likePost(
-                            widget.snap['postId'],
-                            widget.controller.auth.currentUser!.uid,
-                            widget.snap['like']);
+                          widget.snap['postId'],
+                          widget.controller.auth.currentUser!.uid,
+                          widget.snap['like'],
+                        );
                       },
                       child: widget.snap['like']
                               .contains(widget.controller.auth.currentUser!.uid)

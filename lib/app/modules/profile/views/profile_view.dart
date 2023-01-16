@@ -125,7 +125,13 @@ class _ProfileViewState extends State<ProfileView> {
                               children: [
                                 Text(
                                   userData['username'],
-                                  style: Theme.of(context).textTheme.headline4,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4!
+                                      .copyWith(
+                                        color: AppColors.textColour80,
+                                      ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(
                                   height: 4,
@@ -145,12 +151,15 @@ class _ProfileViewState extends State<ProfileView> {
                                 authC.addNewConnection(
                                     userData['email'], userData['uuid']);
                               },
-                              child: Icon(
-                                CupertinoIcons.chat_bubble,
-                                size: 28,
+                              child: const Icon(
+                                CupertinoIcons.chat_bubble_text,
+                                size: 30,
                                 color: AppColors.primaryLight,
                               ),
                             ),
+                          ),
+                          const SizedBox(
+                            width: 10,
                           ),
                           // InkWell(
                           //   onTap: () {},
@@ -176,6 +185,7 @@ class _ProfileViewState extends State<ProfileView> {
                         ],
                       ),
                     ),
+
                     Visibility(
                       visible: userData['bio'] != '',
                       child: SizedBox(
@@ -195,7 +205,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 12,
                     ),
                     Container(
                       width: 100.w,
@@ -205,32 +215,57 @@ class _ProfileViewState extends State<ProfileView> {
                             children: [
                               Text(
                                 postLen.toString(),
-                                style: Theme.of(context).textTheme.headline6,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6!
+                                    .copyWith(
+                                      color: AppColors.primaryDark,
+                                    ),
                               ),
                               const SizedBox(
                                 width: 4,
                               ),
                               Text(
                                 'of Sharing',
-                                style: Theme.of(context).textTheme.titleLarge,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .copyWith(
+                                      color: AppColors.primaryDark,
+                                    ),
                               ),
                             ],
                           ),
                           const SizedBox(
-                            width: 16,
+                            width: 8,
+                          ),
+                          Text('|',
+                              style: Theme.of(context).textTheme.headline3),
+                          const SizedBox(
+                            width: 8,
                           ),
                           Row(
                             children: [
                               Text(
                                 connecters.toString(),
-                                style: Theme.of(context).textTheme.headline6,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6!
+                                    .copyWith(
+                                      color: AppColors.primaryDark,
+                                    ),
                               ),
                               const SizedBox(
                                 width: 4,
                               ),
                               Text(
                                 'Connecters',
-                                style: Theme.of(context).textTheme.titleLarge,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .copyWith(
+                                      color: AppColors.primaryDark,
+                                    ),
                               ),
                             ],
                           ),
@@ -238,7 +273,7 @@ class _ProfileViewState extends State<ProfileView> {
                       ),
                     ),
                     const SizedBox(
-                      height: 12,
+                      height: 20,
                     ),
                     FirebaseAuth.instance.currentUser!.uid == widget.uuid
                         ? InkWell(

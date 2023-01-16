@@ -6,10 +6,10 @@ class PeopleController extends GetxController {
   TextEditingController searchC = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  bool isSearch = false;
+  var isSearch = false.obs;
   var isConnecters;
   var getResult;
-  var parsingStatus;
+  var parsingStatus = ''.obs;
 
   Future<void> connectUser(String uuid, String connectId) async {
     try {

@@ -8,6 +8,7 @@ class ProfileController extends GetxController {
   String? uuID;
   ProfileController({this.uuID});
   //TODO: Implement ProfileController
+  static ProfileController find = Get.find();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   GetStorage box = GetStorage();

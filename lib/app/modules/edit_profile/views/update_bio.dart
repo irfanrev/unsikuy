@@ -3,8 +3,10 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/controllers/edit_profile_controller.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/views/update_profile.dart';
+import 'package:unsikuy_app/app/modules/profile/controllers/profile_controller.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/utils/widgets/primary_button.dart';
+import 'package:get/get.dart';
 
 class UpdateBio extends StatelessWidget {
   const UpdateBio({super.key});

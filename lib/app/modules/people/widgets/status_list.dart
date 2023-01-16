@@ -40,9 +40,10 @@ class StatusList extends StatelessWidget {
                     final statusData = (snapshot.data! as dynamic).docs[index];
                     return InkWell(
                       onTap: () {
-                        controller.parsingStatus = statusData['title'];
+                        controller.parsingStatus.value = statusData['title'];
                         controller.update();
-                        print(controller.parsingStatus.toString());
+                        controller.refresh();
+                        print(controller.parsingStatus.value.toString());
                       },
                       child: Container(
                         padding:
@@ -50,12 +51,12 @@ class StatusList extends StatelessWidget {
                         margin: EdgeInsets.only(right: 12),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color:
-                                controller.parsingStatus == statusData['title']
-                                    ? AppColors.primaryLight
-                                    : AppColors.white,
+                            color: controller.parsingStatus.value ==
+                                    statusData['title']
+                                ? AppColors.primaryLight
+                                : AppColors.white,
                             border: Border.all(
-                                color: controller.parsingStatus ==
+                                color: controller.parsingStatus.value ==
                                         statusData['title']
                                     ? AppColors.primaryLight
                                     : AppColors.grey.shade300)),
@@ -67,7 +68,7 @@ class StatusList extends StatelessWidget {
                                   .textTheme
                                   .headline5!
                                   .copyWith(
-                                    color: controller.parsingStatus ==
+                                    color: controller.parsingStatus.value ==
                                             statusData['title']
                                         ? AppColors.white
                                         : AppColors.textColour70,

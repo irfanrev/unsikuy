@@ -1,20 +1,31 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class ChatRoomController extends GetxController {
   //TODO: Implement ChatRoomController
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   int totalUnread = 0;
   late ScrollController scrollC;
+  var isShowEmoji = false.obs;
+  late FocusNode focusNode;
+  TextEditingController chatC = TextEditingController();
 
   @override
   void onInit() {
     // TODO: implement onInit
     scrollC = ScrollController();
+    focusNode = FocusNode();
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        isShowEmoji.value = false;
+      }
+    });
     super.onInit();
   }
 
@@ -22,6 +33,7 @@ class ChatRoomController extends GetxController {
   void onClose() {
     // TODO: implement onClose
     scrollC.dispose();
+    focusNode.dispose();
     super.onClose();
   }
 
@@ -35,6 +47,14 @@ class ChatRoomController extends GetxController {
   //       .orderBy('lastTime', descending: false)
   //       .snapshots();
   // }
+
+  void addEmojiToChat(Emoji emoji) {
+    chatC.text = chatC.text + emoji.emoji;
+  }
+
+  void deleteEmoji() {
+    chatC.text = chatC.text.substring(0, chatC.text.length - 2);
+  }
 
   Stream<DocumentSnapshot<Object?>> friendData(String uuidFriend) {
     CollectionReference users = firestore.collection('users');
@@ -56,6 +76,7 @@ class ChatRoomController extends GetxController {
       'pesan': chat,
       'time': date,
       'isRead': false,
+      'groupTime': DateFormat.yMMMMd('en_us').format(DateTime.parse(date)),
     });
     totalUnread += 1;
 

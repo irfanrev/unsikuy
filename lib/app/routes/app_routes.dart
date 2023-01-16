@@ -18,6 +18,7 @@ abstract class Routes {
   static const UPDATE_BIO = _Paths.update_bio;
   static const CHAT_ROOM = _Paths.CHAT_ROOM;
   static const SEARCH = _Paths.SEARCH;
+  static const POST_DETAIL = _Paths.POST_DETAIL;
 }
 
 abstract class _Paths {
@@ -37,4 +38,5 @@ abstract class _Paths {
   static const update_bio = '/update-bio';
   static const CHAT_ROOM = '/chat-room';
   static const SEARCH = '/search';
+  static const POST_DETAIL = '/post-detail';
 }

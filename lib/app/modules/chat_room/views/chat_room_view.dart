@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -93,11 +94,35 @@ class ChatRoomView extends GetView<ChatRoomController> {
                   const SizedBox(
                     height: 4,
                   ),
-                  Text(
-                    'status',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: AppColors.shadesPrimaryDark60,
-                        ),
+                  Container(
+                    child: StreamBuilder<DocumentSnapshot<Object>>(
+                        stream: FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(uuidFriend)
+                            .snapshots(),
+                        builder: (context, snapProfile) {
+                          if (snapProfile.connectionState ==
+                              ConnectionState.active) {
+                            var profileData = snapProfile.data!.data()
+                                as Map<String, dynamic>;
+                            return Text(
+                              profileData['status'],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                    color: AppColors.shadesPrimaryDark60,
+                                  ),
+                            );
+                          }
+                          return Text(
+                            '',
+                            style:
+                                Theme.of(context).textTheme.headline5!.copyWith(
+                                      color: AppColors.textColour80,
+                                    ),
+                          );
+                        }),
                   ),
                 ],
               ),
@@ -133,81 +158,194 @@ class ChatRoomView extends GetView<ChatRoomController> {
                           controller: controller.scrollC,
                           itemCount: allData.length,
                           itemBuilder: (context, index) {
-                            // return BubbleNormal(
-                            //   tail: true,
-                            //   text: allData[index]['pesan'],
-                            //   isSender: allData[index]['pengirim'] ==
-                            //           FirebaseAuth.instance.currentUser!.email
-                            //       ? true
-                            //       : false,
-                            //   color: AppColors.primaryLight,
-                            //   textStyle:
-                            //       TextStyle(color: Colors.white, fontSize: 16),
-                            // );
-                            return ItemChat(
-                                isSender: allData[index]['pengirim'] ==
-                                        FirebaseAuth.instance.currentUser!.email
-                                    ? true
-                                    : false,
-                                msg: allData[index]['pesan'],
-                                time: allData[index]['time']);
+                            if (index == 0) {
+                              return Column(
+                                children: [
+                                  Chip(
+                                    backgroundColor: AppColors.grey.shade200,
+                                    label: Text(
+                                      allData[index]['groupTime'],
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    ),
+                                  ),
+                                  ItemChat(
+                                      isSender: allData[index]['pengirim'] ==
+                                              FirebaseAuth
+                                                  .instance.currentUser!.email
+                                          ? true
+                                          : false,
+                                      msg: allData[index]['pesan'],
+                                      time: allData[index]['time']),
+                                ],
+                              );
+                            } else {
+                              if (allData[index]['groupTime'] ==
+                                  allData[index - 1]['groupTime']) {
+                                return ItemChat(
+                                    isSender: allData[index]['pengirim'] ==
+                                            FirebaseAuth
+                                                .instance.currentUser!.email
+                                        ? true
+                                        : false,
+                                    msg: allData[index]['pesan'],
+                                    time: allData[index]['time']);
+                              } else {
+                                return Column(
+                                  children: [
+                                    Chip(
+                                      backgroundColor: AppColors.grey.shade200,
+                                      label: Text(
+                                        allData[index]['groupTime'],
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                      ),
+                                    ),
+                                    ItemChat(
+                                        isSender: allData[index]['pengirim'] ==
+                                                FirebaseAuth
+                                                    .instance.currentUser!.email
+                                            ? true
+                                            : false,
+                                        msg: allData[index]['pesan'],
+                                        time: allData[index]['time']),
+                                  ],
+                                );
+                              }
+                            }
                           });
                     }
                     return LoadingOverlay();
                   }),
             ),
-            // child: Column(
-            //   children: [
-            //     BubbleNormal(
-            //       text:
-            //           'Added iMassage shape bubbles Added iMassage shape bubbles Added iMassage shape bubbles Added iMassage shape bubbles Added iMassage shape bubbles Added iMassage shape bubbles Added iMassage shape bubbles Added iMassage shape bubbles Added iMassage shape bubbles Added iMassage shape bubbles Added iMassage shape bubbles',
-            //       color: Color(0xFF1B97F3),
-            //       tail: true,
-            //       textStyle: TextStyle(color: Colors.white, fontSize: 16),
-            //     ),
-            //     BubbleNormal(
-            //       text: 'Added iMassage shape bubbles',
-            //       color: Color(0xFF1B97F3),
-            //       tail: true,
-            //       isSender: false,
-            //       textStyle: TextStyle(color: Colors.white, fontSize: 16),
-            //     ),
-            //     BubbleNormal(
-            //       text: 'Added iMassage shape bubbles',
-            //       color: Color(0xFF1B97F3),
-            //       tail: true,
-            //       isSender: false,
-            //       textStyle: TextStyle(color: Colors.white, fontSize: 16),
-            //     ),
-            //   ],
-            // ),
           )),
-          MessageBar(
-            sendButtonColor: AppColors.primaryLight,
-            onSend: (value) {
-              if (value.isNotEmpty) {
-                controller.newChat(
-                    Get.arguments as Map<String, dynamic>,
-                    value,
-                    FirebaseAuth.instance.currentUser!.email.toString(),
-                    FirebaseAuth.instance.currentUser!.uid.toString());
-                value = '';
-              }
-            },
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(left: 8, right: 8),
-                child: InkWell(
-                  child: Icon(
-                    Icons.emoji_emotions,
-                    color: Colors.green,
-                    size: 24,
+          Container(
+            margin: EdgeInsets.only(
+              bottom: controller.isShowEmoji.isTrue
+                  ? 5
+                  : context.mediaQueryPadding.bottom,
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            width: Get.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Container(
+                    child: TextField(
+                      autocorrect: false,
+                      controller: controller.chatC,
+                      focusNode: controller.focusNode,
+                      style: Theme.of(context).textTheme.bodyText1,
+                      keyboardType: TextInputType.multiline,
+                      onEditingComplete: () => controller.newChat(
+                          Get.arguments as Map<String, dynamic>,
+                          controller.chatC.text,
+                          FirebaseAuth.instance.currentUser!.email.toString(),
+                          FirebaseAuth.instance.currentUser!.uid.toString()),
+                      decoration: InputDecoration(
+                        prefixIcon: IconButton(
+                          onPressed: () {
+                            controller.focusNode.unfocus();
+                            controller.isShowEmoji.toggle();
+                          },
+                          icon: Icon(Icons.emoji_emotions_outlined),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                      ),
+                    ),
                   ),
-                  onTap: () {},
                 ),
-              ),
-            ],
+                SizedBox(width: 8),
+                Material(
+                  borderRadius: BorderRadius.circular(100),
+                  color: AppColors.primaryDark,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(100),
+                    onTap: () {
+                      if (controller.chatC.text.isNotEmpty) {
+                        controller.newChat(
+                            Get.arguments as Map<String, dynamic>,
+                            controller.chatC.text,
+                            FirebaseAuth.instance.currentUser!.email.toString(),
+                            FirebaseAuth.instance.currentUser!.uid.toString());
+                        controller.chatC.clear();
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Center(
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
+          Obx(
+            () => (controller.isShowEmoji.isTrue)
+                ? Container(
+                    height: 325,
+                    child: EmojiPicker(
+                      onEmojiSelected: (category, emoji) {
+                        controller.addEmojiToChat(emoji);
+                      },
+                      onBackspacePressed: () {
+                        controller.deleteEmoji();
+                      },
+                      config: Config(
+                        backspaceColor: AppColors.primaryDark,
+                        columns: 7,
+                        emojiSizeMax: 32.0,
+                        verticalSpacing: 0,
+                        horizontalSpacing: 0,
+                        initCategory: Category.RECENT,
+                        bgColor: Color(0xFFF2F2F2),
+                        indicatorColor: Color(0xFFB71C1C),
+                        iconColor: Colors.grey,
+                        iconColorSelected: Color(0xFFB71C1C),
+                        showRecentsTab: true,
+                        recentsLimit: 28,
+                        categoryIcons: const CategoryIcons(),
+                        buttonMode: ButtonMode.MATERIAL,
+                      ),
+                    ),
+                  )
+                : SizedBox(),
+          ),
+          // MessageBar(
+          //   sendButtonColor: AppColors.primaryLight,
+          //   onSend: (value) {
+          //     if (value.isNotEmpty) {
+          //       controller.newChat(
+          //           Get.arguments as Map<String, dynamic>,
+          //           value,
+          //           FirebaseAuth.instance.currentUser!.email.toString(),
+          //           FirebaseAuth.instance.currentUser!.uid.toString());
+          //       value = '';
+          //     }
+          //   },
+          //   actions: [
+          //     Padding(
+          //       padding: EdgeInsets.only(left: 8, right: 8),
+          //       child: InkWell(
+          //         child: Icon(
+          //           Icons.emoji_emotions,
+          //           color: Colors.green,
+          //           size: 24,
+          //         ),
+          //         onTap: () {},
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
@@ -231,7 +369,7 @@ class ItemChat extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: 4,
-        horizontal: 16,
+        horizontal: 8,
       ),
       child: Column(
         crossAxisAlignment:
@@ -239,7 +377,8 @@ class ItemChat extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: AppColors.primaryLight,
+              color:
+                  isSender ? AppColors.primaryLight : AppColors.grey.shade200,
               borderRadius: isSender
                   ? BorderRadius.only(
                       topLeft: Radius.circular(18),
@@ -255,11 +394,10 @@ class ItemChat extends StatelessWidget {
             padding: EdgeInsets.all(12),
             child: Text("$msg",
                 style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: AppColors.white,
+                      color: isSender ? AppColors.white : AppColors.black,
                       fontSize: 14,
                     )),
           ),
-          SizedBox(height: 3),
           Text(
             DateFormat.jm().format(DateTime.parse(time)),
             style:

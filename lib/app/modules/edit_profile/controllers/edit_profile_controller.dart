@@ -9,12 +9,14 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unsikuy_app/app/model/user.dart' as model;
+import 'package:unsikuy_app/app/modules/profile/controllers/profile_controller.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
 import 'package:unsikuy_app/app/utils/widgets/pick_image.dart';
 import 'package:uuid/uuid.dart';
 
 class EditProfileController extends GetxController {
+  final ProfileController profileC = ProfileController.find;
   final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -169,6 +171,8 @@ class EditProfileController extends GetxController {
       await _firestore.collection('users').doc(uuidUser).update({
         "bio": bioC.text == username ? username : bioC.text,
       });
+
+      profileC.refresh();
 
       showNotif('Success', 'Profile has updated');
       isLoading.value = false;

@@ -33,33 +33,27 @@ class PeopleView extends GetView<PeopleController> {
         child: Column(
           children: [
             const SizedBox(
-              height: 24,
+              height: 12,
             ),
             Row(
               children: [
                 Expanded(
                   child: FormInputFieldWithIcon(
+                    keyboardType: TextInputType.text,
                     controller: controller.searchC,
                     labelText: 'Search for keep connected',
                     onCompleted: (value) {
                       if (value != '') {
-                        controller.isSearch = true;
-                        controller.parsingStatus = '';
+                        controller.isSearch.value = true;
+                        controller.parsingStatus.value = '';
                         controller.update();
-
                         print(value.toString());
                       } else {
-                        controller.isSearch = false;
+                        controller.isSearch.value = false;
                       }
                     },
                   ),
                 ),
-                IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      CupertinoIcons.slider_horizontal_3,
-                      color: AppColors.primaryLight,
-                    ))
               ],
             ),
             const SizedBox(
@@ -67,10 +61,10 @@ class PeopleView extends GetView<PeopleController> {
             ),
             StatusList(),
             const SizedBox(
-              height: 18,
+              height: 24,
             ),
             Expanded(
-                child: controller.isSearch == true
+                child: Obx(() => controller.isSearch.value == true
                     ? Container(
                         width: 100.w,
                         child: FutureBuilder(
@@ -98,7 +92,7 @@ class PeopleView extends GetView<PeopleController> {
                                   });
                             }),
                       )
-                    : controller.parsingStatus == null
+                    : controller.parsingStatus.value == ''
                         ? Container(
                             width: 100.w,
                             child: FutureBuilder(
@@ -130,6 +124,9 @@ class PeopleView extends GetView<PeopleController> {
                             child: FutureBuilder(
                                 future: FirebaseFirestore.instance
                                     .collection("users")
+                                    .where('status',
+                                        isEqualTo:
+                                            controller.parsingStatus.value)
                                     .get(),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
@@ -150,7 +147,7 @@ class PeopleView extends GetView<PeopleController> {
                                         //     .toString());
                                       });
                                 }),
-                          )),
+                          ))),
           ],
         ),
       ),

@@ -1,15 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
 
-class CommentCard extends StatelessWidget {
+class CommentCardDetail extends StatelessWidget {
   final snap;
+  final String postID;
   final PostController controller;
-  const CommentCard({super.key, required this.snap, required this.controller});
+  const CommentCardDetail(
+      {super.key,
+      required this.snap,
+      required this.controller,
+      required this.postID});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +51,7 @@ class CommentCard extends StatelessWidget {
                       topRight: Radius.circular(16),
                       bottomRight: Radius.circular(16),
                       bottomLeft: Radius.circular(16)),
-                  color: AppColors.shadesPrimaryDark10),
+                  color: AppColors.grey.shade100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -58,11 +65,50 @@ class CommentCard extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                       ),
-                      // Icon(
-                      //   CupertinoIcons.hand_thumbsup,
-                      //   size: 20,
-                      //   color: AppColors.grey.shade500,
-                      // )
+                      Visibility(
+                        visible: controller.uuidUser == snap['uuid'],
+                        child: InkWell(
+                          onTap: () {
+                            if (controller.uuidUser == snap['uuid']) {
+                              Get.defaultDialog(
+                                titlePadding: EdgeInsets.only(top: 16),
+                                title: 'Delete Comment?',
+                                titleStyle:
+                                    Theme.of(context).textTheme.headline2,
+                                content: Column(
+                                  children: [
+                                    Container(
+                                      width: 160,
+                                      height: 160,
+                                      child: Lottie.asset(
+                                          'lib/app/resources/images/delete-post.json'),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        controller.deleteComment(
+                                            postID, snap['commentId']);
+                                        Get.back();
+                                      },
+                                      child: Text('Delete',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4!
+                                              .copyWith(
+                                                color: AppColors.red,
+                                              )),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                          child: Icon(
+                            CupertinoIcons.ellipsis_vertical,
+                            size: 15,
+                            color: AppColors.grey.shade500,
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(
@@ -73,6 +119,7 @@ class CommentCard extends StatelessWidget {
                     //DateFormat.Hm().format(snap['published_at'].toDate()),
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: AppColors.textColour50,
+                          fontSize: 12,
                         ),
                     textAlign: TextAlign.start,
                   ),
@@ -82,9 +129,8 @@ class CommentCard extends StatelessWidget {
                   Text(
                     // DateFormat.Hm().format(dateTime),
                     snap['text'],
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: AppColors.black,
-                          fontSize: 18,
                           height: 1.4,
                         ),
                     textAlign: TextAlign.start,
@@ -96,6 +142,7 @@ class CommentCard extends StatelessWidget {
                     DateFormat.yMMMMEEEEd().format(dateTime),
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: AppColors.textColour50,
+                          fontSize: 12,
                         ),
                     textAlign: TextAlign.start,
                   ),

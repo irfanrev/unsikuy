@@ -94,7 +94,7 @@ class PostComment extends StatelessWidget {
                           'Send',
                           style: Theme.of(context)
                               .textTheme
-                              .headline3!
+                              .headline5!
                               .copyWith(color: AppColors.primaryLight),
                         ),
                       ),
