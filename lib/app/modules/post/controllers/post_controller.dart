@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -16,6 +17,8 @@ class PostController extends GetxController {
   var username;
   var uuidUser;
   var postID;
+  var status;
+  var bio;
 
   RxBool liked = false.obs;
 
@@ -35,6 +38,8 @@ class PostController extends GetxController {
 
     photoUrl = userData['photoUrl'];
     username = userData['username'];
+    status = userData['status'];
+    bio = userData['bio'];
     uuidUser = currentUser.uid.toString();
   }
 
@@ -80,26 +85,77 @@ class PostController extends GetxController {
     }
   }
 
-  Future<void> connectUser(String uuid, String connectId) async {
+  Future<void> connectUser(String uuid, String friendName, String email,
+      String friendPhoto, String friendStatus, String friendBio) async {
     try {
-      DocumentSnapshot snap =
-          await _firestore.collection('users').doc(uuid).get();
-      List connecters = (snap.data()! as dynamic)['connecters'];
-      if (connecters.contains(connectId)) {
-        await _firestore.collection('users').doc(connectId).update({
-          'connecters': FieldValue.arrayRemove([uuid])
-        });
-        await _firestore.collection('users').doc(uuid).update({
-          'connecters': FieldValue.arrayRemove([connectId])
-        });
-      } else {
-        await _firestore.collection('users').doc(connectId).update({
-          'connecters': FieldValue.arrayUnion([uuid])
-        });
-        await _firestore.collection('users').doc(uuid).update({
-          'connecters': FieldValue.arrayUnion([connectId])
-        });
-      }
+      CollectionReference users = _firestore.collection('users');
+      // DocumentSnapshot snap =
+      //     await _firestore.collection('users').doc(uuid).get();
+      // List connecters = (snap.data()! as dynamic)['connecters'];
+      // if (connecters.contains(connectId)) {
+      //   await _firestore.collection('users').doc(connectId).update({
+      //     'connecters': FieldValue.arrayRemove([uuid])
+      //   });
+      //   await _firestore.collection('users').doc(uuid).update({
+      //     'connecters': FieldValue.arrayRemove([connectId])
+      //   });
+      // } else {
+      //   await _firestore.collection('users').doc(connectId).update({
+      //     'connecters': FieldValue.arrayUnion([uuid])
+      //   });
+      //   await _firestore.collection('users').doc(uuid).update({
+      //     'connecters': FieldValue.arrayUnion([connectId])
+      //   });
+      // }
+
+      final isConnected = await users
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('connected')
+          .where('email', isEqualTo: email)
+          .get();
+
+      await users
+          .doc(uuid)
+          .collection('connected')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .set({
+        'uuid': FirebaseAuth.instance.currentUser!.uid,
+        'username': username,
+        'photoUrl': photoUrl,
+        'status': status,
+        'bio': bio,
+      });
+      await users
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('connected')
+          .doc(email)
+          .set({
+        'uuid': uuid,
+        'username': friendName,
+        'photoUrl': friendPhoto,
+        'status': friendStatus,
+        'bio': friendBio,
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> disconnectUser(String uuid, String friendName, String email,
+      String friendPhoto, String friendStatus, String friendBio) async {
+    try {
+      CollectionReference users = _firestore.collection('users');
+
+      await users
+          .doc(uuid)
+          .collection('connected')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .delete();
+      await users
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('connected')
+          .doc(email)
+          .delete();
     } catch (e) {
       print(e);
     }

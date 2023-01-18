@@ -40,116 +40,127 @@ class AuthController extends GetxController {
       var chat_id;
       //TOTO : Fixing chats collection
 
-      final docChats = await users
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('chats')
+      final checkIsConnected = await users
+          .doc(uuid)
+          .collection('connected')
+          .where('uuid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .get();
 
-      if (docChats.docs.length != 0) {
-        // udah ada data
-        final checkConnection = await users
+      if (checkIsConnected.docs.length != 0) {
+        final docChats = await users
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('chats')
-            .where('connection', isEqualTo: friendEmail)
             .get();
-        if (checkConnection.docs.length != 0) {
-          flagNewConnection = false;
-          //ambil chat id dari colletion
-          chat_id = checkConnection.docs[0].id;
-        } else {
-          flagNewConnection = true;
-        }
-      } else {
-        // belum ada data, buat baru!
-        flagNewConnection = true;
-      }
 
-      if (flagNewConnection) {
-        final chatDocs = await chats.where("connection", whereIn: [
-          [
-            FirebaseAuth.instance.currentUser!.email,
-            friendEmail,
-          ],
-          [
-            friendEmail,
-            FirebaseAuth.instance.currentUser!.email,
-          ],
-        ]).get();
-
-        if (chatDocs.docs.length != 0) {
-          // ada data
-          final String chatDataId = chatDocs.docs[0].id;
-          final Map<String, dynamic> chatData =
-              (chatDocs.docs[0].data() as Map<String, dynamic>);
-
-          // Cek dan tambah chat
-
-          await users
+        if (docChats.docs.length != 0) {
+          // udah ada data
+          final checkConnection = await users
               .doc(FirebaseAuth.instance.currentUser!.uid)
               .collection('chats')
-              .doc(chatDataId)
-              .set({
-            "connection": friendEmail,
-            'lastTime': chatData['lastTime'],
-            "uuid": uuid,
-            "total_unread": 0,
-          });
-
-          chat_id = chatDataId;
+              .where('connection', isEqualTo: friendEmail)
+              .get();
+          if (checkConnection.docs.length != 0) {
+            flagNewConnection = false;
+            //ambil chat id dari colletion
+            chat_id = checkConnection.docs[0].id;
+          } else {
+            flagNewConnection = true;
+          }
         } else {
-          // buat baru
-          final newChatDoc = await chats.add({
-            "connection": [
+          // belum ada data, buat baru!
+          flagNewConnection = true;
+        }
+
+        if (flagNewConnection) {
+          final chatDocs = await chats.where("connection", whereIn: [
+            [
               FirebaseAuth.instance.currentUser!.email,
               friendEmail,
             ],
-          });
+            [
+              friendEmail,
+              FirebaseAuth.instance.currentUser!.email,
+            ],
+          ]).get();
 
-          await chats.doc(newChatDoc.id).collection('chat');
+          if (chatDocs.docs.length != 0) {
+            // ada data
+            final String chatDataId = chatDocs.docs[0].id;
+            final Map<String, dynamic> chatData =
+                (chatDocs.docs[0].data() as Map<String, dynamic>);
 
-          await users
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .collection('chats')
-              .doc(newChatDoc.id)
-              .set({
-            "connection": friendEmail,
-            'lastTime': date,
-            "uuid": uuid,
-            "total_unread": 0,
-          });
+            // Cek dan tambah chat
 
-          chat_id = newChatDoc.id;
+            await users
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection('chats')
+                .doc(chatDataId)
+                .set({
+              "connection": friendEmail,
+              'lastTime': chatData['lastTime'],
+              "uuid": uuid,
+              "total_unread": 0,
+            });
+
+            chat_id = chatDataId;
+          } else {
+            // buat baru
+            final newChatDoc = await chats.add({
+              "connection": [
+                FirebaseAuth.instance.currentUser!.email,
+                friendEmail,
+              ],
+            });
+
+            await chats.doc(newChatDoc.id).collection('chat');
+
+            await users
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection('chats')
+                .doc(newChatDoc.id)
+                .set({
+              "connection": friendEmail,
+              'lastTime': date,
+              "uuid": uuid,
+              "total_unread": 0,
+            });
+
+            chat_id = newChatDoc.id;
+          }
         }
-      }
 
-      final updateStatusChat = await chats
-          .doc(chat_id)
-          .collection('chat')
-          .where('isRead', isEqualTo: false)
-          .where('penerima',
-              isEqualTo: FirebaseAuth.instance.currentUser!.email)
-          .get();
+        final updateStatusChat = await chats
+            .doc(chat_id)
+            .collection('chat')
+            .where('isRead', isEqualTo: false)
+            .where('penerima',
+                isEqualTo: FirebaseAuth.instance.currentUser!.email)
+            .get();
 
-      updateStatusChat.docs.forEach((element) async {
-        await chats.doc(chat_id).collection('chat').doc(element.id).update({
-          'isRead': true,
+        updateStatusChat.docs.forEach((element) async {
+          await chats.doc(chat_id).collection('chat').doc(element.id).update({
+            'isRead': true,
+          });
         });
-      });
 
-      await users
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('chats')
-          .doc(chat_id)
-          .update({
-        'total_unread': 0,
-      });
+        await users
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('chats')
+            .doc(chat_id)
+            .update({
+          'total_unread': 0,
+        });
 
-      print(chat_id);
-      Get.toNamed(Routes.CHAT_ROOM, arguments: {
-        'chat_id': chat_id,
-        'friendEmail': friendEmail,
-        'uuid': uuid,
-      });
+        print(chat_id);
+        Get.toNamed(Routes.CHAT_ROOM, arguments: {
+          'chat_id': chat_id,
+          'friendEmail': friendEmail,
+          'uuid': uuid,
+        });
+      } else {
+        showNotif('You mus be a connected',
+            'Tap on Connect button to use Chat feature');
+      }
 
       // fixing diatas
 
@@ -190,6 +201,10 @@ showError(String title, String message) {
 }
 
 void showNotif(String title, String message) {
-  Get.snackbar(title, message.toString(),
-      backgroundColor: AppColors.successMain, colorText: Colors.white);
+  Get.snackbar(
+    title,
+    message.toString(),
+    backgroundColor: AppColors.primaryLight,
+    colorText: Colors.white,
+  );
 }

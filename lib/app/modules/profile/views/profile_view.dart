@@ -32,6 +32,7 @@ class _ProfileViewState extends State<ProfileView> {
   int connecters = 0;
   bool isLoading = false;
   bool isConnecters = false;
+  bool checkIsConnected = false;
 
   @override
   void initState() {
@@ -48,6 +49,11 @@ class _ProfileViewState extends State<ProfileView> {
           .collection('users')
           .doc(widget.uuid)
           .get();
+      var connecterLength = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uuid)
+          .collection('connected')
+          .get();
 
       var postSnap = await FirebaseFirestore.instance
           .collection('posts')
@@ -56,10 +62,20 @@ class _ProfileViewState extends State<ProfileView> {
 
       postLen = postSnap.docs.length;
       userData = snap.data()!;
-      connecters = snap.data()!['connecters'].length;
-      isConnecters = snap
-          .data()!['connecters']
+      connecters = connecterLength.docs.length;
+      var cekkoneksi = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uuid)
+          .collection('connected')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .get();
+      checkIsConnected = cekkoneksi
+          .data()!['uuid']
           .contains(FirebaseAuth.instance.currentUser!.uid);
+
+      // isConnecters = snap
+      //     .data()!['connecters']
+      //     .contains(FirebaseAuth.instance.currentUser!.uid);
 
       setState(() {});
     } catch (e) {
@@ -244,30 +260,36 @@ class _ProfileViewState extends State<ProfileView> {
                           const SizedBox(
                             width: 8,
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                connecters.toString(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6!
-                                    .copyWith(
-                                      color: AppColors.primaryDark,
-                                    ),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                'Connecters',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge!
-                                    .copyWith(
-                                      color: AppColors.primaryDark,
-                                    ),
-                              ),
-                            ],
+                          InkWell(
+                            onTap: () {
+                              Get.toNamed(Routes.CONNECTED_VIEW,
+                                  arguments: userData['uuid']);
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  connecters.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .copyWith(
+                                        color: AppColors.primaryDark,
+                                      ),
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  'Connecters',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge!
+                                      .copyWith(
+                                        color: AppColors.primaryDark,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -304,14 +326,19 @@ class _ProfileViewState extends State<ProfileView> {
                               ),
                             ),
                           )
-                        : isConnecters
+                        : checkIsConnected
                             ? InkWell(
                                 onTap: () async {
-                                  await c.connectUser(
-                                      FirebaseAuth.instance.currentUser!.uid,
-                                      userData['uuid']);
+                                  await c.disconnectUser(
+                                    userData['uuid'],
+                                    userData['username'],
+                                    userData['email'],
+                                    userData['photoUrl'],
+                                    userData['status'],
+                                    userData['bio'],
+                                  );
                                   setState(() {
-                                    isConnecters = false;
+                                    checkIsConnected = false;
                                     connecters--;
                                   });
                                 },
@@ -339,10 +366,15 @@ class _ProfileViewState extends State<ProfileView> {
                             : InkWell(
                                 onTap: () async {
                                   await c.connectUser(
-                                      FirebaseAuth.instance.currentUser!.uid,
-                                      userData['uuid']);
+                                    userData['uuid'],
+                                    userData['username'],
+                                    userData['email'],
+                                    userData['photoUrl'],
+                                    userData['status'],
+                                    userData['bio'],
+                                  );
                                   setState(() {
-                                    isConnecters = true;
+                                    checkIsConnected = true;
                                     connecters++;
                                   });
                                 },

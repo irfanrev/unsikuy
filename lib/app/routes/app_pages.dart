@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:unsikuy_app/app/modules/profile/views/connected_view.dart';
 
 import '../modules/chat_room/bindings/chat_room_binding.dart';
 import '../modules/chat_room/views/chat_room_view.dart';
@@ -112,6 +113,10 @@ class AppPages {
       name: _Paths.POST_DETAIL,
       page: () => const PostDetailView(),
       binding: PostDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.CONNECTED_VIEW,
+      page: () => const ConnectedView(),
     ),
   ];
 }

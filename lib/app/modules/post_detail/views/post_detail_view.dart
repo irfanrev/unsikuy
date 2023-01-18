@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +48,7 @@ class PostDetailView extends GetView<PostDetailController> {
         children: [
           Expanded(
             child: SingleChildScrollView(
+              controller: controller.scrollC,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -149,8 +152,6 @@ class PostDetailView extends GetView<PostDetailController> {
                                 fontWeight: FontWeight.bold,
                                 height: 1.4,
                               ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(
@@ -227,7 +228,7 @@ class PostDetailView extends GetView<PostDetailController> {
                         children: [
                           InkWell(
                             onTap: () {
-                              FocusManager.instance.primaryFocus?.nextFocus();
+                              controller.focusNode.requestFocus();
                             },
                             child: Icon(
                               CupertinoIcons.chat_bubble,

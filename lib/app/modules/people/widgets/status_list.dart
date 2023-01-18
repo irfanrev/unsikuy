@@ -41,6 +41,8 @@ class StatusList extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         controller.parsingStatus.value = statusData['title'];
+                        controller.isSearch.value = false;
+                        controller.searchC.text = '';
                         controller.update();
                         controller.refresh();
                         print(controller.parsingStatus.value.toString());

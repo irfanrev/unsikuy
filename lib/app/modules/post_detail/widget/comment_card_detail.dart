@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
@@ -7,6 +8,7 @@ import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommentCardDetail extends StatelessWidget {
   final snap;
@@ -119,21 +121,33 @@ class CommentCardDetail extends StatelessWidget {
                     //DateFormat.Hm().format(snap['published_at'].toDate()),
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: AppColors.textColour50,
-                          fontSize: 12,
+                          fontSize: 10,
                         ),
                     textAlign: TextAlign.start,
                   ),
                   const SizedBox(
                     height: 6,
                   ),
-                  Text(
-                    // DateFormat.Hm().format(dateTime),
-                    snap['text'],
+                  Linkify(
+                    text: snap['text'],
+                    onOpen: (value) async {
+                      Uri url = Uri.parse(value.url);
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
+                      } else {
+                        throw 'Could not launch $value.url';
+                      }
+                    },
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: AppColors.black,
                           height: 1.4,
                         ),
-                    textAlign: TextAlign.start,
+                    linkStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: Colors.blue[800],
+                          fontWeight: FontWeight.bold,
+                          height: 1.4,
+                        ),
                   ),
                   const SizedBox(
                     height: 6,

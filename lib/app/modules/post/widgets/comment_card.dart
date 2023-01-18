@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommentCard extends StatelessWidget {
   final snap;
@@ -44,7 +46,7 @@ class CommentCard extends StatelessWidget {
                       topRight: Radius.circular(16),
                       bottomRight: Radius.circular(16),
                       bottomLeft: Radius.circular(16)),
-                  color: AppColors.shadesPrimaryDark10),
+                  color: AppColors.grey.shade100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -73,21 +75,33 @@ class CommentCard extends StatelessWidget {
                     //DateFormat.Hm().format(snap['published_at'].toDate()),
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: AppColors.textColour50,
+                          fontSize: 10,
                         ),
                     textAlign: TextAlign.start,
                   ),
                   const SizedBox(
                     height: 6,
                   ),
-                  Text(
-                    // DateFormat.Hm().format(dateTime),
-                    snap['text'],
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                  Linkify(
+                    text: snap['text'],
+                    onOpen: (value) async {
+                      Uri url = Uri.parse(value.url);
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url,
+                            mode: LaunchMode.externalApplication);
+                      } else {
+                        throw 'Could not launch $value.url';
+                      }
+                    },
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: AppColors.black,
-                          fontSize: 18,
                           height: 1.4,
                         ),
-                    textAlign: TextAlign.start,
+                    linkStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: Colors.blue[800],
+                          fontWeight: FontWeight.bold,
+                          height: 1.4,
+                        ),
                   ),
                   const SizedBox(
                     height: 6,
@@ -96,6 +110,7 @@ class CommentCard extends StatelessWidget {
                     DateFormat.yMMMMEEEEd().format(dateTime),
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: AppColors.textColour50,
+                          fontSize: 12,
                         ),
                     textAlign: TextAlign.start,
                   ),

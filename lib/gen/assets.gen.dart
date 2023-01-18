@@ -37,6 +37,9 @@ class $LibAppResourcesImagesGen {
   AssetGenImage get emptyStateCode =>
       const AssetGenImage('lib/app/resources/images/empty_state_code.png');
 
+  /// File path: lib/app/resources/images/emptybox.json
+  String get emptybox => 'lib/app/resources/images/emptybox.json';
+
   /// File path: lib/app/resources/images/ic_logo_suitcore_main.png
   AssetGenImage get icLogoSuitcoreMain =>
       const AssetGenImage('lib/app/resources/images/ic_logo_suitcore_main.png');
@@ -76,6 +79,10 @@ class $LibAppResourcesImagesGen {
   /// File path: lib/app/resources/images/success.json
   String get success => 'lib/app/resources/images/success.json';
 
+  /// File path: lib/app/resources/images/unsika_connect.png
+  AssetGenImage get unsikaConnect =>
+      const AssetGenImage('lib/app/resources/images/unsika_connect.png');
+
   /// File path: lib/app/resources/images/user_placeholder.png
   AssetGenImage get userPlaceholder =>
       const AssetGenImage('lib/app/resources/images/user_placeholder.png');
@@ -84,6 +91,7 @@ class $LibAppResourcesImagesGen {
   List<dynamic> get values => [
         deletePost,
         emptyStateCode,
+        emptybox,
         icLogoSuitcoreMain,
         imgEmpty,
         imgError,
@@ -94,6 +102,7 @@ class $LibAppResourcesImagesGen {
         regisSuccess,
         registerSuccess,
         success,
+        unsikaConnect,
         userPlaceholder
       ];
 }

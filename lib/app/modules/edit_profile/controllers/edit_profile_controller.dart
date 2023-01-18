@@ -120,6 +120,7 @@ class EditProfileController extends GetxController {
                     "profImg": photo,
                   });
                 }));
+
         showNotif('Success', 'Profile has updated');
       } else {
         await _firestore.collection('users').doc(uuidUser).update({

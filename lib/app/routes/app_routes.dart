@@ -19,6 +19,7 @@ abstract class Routes {
   static const CHAT_ROOM = _Paths.CHAT_ROOM;
   static const SEARCH = _Paths.SEARCH;
   static const POST_DETAIL = _Paths.POST_DETAIL;
+  static const CONNECTED_VIEW = _Paths.CONNECTED_VIEW;
 }
 
 abstract class _Paths {
@@ -39,4 +40,5 @@ abstract class _Paths {
   static const CHAT_ROOM = '/chat-room';
   static const SEARCH = '/search';
   static const POST_DETAIL = '/post-detail';
+  static const CONNECTED_VIEW = '/connected-view';
 }
