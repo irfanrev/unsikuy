@@ -245,6 +245,7 @@ class ChatRoomView extends GetView<ChatRoomController> {
                           FirebaseAuth.instance.currentUser!.email.toString(),
                           FirebaseAuth.instance.currentUser!.uid.toString()),
                       decoration: InputDecoration(
+                        hintText: 'Type message here',
                         prefixIcon: IconButton(
                           onPressed: () {
                             controller.focusNode.unfocus();

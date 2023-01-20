@@ -5,20 +5,21 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
+import 'package:unsikuy_app/app/modules/discussion/controllers/discussion_controller.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CommentCard extends StatelessWidget {
+class ContributorCard extends StatelessWidget {
   final snap;
-  final String postId;
-  final PostController controller;
-  const CommentCard(
+  final posId;
+  final DiscussionController controller;
+  const ContributorCard(
       {super.key,
       required this.snap,
       required this.controller,
-      required this.postId});
+      required this.posId});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +75,7 @@ class CommentCard extends StatelessWidget {
                             if (controller.uuidUser == snap['uuid']) {
                               Get.defaultDialog(
                                 titlePadding: EdgeInsets.only(top: 16),
-                                title: 'Delete Comment?',
+                                title: 'Delete Contribution?',
                                 titleStyle:
                                     Theme.of(context).textTheme.headline2,
                                 content: Column(
@@ -87,8 +88,8 @@ class CommentCard extends StatelessWidget {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        controller.deleteComment(
-                                            postId, snap['commentId']);
+                                        controller.deleteContribution(
+                                            posId, snap['commentId']);
                                         Get.back();
                                       },
                                       child: Text('Delete',

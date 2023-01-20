@@ -113,20 +113,16 @@ class CommentCardDetail extends StatelessWidget {
                       )
                     ],
                   ),
-                  const SizedBox(
-                    height: 2,
-                  ),
                   Text(
-                    DateFormat.Hm().format(dateTime),
-                    //DateFormat.Hm().format(snap['published_at'].toDate()),
+                    "${DateFormat.yMMMEd().format(dateTime)} on ${DateFormat.Hm().format(dateTime)}",
                     style: Theme.of(context).textTheme.bodyText1!.copyWith(
                           color: AppColors.textColour50,
-                          fontSize: 10,
+                          fontSize: 11,
                         ),
                     textAlign: TextAlign.start,
                   ),
                   const SizedBox(
-                    height: 6,
+                    height: 4,
                   ),
                   Linkify(
                     text: snap['text'],
@@ -148,17 +144,6 @@ class CommentCardDetail extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           height: 1.4,
                         ),
-                  ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  Text(
-                    DateFormat.yMMMMEEEEd().format(dateTime),
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: AppColors.textColour50,
-                          fontSize: 12,
-                        ),
-                    textAlign: TextAlign.start,
                   ),
                 ],
               ),

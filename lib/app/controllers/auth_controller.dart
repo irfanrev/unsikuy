@@ -1,35 +1,97 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:unsikuy_app/app/model/chat.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
+import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   UserCredential? userCredential;
-  // User? currentUserNow;
+  String mToken = '';
 
-  //initial variable
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    requestPermission();
+    getToken();
+    super.onInit();
+  }
 
-  // @override
-  // void onInit() {
-  //   // TODO: implement onInit
-  //   getUsersData();
-  //   super.onInit();
-  // }
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  // Future getUsersData() async {
-  //   User currentUser = auth.currentUser!;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
 
-  //   DocumentSnapshot userData =
-  //       await firestore.collection('users').doc(currentUser.uid).get();
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
 
-  //   currentUserNow = auth.currentUser!;
-  // }
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      mToken = token.toString();
+      print('user token : $mToken');
+      saveToken(token.toString());
+    });
+  }
+
+  void saveToken(String token) async {
+    await firestore.collection('userToken').doc(auth.currentUser!.uid).set({
+      'token': token,
+    });
+  }
+
+  void sendPustNotification(String token, String body, String title) async {
+    try {
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization':
+              'key=AAAAiySsgPE:APA91bFImNrylFdUbkA5WjIKqZ1oDjG42Xtfc4inm5K8xouoZ8BrmMe82Sy-0du7znCb8iyesYsJcEB38Ro87-S4HFWJBenxqldwxeRvZqQRXJSswIPptrysSOMsSOvmkgPCVhwmTPmL',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'priority': 'high',
+          'token': token,
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'status': 'done',
+            'title': title,
+            'body': body,
+          },
+          'notification': <String, dynamic>{
+            'title': title,
+            'body': body,
+          },
+          'to': token,
+        }),
+      );
+      print('Notifikasi has sended');
+    } catch (e) {
+      print(e);
+    }
+  }
 
   void addNewConnection(String friendEmail, String uuid) async {
     try {

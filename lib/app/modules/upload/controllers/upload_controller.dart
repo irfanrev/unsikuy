@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:unsikuy_app/app/model/discuss.dart';
 import 'package:unsikuy_app/app/model/post.dart';
 import 'package:unsikuy_app/app/model/user.dart' as model;
 import 'package:unsikuy_app/app/resources/resource.dart';
@@ -22,6 +23,8 @@ class UploadController extends GetxController {
   final TextEditingController desc = TextEditingController();
   var username;
   var photoUrl;
+  var displayName = ''.obs;
+  var displayPhoto = ''.obs;
   RxBool isDismiss = false.obs;
 
   Uint8List? file;
@@ -52,7 +55,9 @@ class UploadController extends GetxController {
         await _firestore.collection('users').doc(currentUser.uid).get();
 
     username = userData['username'];
+    displayName.value = userData['username'];
     photoUrl = userData['photoUrl'];
+    displayPhoto.value = userData['photoUrl'];
   }
 
   Future<String> uploadImageToStorage(
@@ -112,6 +117,33 @@ class UploadController extends GetxController {
         desc.text = '';
         isDismiss.value = false;
       }
+    } catch (e) {
+      showError('Error', e.toString());
+      isDismiss.value = false;
+    }
+  }
+
+  Future openDiscuss() async {
+    try {
+      isDismiss.value = true;
+
+      String discussId = Uuid().v1();
+      Discuss post = Discuss(
+        postId: discussId,
+        username: username,
+        title: desc.text,
+        publishedAt: DateTime.now(),
+        uuid: _auth.currentUser!.uid,
+        profImg: photoUrl,
+      );
+      await _firestore
+          .collection('discussion')
+          .doc(discussId)
+          .set(post.toJson());
+      showNotif('Success', 'Discussion successfully opened');
+      desc.text = '';
+      isDismiss.value = false;
+      Get.back();
     } catch (e) {
       showError('Error', e.toString());
       isDismiss.value = false;

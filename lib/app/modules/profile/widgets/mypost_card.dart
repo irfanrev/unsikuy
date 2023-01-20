@@ -203,6 +203,7 @@ class _MyPostCardState extends State<MyPostCard> {
                           widget.snap['postId'],
                           widget.controller.auth.currentUser!.uid,
                           widget.snap['like'],
+                          widget.snap['uuid'],
                         );
                       },
                       child: widget.snap['like']

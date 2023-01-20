@@ -29,6 +29,11 @@ class SearchView extends GetView<SearchController> {
               controller.isSearch.value = false;
             }
           },
+          onClear: () {
+            controller.searchC.clear();
+            controller.isSearch.value = false;
+            controller.update();
+          },
         ),
       ),
       body: Obx(

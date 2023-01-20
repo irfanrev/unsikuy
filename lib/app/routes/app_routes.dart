@@ -20,6 +20,9 @@ abstract class Routes {
   static const SEARCH = _Paths.SEARCH;
   static const POST_DETAIL = _Paths.POST_DETAIL;
   static const CONNECTED_VIEW = _Paths.CONNECTED_VIEW;
+  static const DISCUSSION = _Paths.DISCUSSION;
+  static const UPLOAD_DISCUSS = _Paths.UPLOAD_DISCUSS;
+  static const DISCUSS_DETAIL = _Paths.DISCUSS_DETAIL;
 }
 
 abstract class _Paths {
@@ -41,4 +44,7 @@ abstract class _Paths {
   static const SEARCH = '/search';
   static const POST_DETAIL = '/post-detail';
   static const CONNECTED_VIEW = '/connected-view';
+  static const DISCUSSION = '/discussion';
+  static const UPLOAD_DISCUSS = '/upload-discuss';
+  static const DISCUSS_DETAIL = '/discuss-detail';
 }

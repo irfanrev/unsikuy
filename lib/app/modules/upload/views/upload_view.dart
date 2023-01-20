@@ -5,6 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:sizer/sizer.dart';
+import 'package:unsikuy_app/app/controllers/auth_controller.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/utils/widgets/bottom_sheet_helper.dart';
 import 'package:unsikuy_app/app/utils/widgets/form/form_image_picker.dart';
@@ -19,6 +20,8 @@ class UploadView extends GetView<UploadController> {
   const UploadView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final authC = Get.find<AuthController>();
+
     chooseImage() {
       return SimpleDialog(
         title: Text('Create a Post'),
@@ -35,13 +38,22 @@ class UploadView extends GetView<UploadController> {
       );
     }
 
-    return SMAppBar(
-      showLeading: false,
-      title: 'Sharing',
-      titleStyle: Theme.of(context)
-          .textTheme
-          .headline2!
-          .copyWith(color: AppColors.textColour80),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: Icon(Icons.close)),
+        title: Text(
+          'Sharing',
+          style: Theme.of(context)
+              .textTheme
+              .headline2!
+              .copyWith(color: AppColors.textColour80),
+        ),
+        centerTitle: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
@@ -56,14 +68,12 @@ class UploadView extends GetView<UploadController> {
                     height: 60,
                     width: 60,
                     decoration: BoxDecoration(shape: BoxShape.circle),
-                    child: ImageLoad(
-                      shapeImage: ShapeImage.oval,
-                      placeholder: AppImages.userPlaceholder.image().image,
-                      image: controller.photoUrl == ''
-                          ? 'https://firebasestorage.googleapis.com/v0/b/unsika-connect.appspot.com/o/user_placeholder.png?alt=media&token=d78dc4cb-0e08-4023-bc8d-6a361c4cd461'
-                          : controller.photoUrl.toString(),
-                      fit: BoxFit.cover,
-                    ),
+                    child: Obx(() => ImageLoad(
+                          shapeImage: ShapeImage.oval,
+                          placeholder: AppImages.userPlaceholder.image().image,
+                          image: controller.displayPhoto.toString(),
+                          fit: BoxFit.cover,
+                        )),
                   ),
                   const SizedBox(
                     width: 12,
@@ -71,13 +81,13 @@ class UploadView extends GetView<UploadController> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(controller.username.toString(),
+                      Obx(() => Text(controller.displayName.value.toString(),
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium
                               ?.copyWith(
                                 color: AppColors.textColour70,
-                              )),
+                              ))),
                       const SizedBox(
                         height: 4,
                       ),
@@ -106,22 +116,18 @@ class UploadView extends GetView<UploadController> {
                 controller: controller.desc,
                 maxLines: 12,
                 decoration: InputDecoration(
-                  hintText: 'What do you think?',
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  fillColor: AppColors.white,
+                  hintText: "What do you think?",
+                  focusedErrorBorder: OutlineInputBorder(),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      width: 1.0,
-                      color: AppColors.grey.shade300,
-                    ),
+                    borderSide: BorderSide.none,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                        width: 1, color: AppColors.primaryLight), //<-- SEE HERE
-                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
                   ),
+                  hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      fontSize: 18, color: AppColors.textColour50, height: 1.3),
                 ),
                 style: Theme.of(context).textTheme.bodyLarge,
                 keyboardType: TextInputType.multiline,

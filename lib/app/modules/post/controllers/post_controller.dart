@@ -4,12 +4,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:unsikuy_app/app/controllers/auth_controller.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:uuid/uuid.dart';
 
 class PostController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final authC = Get.find<AuthController>();
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
   TextEditingController commentC = TextEditingController();
@@ -43,7 +45,8 @@ class PostController extends GetxController {
     uuidUser = currentUser.uid.toString();
   }
 
-  Future<void> likePost(String postId, String uuid, List like) async {
+  Future<void> likePost(
+      String postId, String uuid, List like, String friendUuid) async {
     try {
       if (like.contains(uuid)) {
         await _firestore.collection('posts').doc(postId).update({
@@ -54,12 +57,18 @@ class PostController extends GetxController {
           "like": FieldValue.arrayUnion([uuid]),
         });
       }
+      DocumentSnapshot docSnap = await FirebaseFirestore.instance
+          .collection('userToken')
+          .doc(uuid)
+          .get();
+      String mToken = docSnap['token'];
+      authC.sendPustNotification(mToken, '', '$username Like your sharing');
     } catch (e) {
       print(e.toString());
     }
   }
 
-  Future<void> postComment(String postId) async {
+  Future<void> postComment(String postId, String uuid) async {
     try {
       if (commentC.text.isNotEmpty) {
         String commentId = const Uuid().v1();
@@ -76,6 +85,13 @@ class PostController extends GetxController {
           "commentId": commentId,
           "published_at": DateTime.now().toString(),
         });
+        DocumentSnapshot docSnap = await FirebaseFirestore.instance
+            .collection('userToken')
+            .doc(uuid)
+            .get();
+        String mToken = docSnap['token'];
+        authC.sendPustNotification(
+            mToken, commentC.text.toString(), '$username Comment your sharing');
         // showNotif('Success', 'Comment is posted');
       } else {
         showError('Text is empty', 'Please enter your comment below');
@@ -203,5 +219,5 @@ void dismissloading(bool? skip) {
 
 void showNotif(String title, String message) {
   Get.snackbar(title, message.toString(),
-      backgroundColor: AppColors.successMain, colorText: Colors.white);
+      backgroundColor: AppColors.primaryLight, colorText: Colors.white);
 }

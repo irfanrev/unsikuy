@@ -6,10 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:unsikuy_app/app/controllers/auth_controller.dart';
 
 class ChatRoomController extends GetxController {
   //TODO: Implement ChatRoomController
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final authC = Get.find<AuthController>();
   int totalUnread = 0;
   late ScrollController scrollC;
   var isShowEmoji = false.obs;
@@ -80,6 +82,15 @@ class ChatRoomController extends GetxController {
     });
     totalUnread += 1;
 
+    DocumentSnapshot docSnap = await FirebaseFirestore.instance
+        .collection('userToken')
+        .doc(argument['uuid'])
+        .get();
+    DocumentSnapshot userSnap = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
     Timer(
       Duration.zero,
       () => scrollC.jumpTo(scrollC.position.maxScrollExtent),
@@ -128,5 +139,10 @@ class ChatRoomController extends GetxController {
         'uuid': FirebaseAuth.instance.currentUser!.uid,
       });
     }
+
+    String friendToken = docSnap['token'];
+    String userName = userSnap['username'];
+    print(friendToken);
+    authC.sendPustNotification(friendToken, chat, userName);
   }
 }

@@ -42,6 +42,8 @@ dependencies:
   flutter_linkify: ^5.0.2
   url_launcher: 6.1.7
   firebase_messaging: any
+  flutter_local_notifications: 13.0.0
+  http: 0.13.5
   flutter: 
     sdk: flutter
 

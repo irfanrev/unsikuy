@@ -114,9 +114,11 @@ class PostView extends GetView<PostController> {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.toNamed(Routes.UPLOAD);
+            },
             icon: Icon(
-              CupertinoIcons.bell,
+              CupertinoIcons.plus_app,
               color: AppColors.primaryDark,
             ),
           ),

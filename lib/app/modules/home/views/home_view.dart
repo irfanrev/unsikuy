@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unsikuy_app/app/modules/chats/views/chats_view.dart';
+import 'package:unsikuy_app/app/modules/discussion/views/discussion_view.dart';
 import 'package:unsikuy_app/app/modules/home/controllers/home_controller.dart';
 import 'package:unsikuy_app/app/modules/people/views/people_view.dart';
 import 'package:unsikuy_app/app/modules/post/views/post_view.dart';
@@ -24,7 +25,7 @@ class HomeView extends StatelessWidget {
                 children: [
                   PostView(),
                   PeopleView(),
-                  UploadView(),
+                  DiscussionView(),
                   ChatsView(),
                   ProfileView(
                     uuid: FirebaseAuth.instance.currentUser!.uid,
@@ -55,8 +56,8 @@ class HomeView extends StatelessWidget {
                     label: 'Connect',
                   ),
                   _bottomNavigationBarItem(
-                    icon: CupertinoIcons.add_circled,
-                    label: 'Post',
+                    icon: CupertinoIcons.chat_bubble_2,
+                    label: 'Discussion',
                   ),
                   _bottomNavigationBarItem(
                     icon: CupertinoIcons.chat_bubble,

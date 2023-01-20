@@ -25,6 +25,7 @@ class PostDetailView extends GetView<PostDetailController> {
   @override
   Widget build(BuildContext context) {
     DateTime dateTime = DateTime.parse(Get.arguments['published_at']);
+
     final postC = Get.put(PostController());
     return Scaffold(
       appBar: AppBar(
@@ -207,6 +208,7 @@ class PostDetailView extends GetView<PostDetailController> {
                                   Get.arguments['postId'],
                                   postC.auth.currentUser!.uid,
                                   Get.arguments['like'],
+                                  Get.arguments['uuid'],
                                 );
                               },
                               child: Get.arguments['like']
@@ -327,7 +329,8 @@ class PostDetailView extends GetView<PostDetailController> {
                   )),
                   InkWell(
                     onTap: () {
-                      postC.postComment(Get.arguments['postId']);
+                      postC.postComment(
+                          Get.arguments['postId'], Get.arguments['uuid']);
                       postC.commentC.text = '';
                       FocusManager.instance.primaryFocus?.unfocus();
                     },

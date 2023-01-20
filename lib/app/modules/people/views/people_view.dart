@@ -52,6 +52,11 @@ class PeopleView extends GetView<PeopleController> {
                         controller.isSearch.value = false;
                       }
                     },
+                    onClear: () {
+                      controller.searchC.clear();
+                      controller.isSearch.value = false;
+                      controller.update();
+                    },
                   ),
                 ),
               ],

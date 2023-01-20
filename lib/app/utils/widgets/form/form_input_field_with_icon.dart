@@ -4,19 +4,21 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 
 class FormInputFieldWithIcon extends StatelessWidget {
-  FormInputFieldWithIcon(
-      {required this.controller,
-      this.iconPrefix,
-      this.labelText,
-      this.validator,
-      this.keyboardType = TextInputType.text,
-      this.obscureText = false,
-      this.enabled = true,
-      this.minLines = 1,
-      this.maxLines,
-      this.onChanged,
-      this.onSaved,
-      this.onCompleted});
+  FormInputFieldWithIcon({
+    required this.controller,
+    this.iconPrefix,
+    this.labelText,
+    this.validator,
+    this.keyboardType = TextInputType.text,
+    this.obscureText = false,
+    this.enabled = true,
+    this.minLines = 1,
+    this.maxLines,
+    this.onChanged,
+    this.onSaved,
+    this.onCompleted,
+    this.onClear,
+  });
 
   final TextEditingController controller;
   final IconData? iconPrefix;
@@ -30,6 +32,7 @@ class FormInputFieldWithIcon extends StatelessWidget {
   final void Function(String)? onChanged;
   final void Function(String?)? onSaved;
   final void Function(String?)? onCompleted;
+  final void Function()? onClear;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,14 @@ class FormInputFieldWithIcon extends StatelessWidget {
         prefixIcon: Icon(
           CupertinoIcons.search,
           color: AppColors.grey.shade400,
+        ),
+        suffixIcon: InkWell(
+          onTap: onClear,
+          child: Icon(
+            Icons.close,
+            color: AppColors.grey.shade400,
+            size: 18,
+          ),
         ),
         filled: true,
         //prefixIcon: Icon(iconPrefix),

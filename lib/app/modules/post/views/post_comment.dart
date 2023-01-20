@@ -13,6 +13,9 @@ class PostComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String postId = (Get.arguments as Map<String, dynamic>)['postId'];
+    final String uuid = (Get.arguments as Map<String, dynamic>)['uuid'];
+
     return Scaffold(
         appBar: AppBar(
           leading: InkWell(
@@ -33,7 +36,7 @@ class PostComment extends StatelessWidget {
                   child: StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection('posts')
-                        .doc(Get.arguments.toString())
+                        .doc(postId)
                         .collection('comments')
                         .orderBy('published_at', descending: true)
                         .snapshots(),
@@ -48,8 +51,10 @@ class PostComment extends StatelessWidget {
                           itemCount: snapshot.data!.docs.length,
                           itemBuilder: (context, index) {
                             return CommentCard(
-                                snap: snapshot.data!.docs[index],
-                                controller: controller);
+                              snap: snapshot.data!.docs[index],
+                              controller: controller,
+                              postId: Get.arguments.toString(),
+                            );
                           });
                     },
                   ),
@@ -87,7 +92,7 @@ class PostComment extends StatelessWidget {
                       )),
                       InkWell(
                         onTap: () {
-                          controller.postComment(Get.arguments.toString());
+                          controller.postComment(postId, uuid);
                           controller.commentC.text = '';
                         },
                         child: Text(
