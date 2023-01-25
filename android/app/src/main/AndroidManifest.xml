@@ -18,7 +18,7 @@
         </intent>
     </queries>
    <application
-        android:label="unsikuy_app"
+        android:label="Unsika Connect"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

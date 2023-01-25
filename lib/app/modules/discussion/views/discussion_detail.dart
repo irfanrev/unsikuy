@@ -140,6 +140,18 @@ class DiscussionDetail extends StatelessWidget {
                         thickness: 1.2,
                       ),
                       Container(
+                        padding: EdgeInsets.only(left: 16, top: 8),
+                        width: 100.w,
+                        child: Text(
+                          'Contribution',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline5!
+                              .copyWith(color: AppColors.textColour80),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      Container(
                         width: 100.w,
                         child: StreamBuilder(
                           stream: FirebaseFirestore.instance
@@ -155,18 +167,29 @@ class DiscussionDetail extends StatelessWidget {
                                 ConnectionState.waiting) {
                               return LoadingOverlay();
                             }
-                            return ListView.builder(
-                                primary: false,
-                                shrinkWrap: true,
-                                padding: EdgeInsets.all(16),
-                                itemCount: snapshot.data!.docs.length,
-                                itemBuilder: (context, index) {
-                                  return ContributorCard(
-                                    snap: snapshot.data!.docs[index],
-                                    controller: controller,
-                                    posId: postId,
-                                  );
-                                });
+
+                            if (snapshot.data!.docs.length == 0) {
+                              return Center(
+                                child: Container(
+                                  width: 150,
+                                  child: Lottie.asset(
+                                      'lib/app/resources/images/not-found.json'),
+                                ),
+                              );
+                            } else {
+                              return ListView.builder(
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.all(16),
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    return ContributorCard(
+                                      snap: snapshot.data!.docs[index],
+                                      controller: controller,
+                                      posId: postId,
+                                    );
+                                  });
+                            }
                           },
                         ),
                       ),
@@ -207,7 +230,6 @@ class DiscussionDetail extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           controller.postDiscussion(postId, uuid);
-                          controller.commentC.text = '';
                         },
                         child: Text(
                           'Send',

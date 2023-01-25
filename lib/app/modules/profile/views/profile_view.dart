@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/controllers/auth_controller.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/views/edit_profile_view.dart';
@@ -29,6 +30,7 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   var userData = {};
   int postLen = 0;
+  int discussLen = 0;
   int connecters = 0;
   bool isLoading = false;
   bool isConnecters = false;
@@ -36,8 +38,8 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   void initState() {
-    getUserData();
     super.initState();
+    getUserData();
   }
 
   getUserData() async {
@@ -59,8 +61,13 @@ class _ProfileViewState extends State<ProfileView> {
           .collection('posts')
           .where('uuid', isEqualTo: widget.uuid)
           .get();
+      var disSnap = await FirebaseFirestore.instance
+          .collection('discussion')
+          .where('uuid', isEqualTo: widget.uuid)
+          .get();
 
       postLen = postSnap.docs.length;
+      discussLen = disSnap.docs.length;
       userData = snap.data()!;
       connecters = connecterLength.docs.length;
       var cekkoneksi = await FirebaseFirestore.instance
@@ -87,9 +94,22 @@ class _ProfileViewState extends State<ProfileView> {
   }
 
   @override
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    userData.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final c = Get.put(PostController());
     final authC = Get.find<AuthController>();
+    final profC = Get.put(ProfileController());
     return isLoading
         ? LoadingOverlay()
         : Scaffold(
@@ -153,7 +173,7 @@ class _ProfileViewState extends State<ProfileView> {
                                   height: 4,
                                 ),
                                 Text(
-                                  userData['status'] ?? '',
+                                  userData['status'],
                                   style: Theme.of(context).textTheme.bodyText1!,
                                 )
                               ],
@@ -242,7 +262,7 @@ class _ProfileViewState extends State<ProfileView> {
                                 width: 4,
                               ),
                               Text(
-                                'of Sharing',
+                                'Sharing',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge!
@@ -253,13 +273,47 @@ class _ProfileViewState extends State<ProfileView> {
                             ],
                           ),
                           const SizedBox(
-                            width: 8,
+                            width: 16,
                           ),
-                          Text('|',
-                              style: Theme.of(context).textTheme.headline3),
+                          InkWell(
+                            onTap: () {
+                              Get.toNamed(Routes.MYDISCUSS,
+                                  arguments: userData['uuid']);
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  discussLen.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .copyWith(
+                                        color: AppColors.primaryDark,
+                                      ),
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                Text(
+                                  'Discussion',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge!
+                                      .copyWith(
+                                        color: AppColors.primaryDark,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
                           const SizedBox(
-                            width: 8,
+                            width: 16,
                           ),
+                          // Text('|',
+                          //     style: Theme.of(context).textTheme.headline3),
+                          // const SizedBox(
+                          //   width: 8,
+                          // ),
                           InkWell(
                             onTap: () {
                               Get.toNamed(Routes.CONNECTED_VIEW,
@@ -300,7 +354,7 @@ class _ProfileViewState extends State<ProfileView> {
                     FirebaseAuth.instance.currentUser!.uid == widget.uuid
                         ? InkWell(
                             onTap: () {
-                              Get.to(EditProfileView(
+                              Get.offAll(EditProfileView(
                                 photoUrl: userData['photoUrl'].toString(),
                                 username: userData['username'].toString(),
                                 email: userData['email'].toString(),
@@ -410,7 +464,7 @@ class _ProfileViewState extends State<ProfileView> {
                         style: Theme.of(context)
                             .textTheme
                             .headline5!
-                            .copyWith(color: AppColors.textColour50),
+                            .copyWith(color: AppColors.textColour80),
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -430,18 +484,27 @@ class _ProfileViewState extends State<ProfileView> {
                               child: LoadingOverlay(),
                             );
                           }
-
-                          return ListView.builder(
-                              shrinkWrap: true,
-                              primary: false,
-                              itemCount:
-                                  (snapshot.data! as dynamic).docs.length,
-                              itemBuilder: (context, index) {
-                                return PostCardItem(
-                                    snap:
-                                        (snapshot.data! as dynamic).docs[index],
-                                    controller: c);
-                              });
+                          if ((snapshot.data! as dynamic).docs.length == 0) {
+                            return Center(
+                              child: Container(
+                                width: 150,
+                                child: Lottie.asset(
+                                    'lib/app/resources/images/not-found.json'),
+                              ),
+                            );
+                          } else {
+                            return ListView.builder(
+                                shrinkWrap: true,
+                                primary: false,
+                                itemCount:
+                                    (snapshot.data! as dynamic).docs.length,
+                                itemBuilder: (context, index) {
+                                  return PostCardItem(
+                                      snap: (snapshot.data! as dynamic)
+                                          .docs[index],
+                                      controller: c);
+                                });
+                          }
                         }),
 
                     // IconButton(

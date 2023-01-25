@@ -7,6 +7,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/modules/post_detail/views/post_image_view.dart';
@@ -197,64 +198,64 @@ class PostDetailView extends GetView<PostDetailController> {
                   const SizedBox(
                     height: 8,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Row(
-                        children: [
-                          InkWell(
-                              onTap: () {
-                                postC.likePost(
-                                  Get.arguments['postId'],
-                                  postC.auth.currentUser!.uid,
-                                  Get.arguments['like'],
-                                  Get.arguments['uuid'],
-                                );
-                              },
-                              child: Get.arguments['like']
-                                      .contains(postC.auth.currentUser!.uid)
-                                  ? const Icon(
-                                      CupertinoIcons.hand_thumbsup_fill,
-                                      color: AppColors.primaryLight,
-                                      size: 22,
-                                    )
-                                  : Icon(
-                                      CupertinoIcons.hand_thumbsup,
-                                      color: AppColors.grey.shade500,
-                                      size: 22,
-                                    )),
-                        ],
-                      ),
-                      const SizedBox(width: 32),
-                      Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              controller.focusNode.requestFocus();
-                            },
-                            child: Icon(
-                              CupertinoIcons.chat_bubble,
-                              color: AppColors.grey.shade500,
-                              size: 22,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          // Text(
-                          //   lengthOfComment.toString(),
-                          //   style: Theme.of(context)
-                          //       .textTheme
-                          //       .bodySmall!
-                          //       .copyWith(
-                          //           color: AppColors.textColour50,
-                          //           fontSize: 12),
-                          // ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //   children: [
+                  //     Row(
+                  //       children: [
+                  //         InkWell(
+                  //             onTap: () {
+                  //               controller.likePost(
+                  //                 Get.arguments['postId'],
+                  //                 postC.auth.currentUser!.uid,
+                  //                 Get.arguments['like'],
+                  //                 Get.arguments['uuid'],
+                  //               );
+                  //             },
+                  //             child: Obx(() => controller.getUuid.value ==
+                  //                     postC.auth.currentUser!.uid
+                  //                 ? const Icon(
+                  //                     CupertinoIcons.hand_thumbsup_fill,
+                  //                     color: AppColors.primaryLight,
+                  //                     size: 22,
+                  //                   )
+                  //                 : Icon(
+                  //                     CupertinoIcons.hand_thumbsup,
+                  //                     color: AppColors.grey.shade500,
+                  //                     size: 22,
+                  //                   ))),
+                  //       ],
+                  //     ),
+                  //     const SizedBox(width: 32),
+                  //     Row(
+                  //       children: [
+                  //         InkWell(
+                  //           onTap: () {
+                  //             controller.focusNode.requestFocus();
+                  //           },
+                  //           child: Icon(
+                  //             CupertinoIcons.chat_bubble,
+                  //             color: AppColors.grey.shade500,
+                  //             size: 22,
+                  //           ),
+                  //         ),
+                  //         const SizedBox(width: 8),
+                  //         // Text(
+                  //         //   lengthOfComment.toString(),
+                  //         //   style: Theme.of(context)
+                  //         //       .textTheme
+                  //         //       .bodySmall!
+                  //         //       .copyWith(
+                  //         //           color: AppColors.textColour50,
+                  //         //           fontSize: 12),
+                  //         // ),
+                  //       ],
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(
+                  //   height: 10,
+                  // ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
@@ -278,18 +279,28 @@ class PostDetailView extends GetView<PostDetailController> {
                             ConnectionState.waiting) {
                           return LoadingOverlay();
                         }
-                        return ListView.builder(
-                            shrinkWrap: true,
-                            primary: false,
-                            padding: EdgeInsets.all(16),
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              return CommentCardDetail(
-                                snap: snapshot.data!.docs[index],
-                                controller: postC,
-                                postID: Get.arguments['postId'],
-                              );
-                            });
+                        if (snapshot.data!.docs.length == 0) {
+                          return Center(
+                            child: Container(
+                              width: 150,
+                              child: Lottie.asset(
+                                  'lib/app/resources/images/not-found.json'),
+                            ),
+                          );
+                        } else {
+                          return ListView.builder(
+                              shrinkWrap: true,
+                              primary: false,
+                              padding: EdgeInsets.all(16),
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                return CommentCardDetail(
+                                  snap: snapshot.data!.docs[index],
+                                  controller: postC,
+                                  postID: Get.arguments['postId'],
+                                );
+                              });
+                        }
                       },
                     ),
                   ),
@@ -331,7 +342,7 @@ class PostDetailView extends GetView<PostDetailController> {
                     onTap: () {
                       postC.postComment(
                           Get.arguments['postId'], Get.arguments['uuid']);
-                      postC.commentC.text = '';
+
                       FocusManager.instance.primaryFocus?.unfocus();
                     },
                     child: Text(

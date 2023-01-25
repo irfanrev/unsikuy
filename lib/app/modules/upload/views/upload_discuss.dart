@@ -97,6 +97,7 @@ class UploadDiscuss extends StatelessWidget {
                       ),
                       TextFormField(
                         controller: controller.desc,
+                        textCapitalization: TextCapitalization.sentences,
                         maxLines: 12,
                         decoration: InputDecoration(
                           fillColor: AppColors.white,

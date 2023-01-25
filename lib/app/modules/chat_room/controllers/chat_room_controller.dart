@@ -7,16 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:unsikuy_app/app/controllers/auth_controller.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatRoomController extends GetxController {
   //TODO: Implement ChatRoomController
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
   final authC = Get.find<AuthController>();
   int totalUnread = 0;
   late ScrollController scrollC;
   var isShowEmoji = false.obs;
   late FocusNode focusNode;
   TextEditingController chatC = TextEditingController();
+  var photoUrl;
+
+  var chatContent;
 
   @override
   void onInit() {
@@ -28,7 +33,17 @@ class ChatRoomController extends GetxController {
         isShowEmoji.value = false;
       }
     });
+    getUsersData();
     super.onInit();
+  }
+
+  Future getUsersData() async {
+    User currentUser = auth.currentUser!;
+
+    DocumentSnapshot userData =
+        await firestore.collection('users').doc(currentUser.uid).get();
+
+    photoUrl = userData['photoUrl'];
   }
 
   @override
@@ -143,6 +158,6 @@ class ChatRoomController extends GetxController {
     String friendToken = docSnap['token'];
     String userName = userSnap['username'];
     print(friendToken);
-    authC.sendPustNotification(friendToken, chat, userName);
+    authC.sendPustNotification(friendToken, chatContent.toString(), userName);
   }
 }

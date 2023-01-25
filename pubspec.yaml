@@ -44,6 +44,8 @@ dependencies:
   firebase_messaging: any
   flutter_local_notifications: 13.0.0
   http: 0.13.5
+  readmore: 2.2.0
+  flutter_html: any
   flutter: 
     sdk: flutter
 

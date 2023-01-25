@@ -42,7 +42,7 @@ class ChatsView extends GetView<ChatsController> {
                         child: Container(
                           width: 200,
                           child: Lottie.asset(
-                              'lib/app/resources/images/emptybox.json'),
+                              'lib/app/resources/images/not-found.json'),
                         ),
                       );
                     } else {

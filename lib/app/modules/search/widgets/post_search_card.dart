@@ -192,7 +192,7 @@ class _PostSearchCardState extends State<PostSearchCard> {
                   borderRadius: BorderRadius.circular(16),
                   child: ImageLoad(
                     image: widget.snap['postUrl'],
-                    placeholder: AppImages.placeholder.image().image,
+                    placeholder: AppImages.imgPlaceholderPrimary.image().image,
                     fit: BoxFit.cover,
                   ),
                 ),

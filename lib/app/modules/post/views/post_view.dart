@@ -122,13 +122,22 @@ class PostView extends GetView<PostController> {
               color: AppColors.primaryDark,
             ),
           ),
+          IconButton(
+            onPressed: () {
+              Get.toNamed(Routes.NOTIFICATION);
+            },
+            icon: Icon(
+              CupertinoIcons.bell,
+              color: AppColors.primaryDark,
+            ),
+          ),
           const SizedBox(
             width: 8,
           ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         child: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('posts')

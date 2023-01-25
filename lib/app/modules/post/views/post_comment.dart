@@ -53,7 +53,7 @@ class PostComment extends StatelessWidget {
                             return CommentCard(
                               snap: snapshot.data!.docs[index],
                               controller: controller,
-                              postId: Get.arguments.toString(),
+                              postId: postId,
                             );
                           });
                     },
@@ -93,7 +93,6 @@ class PostComment extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           controller.postComment(postId, uuid);
-                          controller.commentC.text = '';
                         },
                         child: Text(
                           'Send',

@@ -22,9 +22,6 @@ class HomeBinding extends Bindings {
     Get.lazyPut<ChatsController>(
       () => ChatsController(),
     );
-    Get.lazyPut<ProfileController>(
-      () => ProfileController(),
-    );
     Get.lazyPut<UploadController>(
       () => UploadController(),
     );

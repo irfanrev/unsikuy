@@ -1,4 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,7 @@ import 'package:unsikuy_app/app/modules/edit_profile/views/update_bio.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/views/update_profile.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/widgets/setting_item.dart';
 import 'package:unsikuy_app/app/modules/profile/controllers/profile_controller.dart';
+import 'package:unsikuy_app/app/modules/profile/views/profile_view.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
 import 'package:unsikuy_app/app/theme/app_theme.dart';
@@ -30,6 +32,14 @@ class EditProfileView extends StatelessWidget {
     final profC = Get.put(ProfileController);
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Get.offAllNamed(Routes.HOME);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              size: 20,
+            )),
         title: const Text('EditProfileView'),
         centerTitle: true,
       ),
@@ -89,47 +99,49 @@ class EditProfileView extends StatelessWidget {
                         icon: CupertinoIcons.color_filter,
                         onTap: () {
                           Get.defaultDialog(
-                              title: 'Switch theme to',
-                              titlePadding:
-                                  EdgeInsets.only(top: 20, bottom: 10),
-                              titleStyle: Theme.of(context)
-                                  .textTheme
-                                  .headline3!
-                                  .copyWith(),
-                              content: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Get.changeTheme(
-                                          AppTheme.buildThemeData(false));
-                                      Get.back();
-                                    },
-                                    child: Text(
-                                      'Light',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline3!
-                                          .copyWith(),
+                            title: 'Stay tune for this feature!',
+                            titlePadding: EdgeInsets.only(top: 20, bottom: 10),
+                            titleStyle:
+                                Theme.of(context).textTheme.headline3!.copyWith(
+                                      color: AppColors.textColour70,
                                     ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Get.changeTheme(
-                                          AppTheme.buildThemeData(true));
-                                      Get.back();
-                                    },
-                                    child: Text(
-                                      'Dark',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline3!
-                                          .copyWith(),
-                                    ),
-                                  ),
-                                ],
-                              ));
+                            content: Text(
+                                'This feature will be added in the next release'),
+                            // content: Row(
+                            //   mainAxisAlignment:
+                            //       MainAxisAlignment.spaceAround,
+                            //   children: [
+                            //     TextButton(
+                            //       onPressed: () {
+                            //         Get.changeTheme(
+                            //             AppTheme.buildThemeData(false));
+                            //         Get.back();
+                            //       },
+                            //       child: Text(
+                            //         'Light',
+                            //         style: Theme.of(context)
+                            //             .textTheme
+                            //             .headline3!
+                            //             .copyWith(),
+                            //       ),
+                            //     ),
+                            //     TextButton(
+                            //       onPressed: () {
+                            //         Get.changeTheme(
+                            //             AppTheme.buildThemeData(true));
+                            //         Get.back();
+                            //       },
+                            //       child: Text(
+                            //         'Dark',
+                            //         style: Theme.of(context)
+                            //             .textTheme
+                            //             .headline3!
+                            //             .copyWith(),
+                            //       ),
+                            //     ),
+                            //   ],
+                            // )
+                          );
                         },
                       ),
                       const SizedBox(height: 32),

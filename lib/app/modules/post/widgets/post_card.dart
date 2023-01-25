@@ -218,12 +218,14 @@ class _PostCardItemState extends State<PostCardItem> {
                       Visibility(
                         visible: widget.snap['postUrl'] != '',
                         child: Container(
-                          height: Get.height * 0.3,
+                          width: Get.width,
+                          height: Get.height * 0.35,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(16),
                             child: ImageLoad(
                               image: widget.snap['postUrl'],
-                              placeholder: AppImages.placeholder.image().image,
+                              placeholder:
+                                  AppImages.imgPlaceholderPrimary.image().image,
                               fit: BoxFit.cover,
                             ),
                           ),

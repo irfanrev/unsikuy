@@ -210,12 +210,17 @@ class RegisterView extends GetView<RegisterController> {
                 ),
                 FormBuilderCheckbox(
                   name: 'tnc',
-                  title: Text(
-                    'I aggree with the Terms and Conditions.',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          color: AppColors.primaryLight,
-                          fontSize: 15,
-                        ),
+                  title: InkWell(
+                    onTap: () {
+                      Get.toNamed(Routes.TERMS_CONDITION);
+                    },
+                    child: Text(
+                      'I aggree with the Terms and Conditions.',
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: AppColors.primaryLight,
+                            fontSize: 15,
+                          ),
+                    ),
                   ),
                   initialValue: controller.isAggree,
                   onChanged: (value) {
@@ -282,7 +287,7 @@ class RegisterView extends GetView<RegisterController> {
                           Get.offNamed(Routes.LOGIN);
                         },
                         child: Text(
-                          ' Sign In',
+                          ' Login',
                           style:
                               Theme.of(context).textTheme.bodyText1!.copyWith(
                                     color: AppColors.primaryLight,

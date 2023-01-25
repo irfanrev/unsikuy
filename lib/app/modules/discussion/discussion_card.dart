@@ -82,6 +82,7 @@ class DiscussionCard extends StatelessWidget {
                             style:
                                 Theme.of(context).textTheme.bodyText1!.copyWith(
                                       color: AppColors.textColour50,
+                                      fontSize: 12,
                                     ),
                             textAlign: TextAlign.start,
                           ),

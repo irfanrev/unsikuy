@@ -43,7 +43,7 @@ class DiscussionView extends StatelessWidget {
                           child: FormInputFieldWithIcon(
                             keyboardType: TextInputType.text,
                             controller: controller.searchC,
-                            labelText: 'Search Discussion',
+                            labelText: 'Search by first keyword',
                             onCompleted: (value) {
                               if (value != '') {
                                 controller.isSearch.value = true;

@@ -98,7 +98,23 @@ class DiscussionController extends GetxController {
         String mToken = docSnap['token'];
         authC.sendPustNotification(
             mToken, commentC.text, '$username Comment your Discussion');
+        String notifId = Uuid().v1();
+        await _firestore
+            .collection('users')
+            .doc(uuid)
+            .collection('notification')
+            .doc(notifId)
+            .set({
+          'username': username,
+          'photoUrl': photoUrl,
+          'title': '$username contribute to your discussion',
+          'body': commentC.text,
+          'time': DateTime.now().toString(),
+          'notifId': notifId,
+        });
+        commentC.clear();
         // showNotif('Success', 'Comment is posted');
+
       } else {
         showError('Text is empty', 'Please enter your comment below');
       }

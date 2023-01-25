@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,7 @@ import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
 import 'package:unsikuy_app/app/utils/widgets/loading_overlay.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/chat_room_controller.dart';
 
@@ -273,6 +275,7 @@ class ChatRoomView extends GetView<ChatRoomController> {
                             controller.chatC.text,
                             FirebaseAuth.instance.currentUser!.email.toString(),
                             FirebaseAuth.instance.currentUser!.uid.toString());
+                        controller.chatContent = controller.chatC.text;
                         controller.chatC.clear();
                       }
                     },
@@ -393,11 +396,26 @@ class ItemChat extends StatelessWidget {
                     ),
             ),
             padding: EdgeInsets.all(12),
-            child: Text("$msg",
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                      color: isSender ? AppColors.white : AppColors.black,
-                      fontSize: 14,
-                    )),
+            child: Linkify(
+              text: '$msg',
+              onOpen: (value) async {
+                Uri url = Uri.parse(value.url);
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                } else {
+                  throw 'Could not launch $value.url';
+                }
+              },
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: isSender ? AppColors.white : AppColors.black,
+                    height: 1.4,
+                  ),
+              linkStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Colors.blue[800],
+                    fontWeight: FontWeight.bold,
+                    height: 1.4,
+                  ),
+            ),
           ),
           Text(
             DateFormat.jm().format(DateTime.parse(time)),

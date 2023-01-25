@@ -23,6 +23,9 @@ abstract class Routes {
   static const DISCUSSION = _Paths.DISCUSSION;
   static const UPLOAD_DISCUSS = _Paths.UPLOAD_DISCUSS;
   static const DISCUSS_DETAIL = _Paths.DISCUSS_DETAIL;
+  static const MYDISCUSS = _Paths.MYDISCUSS;
+  static const NOTIFICATION = _Paths.NOTIFICATION;
+  static const TERMS_CONDITION = _Paths.TERMS_CONDITION;
 }
 
 abstract class _Paths {
@@ -47,4 +50,7 @@ abstract class _Paths {
   static const DISCUSSION = '/discussion';
   static const UPLOAD_DISCUSS = '/upload-discuss';
   static const DISCUSS_DETAIL = '/discuss-detail';
+  static const MYDISCUSS = '/mydiscuss';
+  static const NOTIFICATION = '/notification';
+  static const TERMS_CONDITION = '/terms-condition';
 }

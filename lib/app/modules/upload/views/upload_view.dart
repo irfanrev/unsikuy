@@ -114,6 +114,7 @@ class UploadView extends GetView<UploadController> {
               ),
               TextFormField(
                 controller: controller.desc,
+                textCapitalization: TextCapitalization.sentences,
                 maxLines: 12,
                 decoration: InputDecoration(
                   fillColor: AppColors.white,
@@ -241,7 +242,10 @@ class UploadView extends GetView<UploadController> {
                               color: Colors.white),
                         ),
                   onPressed: () {
-                    controller.upload();
+                    if (controller.desc.text.isNotEmpty ||
+                        controller.file != null) {
+                      controller.upload();
+                    }
                     //controller.formKey.currentState?.reset();
                   },
                 );

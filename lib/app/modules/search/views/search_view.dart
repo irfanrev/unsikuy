@@ -20,7 +20,7 @@ class SearchView extends GetView<SearchController> {
         leadingWidth: 28,
         title: FormInputFieldWithIcon(
           controller: controller.searchC,
-          labelText: 'Search post',
+          labelText: 'Search post by first keyword',
           onCompleted: (value) {
             if (value != '') {
               print(value.toString());
@@ -67,7 +67,8 @@ class SearchView extends GetView<SearchController> {
             : Center(
                 child: Container(
                   width: 200,
-                  child: Lottie.asset('lib/app/resources/images/emptybox.json'),
+                  child:
+                      Lottie.asset('lib/app/resources/images/not-found.json'),
                 ),
               ),
       ),

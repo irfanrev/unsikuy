@@ -44,6 +44,10 @@ class $LibAppResourcesImagesGen {
   AssetGenImage get icLogoSuitcoreMain =>
       const AssetGenImage('lib/app/resources/images/ic_logo_suitcore_main.png');
 
+  /// File path: lib/app/resources/images/img-placeholder-primary.png
+  AssetGenImage get imgPlaceholderPrimary => const AssetGenImage(
+      'lib/app/resources/images/img-placeholder-primary.png');
+
   /// File path: lib/app/resources/images/img_empty.png
   AssetGenImage get imgEmpty =>
       const AssetGenImage('lib/app/resources/images/img_empty.png');
@@ -63,6 +67,10 @@ class $LibAppResourcesImagesGen {
   /// File path: lib/app/resources/images/img_splashbg.png
   AssetGenImage get imgSplashbg =>
       const AssetGenImage('lib/app/resources/images/img_splashbg.png');
+
+  /// File path: lib/app/resources/images/logo-unsika-connect.png
+  AssetGenImage get logoUnsikaConnect =>
+      const AssetGenImage('lib/app/resources/images/logo-unsika-connect.png');
 
   /// File path: lib/app/resources/images/placeholder.png
   AssetGenImage get placeholder =>
@@ -93,11 +101,13 @@ class $LibAppResourcesImagesGen {
         emptyStateCode,
         emptybox,
         icLogoSuitcoreMain,
+        imgPlaceholderPrimary,
         imgEmpty,
         imgError,
         imgLoginIlust,
         imgLogo,
         imgSplashbg,
+        logoUnsikaConnect,
         placeholder,
         regisSuccess,
         registerSuccess,

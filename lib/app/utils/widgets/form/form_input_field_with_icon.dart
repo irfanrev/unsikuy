@@ -69,6 +69,7 @@ class FormInputFieldWithIcon extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
       ),
+      textCapitalization: TextCapitalization.sentences,
       style: Theme.of(context).textTheme.bodyText1,
       enabled: enabled,
       controller: controller,

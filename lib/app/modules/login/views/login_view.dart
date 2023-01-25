@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
@@ -27,13 +28,13 @@ class LoginView extends GetView<LoginController> {
             children: [
               Container(
                 width: 100.w,
-                child: AppImages.imgLoginIlust.image(
-                  height: 250,
+                height: 260,
+                child: Lottie.asset(
+                  'lib/app/resources/images/login.json',
+                  fit: BoxFit.contain,
                 ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
+
               Text(
                 'Login',
                 style: Theme.of(context).textTheme.headline3!.copyWith(
@@ -53,6 +54,7 @@ class LoginView extends GetView<LoginController> {
               CustomizeTextField(
                 textEditingController: controller.emailC,
                 titleText: 'Email',
+                hintText: 'Enter your email address',
                 textStyle: Theme.of(context).textTheme.bodyText1,
               ),
               const SizedBox(
@@ -62,6 +64,7 @@ class LoginView extends GetView<LoginController> {
                 textEditingController: controller.passC,
                 titleText: 'Password',
                 isObscure: controller.isSecure,
+                hintText: 'Enter your password',
                 textStyle: Theme.of(context).textTheme.bodyText1,
                 onPressed: () {
                   controller.isSecure = false;
@@ -149,7 +152,7 @@ class LoginView extends GetView<LoginController> {
                                 Get.toNamed(Routes.REGISTER);
                               },
                               child: Text(
-                                ' Sign Up',
+                                ' Register',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyText1!

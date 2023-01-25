@@ -83,6 +83,7 @@ class AuthController extends GetxController {
           'notification': <String, dynamic>{
             'title': title,
             'body': body,
+            'sound': 'default',
           },
           'to': token,
         }),

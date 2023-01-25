@@ -110,6 +110,7 @@ class EditProfileController extends GetxController {
           "photoUrl": photo,
           "updated_at": DateTime.now().toString(),
         });
+        //update post
         await _firestore
             .collection('posts')
             .where('uuid', isEqualTo: uuidUser)
@@ -120,8 +121,20 @@ class EditProfileController extends GetxController {
                     "profImg": photo,
                   });
                 }));
-
+        //update discussion
+        await _firestore
+            .collection('discussion')
+            .where('uuid', isEqualTo: uuidUser)
+            .get()
+            .then((value) => value.docs.forEach((element) {
+                  element.reference.update({
+                    "username": usernameC.text,
+                    "profImg": photo,
+                  });
+                }));
         showNotif('Success', 'Profile has updated');
+        profileC.update();
+        profileC.refresh();
       } else {
         await _firestore.collection('users').doc(uuidUser).update({
           "username": usernameC.text,
@@ -138,7 +151,18 @@ class EditProfileController extends GetxController {
                     "username": usernameC.text,
                   });
                 }));
+        await _firestore
+            .collection('discussion')
+            .where('uuid', isEqualTo: uuidUser)
+            .get()
+            .then((value) => value.docs.forEach((element) {
+                  element.reference.update({
+                    "username": usernameC.text,
+                  });
+                }));
         showNotif('Success', 'Profile has updated');
+        profileC.update();
+        profileC.refresh();
       }
 
       // model.User user = model.User(

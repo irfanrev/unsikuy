@@ -14,7 +14,8 @@ class PostController extends GetxController {
   final authC = Get.find<AuthController>();
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
-  TextEditingController commentC = TextEditingController();
+  TextEditingController commentC =
+      TextEditingController(); // listener for listview scrolling
   var photoUrl;
   var username;
   var uuidUser;
@@ -28,7 +29,6 @@ class PostController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     getUsersData();
-
     super.onInit();
   }
 
@@ -92,6 +92,21 @@ class PostController extends GetxController {
         String mToken = docSnap['token'];
         authC.sendPustNotification(
             mToken, commentC.text.toString(), '$username Comment your sharing');
+        String notifId = Uuid().v1();
+        await _firestore
+            .collection('users')
+            .doc(uuid)
+            .collection('notification')
+            .doc(notifId)
+            .set({
+          'username': username,
+          'photoUrl': photoUrl,
+          'title': '$username comment your sharing',
+          'body': commentC.text,
+          'time': DateTime.now().toString(),
+          'notifId': notifId,
+        });
+        commentC.text = '';
         // showNotif('Success', 'Comment is posted');
       } else {
         showError('Text is empty', 'Please enter your comment below');
@@ -152,6 +167,21 @@ class PostController extends GetxController {
         'status': friendStatus,
         'bio': friendBio,
       });
+      String notifId = Uuid().v1();
+      await _firestore
+          .collection('users')
+          .doc(uuid)
+          .collection('notification')
+          .doc(notifId)
+          .set({
+        'username': username,
+        'photoUrl': photoUrl,
+        'title': '$username has connected with you',
+        'body': '',
+        'time': DateTime.now().toString(),
+        'notifId': notifId,
+      });
+      commentC.text = '';
     } catch (e) {
       print(e);
     }

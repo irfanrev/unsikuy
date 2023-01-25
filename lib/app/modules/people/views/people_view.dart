@@ -30,130 +30,134 @@ class PeopleView extends GetView<PeopleController> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 12,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: FormInputFieldWithIcon(
-                    keyboardType: TextInputType.text,
-                    controller: controller.searchC,
-                    labelText: 'Search for keep connected',
-                    onCompleted: (value) {
-                      if (value != '') {
-                        controller.isSearch.value = true;
-                        controller.parsingStatus.value = '';
-                        controller.update();
-                        print(value.toString());
-                      } else {
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 12,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: FormInputFieldWithIcon(
+                      keyboardType: TextInputType.text,
+                      controller: controller.searchC,
+                      labelText: 'Search user by first keyword',
+                      onCompleted: (value) {
+                        if (value != '') {
+                          controller.isSearch.value = true;
+                          controller.parsingStatus.value = '';
+                          controller.update();
+                          print(value.toString());
+                        } else {
+                          controller.isSearch.value = false;
+                        }
+                      },
+                      onClear: () {
+                        controller.searchC.clear();
                         controller.isSearch.value = false;
-                      }
-                    },
-                    onClear: () {
-                      controller.searchC.clear();
-                      controller.isSearch.value = false;
-                      controller.update();
-                    },
+                        controller.update();
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 18,
-            ),
-            StatusList(),
-            const SizedBox(
-              height: 24,
-            ),
-            Expanded(
-                child: Obx(() => controller.isSearch.value == true
-                    ? Container(
-                        width: 100.w,
-                        child: FutureBuilder(
-                            future: FirebaseFirestore.instance
-                                .collection("users")
-                                .where("username",
-                                    isGreaterThanOrEqualTo:
-                                        controller.searchC.text)
-                                .where('username',
-                                    isLessThan: controller.searchC.text + 'z')
-                                .orderBy("username", descending: true)
-                                .get(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return LoadingOverlay();
-                              }
-                              return ListView.builder(
-                                  itemCount:
-                                      (snapshot.data! as dynamic).docs.length,
-                                  itemBuilder: (context, index) {
-                                    return UserCard(
-                                      snap: (snapshot.data! as dynamic)
-                                          .docs[index],
-                                    );
-                                  });
-                            }),
-                      )
-                    : controller.parsingStatus.value == ''
-                        ? Container(
-                            width: 100.w,
-                            child: FutureBuilder(
-                                future: FirebaseFirestore.instance
-                                    .collection("users")
-                                    .get(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return LoadingOverlay();
-                                  }
-                                  return ListView.builder(
-                                      itemCount: (snapshot.data! as dynamic)
-                                          .docs
-                                          .length,
-                                      itemBuilder: (context, index) {
-                                        return UserCard(
-                                          snap: (snapshot.data! as dynamic)
-                                              .docs[index],
-                                        );
-                                        // return Text((snapshot.data! as dynamic)
-                                        //     .docs[index]['username']
-                                        //     .toString());
-                                      });
-                                }),
-                          )
-                        : Container(
-                            width: 100.w,
-                            child: FutureBuilder(
-                                future: FirebaseFirestore.instance
-                                    .collection("users")
-                                    .where('status',
-                                        isEqualTo:
-                                            controller.parsingStatus.value)
-                                    .get(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return LoadingOverlay();
-                                  }
-                                  return ListView.builder(
-                                      itemCount: (snapshot.data! as dynamic)
-                                          .docs
-                                          .length,
-                                      itemBuilder: (context, index) {
-                                        return UserCard(
-                                          snap: (snapshot.data! as dynamic)
-                                              .docs[index],
-                                        );
-                                        // return Text((snapshot.data! as dynamic)
-                                        //     .docs[index]['username']
-                                        //     .toString());
-                                      });
-                                }),
-                          ))),
-          ],
+                ],
+              ),
+              const SizedBox(
+                height: 18,
+              ),
+              StatusList(),
+              const SizedBox(
+                height: 24,
+              ),
+              Obx(() => controller.isSearch.value == true
+                  ? Container(
+                      width: 100.w,
+                      child: FutureBuilder(
+                          future: FirebaseFirestore.instance
+                              .collection("users")
+                              .where("username",
+                                  isGreaterThanOrEqualTo:
+                                      controller.searchC.text)
+                              .where('username',
+                                  isLessThan: controller.searchC.text + 'z')
+                              .orderBy("username", descending: true)
+                              .get(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return LoadingOverlay();
+                            }
+                            return ListView.builder(
+                                shrinkWrap: true,
+                                primary: false,
+                                itemCount:
+                                    (snapshot.data! as dynamic).docs.length,
+                                itemBuilder: (context, index) {
+                                  return UserCard(
+                                    snap:
+                                        (snapshot.data! as dynamic).docs[index],
+                                  );
+                                });
+                          }),
+                    )
+                  : controller.parsingStatus.value == ''
+                      ? Container(
+                          width: 100.w,
+                          child: FutureBuilder(
+                              future: FirebaseFirestore.instance
+                                  .collection("users")
+                                  .get(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return LoadingOverlay();
+                                }
+                                return ListView.builder(
+                                    shrinkWrap: true,
+                                    primary: false,
+                                    itemCount:
+                                        (snapshot.data! as dynamic).docs.length,
+                                    itemBuilder: (context, index) {
+                                      return UserCard(
+                                        snap: (snapshot.data! as dynamic)
+                                            .docs[index],
+                                      );
+                                      // return Text((snapshot.data! as dynamic)
+                                      //     .docs[index]['username']
+                                      //     .toString());
+                                    });
+                              }),
+                        )
+                      : Container(
+                          width: 100.w,
+                          child: FutureBuilder(
+                              future: FirebaseFirestore.instance
+                                  .collection("users")
+                                  .where('status',
+                                      isEqualTo: controller.parsingStatus.value)
+                                  .get(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return LoadingOverlay();
+                                }
+                                return ListView.builder(
+                                    shrinkWrap: true,
+                                    primary: false,
+                                    itemCount:
+                                        (snapshot.data! as dynamic).docs.length,
+                                    itemBuilder: (context, index) {
+                                      return UserCard(
+                                        snap: (snapshot.data! as dynamic)
+                                            .docs[index],
+                                      );
+                                      // return Text((snapshot.data! as dynamic)
+                                      //     .docs[index]['username']
+                                      //     .toString());
+                                    });
+                              }),
+                        )),
+            ],
+          ),
         ),
       ),
     );
