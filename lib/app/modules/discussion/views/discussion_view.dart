@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -32,6 +33,8 @@ class DiscussionView extends StatelessWidget {
           return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SingleChildScrollView(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: (kIsWeb) ? 320 : 0),
                 child: Column(
                   children: [
                     const SizedBox(

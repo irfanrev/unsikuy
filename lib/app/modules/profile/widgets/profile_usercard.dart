@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/people/controllers/people_controller.dart';
@@ -43,11 +44,26 @@ class ProfileUserCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    snap['username'] ?? '',
-                    style: Theme.of(context).textTheme.headline5!.copyWith(
-                          color: AppColors.textColour80,
+                  Row(
+                    children: [
+                      Text(
+                        snap['username'] ?? '',
+                        style: Theme.of(context).textTheme.headline5!.copyWith(
+                              color: AppColors.textColour80,
+                            ),
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Visibility(
+                        visible: snap['isVerify'] == true,
+                        child: Icon(
+                          CupertinoIcons.checkmark_seal_fill,
+                          color: Colors.red[900],
+                          size: 14,
                         ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 2,

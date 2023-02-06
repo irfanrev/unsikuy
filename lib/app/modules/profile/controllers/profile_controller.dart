@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../controllers/auth_controller.dart';
 
 class ProfileController extends GetxController {
   //TODO: Implement ProfileController
@@ -11,12 +17,21 @@ class ProfileController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
   GetStorage box = GetStorage();
+  TextEditingController reportC = TextEditingController();
   var profileData;
   var uuidUser;
   var username;
   var status;
   var profImg;
   var bio;
+
+  RxInt tag = 0.obs;
+  List<String> tags = [];
+  List<String> options = [
+    'Spam',
+    'Plagiarism',
+    'Inappropriate',
+  ];
 
   @override
   void onInit() {
@@ -36,6 +51,63 @@ class ProfileController extends GetxController {
     status = userData['status'];
     profImg = userData['photoUrl'];
     bio = userData['bio'];
+  }
+
+  Future blockUser(String sharingName) async {
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    final body = jsonEncode({
+      'service_id': 'service_sd6r46w',
+      'template_id': 'template_xbrcknn',
+      'user_id': 'S27fCFKeMjxIkuHK4',
+      'template_params': {
+        'user_name': username,
+        'user_email': auth.currentUser!.email,
+        'user_subject': 'REPORT UNSIKA CONNECT',
+        'user_message': 'Report User :',
+        'sharing_username': sharingName,
+      }
+    });
+    final response = await http.post(
+      url,
+      headers: {
+        'origin': 'http://localhost',
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    );
+    print(response.body);
+    reportC.clear();
+    showNotif('Report Success', 'Report has sended!');
+    Get.back();
+  }
+
+  Future sendEmail(String sharingName, String sharingId) async {
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    final body = jsonEncode({
+      'service_id': 'service_sd6r46w',
+      'template_id': 'template_xbrcknn',
+      'user_id': 'S27fCFKeMjxIkuHK4',
+      'template_params': {
+        'user_name': username,
+        'user_email': auth.currentUser!.email,
+        'user_subject': 'REPORT UNSIKA CONNECT',
+        'user_message': reportC.text,
+        'sharing_username': sharingName,
+        'sharing_text': sharingId,
+      }
+    });
+    final response = await http.post(
+      url,
+      headers: {
+        'origin': 'http://localhost',
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    );
+    print(response.body);
+    reportC.clear();
+    showNotif('Report Success', 'Report has sended!');
+    Get.back();
   }
 
   Future<void> deleteDiscussion(String postId) async {

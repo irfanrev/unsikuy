@@ -20,6 +20,7 @@ class User {
     this.createdAt,
     this.updatedAt,
     this.uuid,
+    this.isVerify,
     this.chats,
   });
 
@@ -33,6 +34,7 @@ class User {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? uuid;
+  bool? isVerify;
   List<ChatUser>? chats;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -50,6 +52,7 @@ class User {
             ? null
             : DateTime.parse(json["updated_at"]),
         uuid: json["uuid"] == null ? null : json["uuid"],
+        isVerify: json["isVerify"] == null ? null : json["isVerify"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -63,6 +66,7 @@ class User {
         "created_at": createdAt == null ? null : createdAt?.toIso8601String(),
         "updated_at": updatedAt == null ? null : updatedAt?.toIso8601String(),
         "uuid": uuid == null ? null : uuid,
+        "isVerify": isVerify == null ? null : isVerify,
       };
 }
 

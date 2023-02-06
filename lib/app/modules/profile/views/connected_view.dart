@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:lottie/lottie.dart';
 import 'package:unsikuy_app/app/modules/profile/controllers/profile_controller.dart';
 import 'package:unsikuy_app/app/modules/profile/widgets/profile_usercard.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
@@ -35,12 +36,22 @@ class ConnectedView extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return LoadingOverlay();
               }
-              return ListView.builder(
-                  itemCount: (snapshot.data! as dynamic).docs.length,
-                  itemBuilder: (context, index) {
-                    var data = (snapshot.data! as dynamic).docs[index];
-                    return ProfileUserCard(snap: data);
-                  });
+              if ((snapshot.data! as dynamic).docs.length == 0) {
+                return Center(
+                  child: Container(
+                    width: 150,
+                    child:
+                        Lottie.asset('lib/app/resources/images/not-found.json'),
+                  ),
+                );
+              } else {
+                return ListView.builder(
+                    itemCount: (snapshot.data! as dynamic).docs.length,
+                    itemBuilder: (context, index) {
+                      var data = (snapshot.data! as dynamic).docs[index];
+                      return ProfileUserCard(snap: data);
+                    });
+              }
             }),
       ),
     );

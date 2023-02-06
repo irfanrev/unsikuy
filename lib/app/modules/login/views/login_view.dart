@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -23,6 +24,7 @@ class LoginView extends GetView<LoginController> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: (kIsWeb) ? 400 : 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -20,6 +20,7 @@ class ChatRoomController extends GetxController {
   late FocusNode focusNode;
   TextEditingController chatC = TextEditingController();
   var photoUrl;
+  var username;
 
   var chatContent;
 
@@ -44,6 +45,7 @@ class ChatRoomController extends GetxController {
         await firestore.collection('users').doc(currentUser.uid).get();
 
     photoUrl = userData['photoUrl'];
+    username = userData['username'];
   }
 
   @override
@@ -152,6 +154,7 @@ class ChatRoomController extends GetxController {
         'lastTime': date,
         'total_unread': totalUnread + 1,
         'uuid': FirebaseAuth.instance.currentUser!.uid,
+        "name": username,
       });
     }
 

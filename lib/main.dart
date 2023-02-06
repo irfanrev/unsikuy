@@ -24,7 +24,21 @@ void main() async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: 'AIzaSyCSiN5CRA0ZMjQW1JyvMxFedLc9q7YuCzQ',
+        appId: '1:597615739121:web:927e9f37437206fc0e2950',
+        messagingSenderId: '597615739121',
+        projectId: 'unsika-connect',
+        authDomain: 'unsika-connect.firebaseapp.com',
+        storageBucket: 'unsika-connect.appspot.com',
+        measurementId: 'G-F3XL1S8VQG',
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
   await GetStorage.init();
   //await Initializer.init();
   // await Initializer.oneSignalInitial();
@@ -55,7 +69,15 @@ class MyApp extends StatelessWidget {
         // translations: AppTranslation(),
         // locale: LocaleHelper().getCurrentLocale(),
         // fallbackLocale: LocaleHelper().fallbackLocale,
-        initialRoute: box.hasData('token') ? Routes.HOME : Routes.LOGIN,
+        initialRoute: (kIsWeb)
+            ? box.hasData('token')
+                ? Routes.HOME
+                : Routes.LOGIN
+            : box.hasData('skipOnboard')
+                ? box.hasData('token')
+                    ? Routes.HOME
+                    : Routes.LOGIN
+                : Routes.ONBOARDING,
         getPages: AppPages.routes,
         theme: AppTheme.buildThemeData(false),
         // builder: (BuildContext context, child) {

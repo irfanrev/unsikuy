@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -24,16 +25,27 @@ class NotificationView extends GetView<NotificationController> {
               .headline2!
               .copyWith(color: AppColors.textColour80),
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                controller.deleteAllNotif();
+              },
+              icon: Icon(
+                CupertinoIcons.delete,
+                size: 22,
+                color: AppColors.primaryDark,
+              ))
+        ],
         centerTitle: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder(
-            future: FirebaseFirestore.instance
+        child: StreamBuilder(
+            stream: FirebaseFirestore.instance
                 .collection('users')
                 .doc(FirebaseAuth.instance.currentUser!.uid)
                 .collection('notification')
-                .get(),
+                .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return LoadingOverlay();

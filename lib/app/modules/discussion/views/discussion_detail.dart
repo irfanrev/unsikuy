@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
@@ -25,12 +26,13 @@ class DiscussionDetail extends StatelessWidget {
     final String title = (Get.arguments as Map<String, dynamic>)['title'];
     var date = (Get.arguments as Map<String, dynamic>)['date'];
     final String uuid = (Get.arguments as Map<String, dynamic>)['uuid'];
+    var isVerify = (Get.arguments as Map<String, dynamic>)['isVerify'];
     return Scaffold(
         appBar: AppBar(
           leading: InkWell(
               onTap: () => Get.back(), child: Icon(Icons.arrow_back_ios_new)),
           title: Text(
-            'Discussion Contributors',
+            'Main Discussion',
             style: Theme.of(context)
                 .textTheme
                 .headline3!
@@ -42,6 +44,8 @@ class DiscussionDetail extends StatelessWidget {
             children: [
               Expanded(
                 child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: (kIsWeb) ? 320 : 0),
                   child: Column(
                     children: [
                       const SizedBox(
@@ -83,15 +87,31 @@ class DiscussionDetail extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        username,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4!
-                                            .copyWith(
-                                              color: AppColors.black,
-                                              fontWeight: FontWeight.bold,
+                                      Row(
+                                        children: [
+                                          Text(
+                                            username,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4!
+                                                .copyWith(
+                                                  color: AppColors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          Visibility(
+                                            visible: isVerify == true,
+                                            child: Icon(
+                                              CupertinoIcons
+                                                  .checkmark_seal_fill,
+                                              color: Colors.red[900],
+                                              size: 14,
                                             ),
+                                          ),
+                                        ],
                                       ),
                                       const SizedBox(
                                         height: 4,
@@ -126,7 +146,7 @@ class DiscussionDetail extends StatelessWidget {
                           style:
                               Theme.of(context).textTheme.headline5!.copyWith(
                                     color: AppColors.black,
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     height: 1.4,
                                   ),
                         ),
@@ -198,7 +218,8 @@ class DiscussionDetail extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16, horizontal: (kIsWeb) ? 320 : 16),
                 child: Container(
                   child: Row(
                     children: [

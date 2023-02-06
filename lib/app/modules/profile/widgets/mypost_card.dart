@@ -136,8 +136,11 @@ class _MyPostCardState extends State<MyPostCard> {
                             ),
                             InkWell(
                               onTap: () {
-                                widget.controller
-                                    .deletePost(widget.snap['postId']);
+                                widget.controller.deletePost(
+                                  widget.snap['postId'],
+                                  widget.snap['uuid'],
+                                  widget.snap['postUrl'],
+                                );
                                 Get.back();
                               },
                               child: Text('Delete',

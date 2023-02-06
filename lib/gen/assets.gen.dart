@@ -40,6 +40,12 @@ class $LibAppResourcesImagesGen {
   /// File path: lib/app/resources/images/emptybox.json
   String get emptybox => 'lib/app/resources/images/emptybox.json';
 
+  /// File path: lib/app/resources/images/hello.json
+  String get hello => 'lib/app/resources/images/hello.json';
+
+  /// File path: lib/app/resources/images/hi.json
+  String get hi => 'lib/app/resources/images/hi.json';
+
   /// File path: lib/app/resources/images/ic_logo_suitcore_main.png
   AssetGenImage get icLogoSuitcoreMain =>
       const AssetGenImage('lib/app/resources/images/ic_logo_suitcore_main.png');
@@ -68,13 +74,35 @@ class $LibAppResourcesImagesGen {
   AssetGenImage get imgSplashbg =>
       const AssetGenImage('lib/app/resources/images/img_splashbg.png');
 
+  /// File path: lib/app/resources/images/login.json
+  String get login => 'lib/app/resources/images/login.json';
+
   /// File path: lib/app/resources/images/logo-unsika-connect.png
   AssetGenImage get logoUnsikaConnect =>
       const AssetGenImage('lib/app/resources/images/logo-unsika-connect.png');
 
+  /// File path: lib/app/resources/images/not-found.json
+  String get notFound => 'lib/app/resources/images/not-found.json';
+
+  /// File path: lib/app/resources/images/onboard1.png
+  AssetGenImage get onboard1 =>
+      const AssetGenImage('lib/app/resources/images/onboard1.png');
+
+  /// File path: lib/app/resources/images/onboard2.png
+  AssetGenImage get onboard2 =>
+      const AssetGenImage('lib/app/resources/images/onboard2.png');
+
+  /// File path: lib/app/resources/images/onboard3.png
+  AssetGenImage get onboard3 =>
+      const AssetGenImage('lib/app/resources/images/onboard3.png');
+
   /// File path: lib/app/resources/images/placeholder.png
   AssetGenImage get placeholder =>
       const AssetGenImage('lib/app/resources/images/placeholder.png');
+
+  /// File path: lib/app/resources/images/primary-logo.png
+  AssetGenImage get primaryLogo =>
+      const AssetGenImage('lib/app/resources/images/primary-logo.png');
 
   /// File path: lib/app/resources/images/regis-success.png
   AssetGenImage get regisSuccess =>
@@ -91,6 +119,9 @@ class $LibAppResourcesImagesGen {
   AssetGenImage get unsikaConnect =>
       const AssetGenImage('lib/app/resources/images/unsika_connect.png');
 
+  /// File path: lib/app/resources/images/user.json
+  String get user => 'lib/app/resources/images/user.json';
+
   /// File path: lib/app/resources/images/user_placeholder.png
   AssetGenImage get userPlaceholder =>
       const AssetGenImage('lib/app/resources/images/user_placeholder.png');
@@ -100,6 +131,8 @@ class $LibAppResourcesImagesGen {
         deletePost,
         emptyStateCode,
         emptybox,
+        hello,
+        hi,
         icLogoSuitcoreMain,
         imgPlaceholderPrimary,
         imgEmpty,
@@ -107,12 +140,19 @@ class $LibAppResourcesImagesGen {
         imgLoginIlust,
         imgLogo,
         imgSplashbg,
+        login,
         logoUnsikaConnect,
+        notFound,
+        onboard1,
+        onboard2,
+        onboard3,
         placeholder,
+        primaryLogo,
         regisSuccess,
         registerSuccess,
         success,
         unsikaConnect,
+        user,
         userPlaceholder
       ];
 }

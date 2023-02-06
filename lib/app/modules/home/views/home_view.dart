@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,30 +43,26 @@ class HomeView extends StatelessWidget {
                 onTap: controller.changeTabIndex,
                 currentIndex: controller.tabIndex,
                 type: BottomNavigationBarType.fixed,
-                showSelectedLabels: true,
-                showUnselectedLabels: true,
-                unselectedItemColor: Colors.grey,
-                selectedItemColor: AppColors.primaryLight,
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                unselectedItemColor: Colors.black,
+                selectedItemColor: AppColors.primaryDark,
+                landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
                 items: [
                   _bottomNavigationBarItem(
-                    icon: CupertinoIcons.home,
-                    label: 'Home',
+                    icon: EvaIcons.homeOutline,
                   ),
                   _bottomNavigationBarItem(
-                    icon: CupertinoIcons.person_3,
-                    label: 'Connect',
+                    icon: EvaIcons.peopleOutline,
                   ),
                   _bottomNavigationBarItem(
                     icon: CupertinoIcons.chat_bubble_2,
-                    label: 'Discussion',
                   ),
                   _bottomNavigationBarItem(
-                    icon: CupertinoIcons.chat_bubble,
-                    label: 'Chat',
+                    icon: EvaIcons.messageCircleOutline,
                   ),
                   _bottomNavigationBarItem(
                     icon: CupertinoIcons.person_crop_circle,
-                    label: 'Profile',
                   )
                 ],
               ),
@@ -76,10 +73,12 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  _bottomNavigationBarItem({required IconData icon, required String label}) {
+  _bottomNavigationBarItem({required IconData icon}) {
     return BottomNavigationBarItem(
-      icon: Icon(icon),
-      label: label,
+      icon: Icon(
+        icon,
+      ),
+      label: '',
     );
   }
 }

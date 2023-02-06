@@ -64,12 +64,15 @@ class EditProfileView extends StatelessWidget {
                         child: Container(
                           width: 140,
                           height: 140,
-                          child: ImageLoad(
-                            shapeImage: ShapeImage.oval,
-                            placeholder:
-                                AppImages.userPlaceholder.image().image,
-                            image: photoUrl ?? '',
-                            fit: BoxFit.cover,
+                          child: Hero(
+                            tag: 'pp',
+                            child: ImageLoad(
+                              shapeImage: ShapeImage.oval,
+                              placeholder:
+                                  AppImages.userPlaceholder.image().image,
+                              image: photoUrl ?? '',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
@@ -90,9 +93,19 @@ class EditProfileView extends StatelessWidget {
                         onTap: () => Get.toNamed(Routes.UPDATE_BIO),
                       ),
                       SettingItem(
+                        title: 'Edit About',
+                        icon: CupertinoIcons.person,
+                        onTap: () => Get.toNamed(Routes.ABOUT),
+                      ),
+                      SettingItem(
                         title: 'Edit Profile',
                         icon: CupertinoIcons.pencil_ellipsis_rectangle,
                         onTap: () => Get.toNamed(Routes.UPDATE_PROFILE),
+                      ),
+                      SettingItem(
+                        title: 'Add Social Media',
+                        icon: CupertinoIcons.link,
+                        onTap: () => Get.toNamed(Routes.SOSMED),
                       ),
                       SettingItem(
                         title: 'Change Theme',

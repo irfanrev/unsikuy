@@ -26,13 +26,13 @@ class ChatRoomView extends GetView<ChatRoomController> {
 
     return Scaffold(
       appBar: AppBar(
-        leadingWidth: 22,
+        leadingWidth: 28,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: 42,
+              height: 42,
               child: StreamBuilder<DocumentSnapshot<Object>>(
                   stream: FirebaseFirestore.instance
                       .collection('users')
@@ -236,6 +236,8 @@ class ChatRoomView extends GetView<ChatRoomController> {
                 Expanded(
                   child: Container(
                     child: TextField(
+                      minLines: 1,
+                      maxLines: 4,
                       autocorrect: false,
                       controller: controller.chatC,
                       focusNode: controller.focusNode,
@@ -257,6 +259,23 @@ class ChatRoomView extends GetView<ChatRoomController> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(100),
+                        ),
+                        filled: true,
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 1.0,
+                            color: AppColors.grey.shade300,
+                          ),
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1,
+                              color: AppColors.primaryLight), //<-- SEE HERE
+                          borderRadius: BorderRadius.circular(32),
                         ),
                       ),
                     ),
@@ -312,9 +331,9 @@ class ChatRoomView extends GetView<ChatRoomController> {
                         horizontalSpacing: 0,
                         initCategory: Category.RECENT,
                         bgColor: Color(0xFFF2F2F2),
-                        indicatorColor: Color(0xFFB71C1C),
+                        indicatorColor: AppColors.primaryLight,
                         iconColor: Colors.grey,
-                        iconColorSelected: Color(0xFFB71C1C),
+                        iconColorSelected: AppColors.primaryLight,
                         showRecentsTab: true,
                         recentsLimit: 28,
                         categoryIcons: const CategoryIcons(),
@@ -324,32 +343,6 @@ class ChatRoomView extends GetView<ChatRoomController> {
                   )
                 : SizedBox(),
           ),
-          // MessageBar(
-          //   sendButtonColor: AppColors.primaryLight,
-          //   onSend: (value) {
-          //     if (value.isNotEmpty) {
-          //       controller.newChat(
-          //           Get.arguments as Map<String, dynamic>,
-          //           value,
-          //           FirebaseAuth.instance.currentUser!.email.toString(),
-          //           FirebaseAuth.instance.currentUser!.uid.toString());
-          //       value = '';
-          //     }
-          //   },
-          //   actions: [
-          //     Padding(
-          //       padding: EdgeInsets.only(left: 8, right: 8),
-          //       child: InkWell(
-          //         child: Icon(
-          //           Icons.emoji_emotions,
-          //           color: Colors.green,
-          //           size: 24,
-          //         ),
-          //         onTap: () {},
-          //       ),
-          //     ),
-          //   ],
-          // ),
         ],
       ),
     );
@@ -372,7 +365,7 @@ class ItemChat extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        vertical: 4,
+        vertical: 1,
         horizontal: 8,
       ),
       child: Column(
@@ -385,42 +378,52 @@ class ItemChat extends StatelessWidget {
                   isSender ? AppColors.primaryLight : AppColors.grey.shade200,
               borderRadius: isSender
                   ? BorderRadius.only(
-                      topLeft: Radius.circular(18),
-                      topRight: Radius.circular(18),
-                      bottomLeft: Radius.circular(18),
+                      topLeft: Radius.circular(22),
+                      topRight: Radius.circular(22),
+                      bottomLeft: Radius.circular(22),
                     )
                   : BorderRadius.only(
-                      topLeft: Radius.circular(18),
-                      topRight: Radius.circular(18),
-                      bottomRight: Radius.circular(18),
+                      topLeft: Radius.circular(22),
+                      topRight: Radius.circular(22),
+                      bottomRight: Radius.circular(22),
                     ),
             ),
-            padding: EdgeInsets.all(12),
-            child: Linkify(
-              text: '$msg',
-              onOpen: (value) async {
-                Uri url = Uri.parse(value.url);
-                if (await canLaunchUrl(url)) {
-                  await launchUrl(url, mode: LaunchMode.externalApplication);
-                } else {
-                  throw 'Could not launch $value.url';
-                }
-              },
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: isSender ? AppColors.white : AppColors.black,
-                    height: 1.4,
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Linkify(
+                  text: '$msg',
+                  onOpen: (value) async {
+                    Uri url = Uri.parse(value.url);
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url,
+                          mode: LaunchMode.externalApplication);
+                    } else {
+                      throw 'Could not launch $value.url';
+                    }
+                  },
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: isSender ? AppColors.white : AppColors.black,
+                        height: 1.4,
+                      ),
+                  linkStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Colors.blue[800],
+                        fontWeight: FontWeight.bold,
+                        height: 1.4,
+                      ),
+                ),
+                Container(
+                  child: Text(
+                    DateFormat.jm().format(DateTime.parse(time)),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(fontSize: 10),
                   ),
-              linkStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    color: Colors.blue[800],
-                    fontWeight: FontWeight.bold,
-                    height: 1.4,
-                  ),
+                ),
+              ],
             ),
-          ),
-          Text(
-            DateFormat.jm().format(DateTime.parse(time)),
-            style:
-                Theme.of(context).textTheme.bodySmall!.copyWith(fontSize: 10),
           ),
         ],
       ),

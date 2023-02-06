@@ -67,13 +67,30 @@ class MydiscussCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            snap['username'],
-                            style:
-                                Theme.of(context).textTheme.headline4!.copyWith(
+                          Row(
+                            children: [
+                              Text(
+                                snap['username'],
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5!
+                                    .copyWith(
                                       color: AppColors.black,
                                       fontWeight: FontWeight.bold,
                                     ),
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Visibility(
+                                visible: snap['isVerify'] == true,
+                                child: Icon(
+                                  CupertinoIcons.checkmark_seal_fill,
+                                  color: Colors.red[900],
+                                  size: 14,
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(
                             height: 4,
@@ -145,7 +162,7 @@ class MydiscussCard extends StatelessWidget {
                 snap['title'],
                 style: Theme.of(context).textTheme.headline5!.copyWith(
                       color: AppColors.black,
-                      fontSize: 20,
+                      fontSize: 16,
                       height: 1.4,
                     ),
               ),

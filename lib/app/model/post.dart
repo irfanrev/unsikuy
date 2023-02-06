@@ -17,7 +17,10 @@ class Post {
     this.uuid,
     this.postUrl,
     this.profImg,
+    this.isVerify,
     this.like,
+    this.upPost,
+    this.imgPath,
   });
 
   String? postId;
@@ -27,7 +30,10 @@ class Post {
   String? uuid;
   String? postUrl;
   String? profImg;
+  bool? isVerify;
   final like;
+  final upPost;
+  String? imgPath;
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
         postId: json["postId"] == null ? null : json["postId"],
@@ -39,7 +45,10 @@ class Post {
         uuid: json["uuid"] == null ? null : json["uuid"],
         postUrl: json["postUrl"] == null ? null : json["postUrl"],
         profImg: json["profImg"] == null ? null : json["profImg"],
+        isVerify: json["isVerify"] == null ? null : json["isVerify"],
         like: json["like"] == null ? null : json["like"],
+        upPost: json["upPost"] == null ? null : json["upPost"],
+        imgPath: json["imgPath"] == null ? null : json["imgPath"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -51,6 +60,9 @@ class Post {
         "uuid": uuid == null ? null : uuid,
         "postUrl": postUrl == null ? null : postUrl,
         "profImg": profImg == null ? null : profImg,
+        "isVerify": isVerify == null ? null : isVerify,
         "like": like == null ? null : like,
+        "upPost": upPost == null ? null : upPost,
+        "imgPath": imgPath == null ? null : imgPath,
       };
 }

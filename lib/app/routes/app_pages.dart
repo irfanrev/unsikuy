@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:unsikuy_app/app/modules/discussion/views/contribution_detail.dart';
+import 'package:unsikuy_app/app/modules/edit_profile/views/add_about.dart';
+import 'package:unsikuy_app/app/modules/edit_profile/views/add_social_media.dart';
+import 'package:unsikuy_app/app/modules/post/views/comment_detail.dart';
 
 import '../modules/chat_room/bindings/chat_room_binding.dart';
 import '../modules/chat_room/views/chat_room_view.dart';
@@ -17,6 +21,8 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
+import '../modules/onboarding/bindings/onboarding_binding.dart';
+import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/people/bindings/people_binding.dart';
 import '../modules/people/views/people_view.dart';
 import '../modules/post/bindings/post_binding.dart';
@@ -153,6 +159,27 @@ class AppPages {
       name: _Paths.TERMS_CONDITION,
       page: () => const TermsConditionView(),
       binding: TermsConditionBinding(),
+    ),
+    GetPage(
+      name: _Paths.ONBOARDING,
+      page: () => const OnboardingView(),
+      binding: OnboardingBinding(),
+    ),
+    GetPage(
+      name: _Paths.SOSMED,
+      page: () => const AddSocialMedia(),
+    ),
+    GetPage(
+      name: _Paths.ABOUT,
+      page: () => const EditAbout(),
+    ),
+    GetPage(
+      name: _Paths.COMMENT_DETAIL,
+      page: () => const CommentDetail(),
+    ),
+    GetPage(
+      name: _Paths.CONTR_DETAIL,
+      page: () => const ContributionDetail(),
     ),
   ];
 }

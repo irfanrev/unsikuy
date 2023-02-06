@@ -25,6 +25,11 @@ class EditProfileController extends GetxController {
   TextEditingController phoneC = TextEditingController();
   TextEditingController statusC = TextEditingController();
   TextEditingController bioC = TextEditingController();
+  TextEditingController igC = TextEditingController();
+  TextEditingController twitterC = TextEditingController();
+  TextEditingController linkedinC = TextEditingController();
+  TextEditingController webC = TextEditingController();
+  TextEditingController aboutC = TextEditingController();
   RxBool isLoading = false.obs;
   var uuidUser;
   var photoUrl;
@@ -32,6 +37,10 @@ class EditProfileController extends GetxController {
   var phone;
   var status;
   var email;
+  var ig;
+  var twitter;
+  var linkedIn;
+  var web;
   String photoReady = '';
   Uint8List? file;
   List<String> statusOptions = [
@@ -39,6 +48,7 @@ class EditProfileController extends GetxController {
     'Alumni',
     'Lecturer',
     'Staff',
+    'Organization',
     'Other'
   ];
   GetStorage box = GetStorage();
@@ -65,6 +75,11 @@ class EditProfileController extends GetxController {
     email = userData['email'];
     statusC.text = userData['status'];
     bioC.text = userData['bio'];
+    aboutC.text = userData['about'];
+    igC.text = userData['ig'];
+    twitterC.text = userData['twitter'];
+    linkedinC.text = userData['linkedin'];
+    webC.text = userData['web'];
     uuidUser = currentUser.uid;
   }
 
@@ -96,6 +111,24 @@ class EditProfileController extends GetxController {
     String downloadUrl = await snap.ref.getDownloadURL();
     photoReady = downloadUrl;
     return downloadUrl;
+  }
+
+  Future updateSosmed() async {
+    isLoading.value = true;
+    try {
+      await _firestore.collection('users').doc(uuidUser).update({
+        "ig": igC.text,
+        "twitter": twitterC.text,
+        "linkedin": linkedinC.text,
+        "web": webC.text,
+      });
+      showNotif('Success', 'Social Media has updated');
+      profileC.update();
+      profileC.refresh();
+      isLoading.value = false;
+    } catch (e) {
+      showError('Error', e.toString());
+    }
   }
 
   Future updateProfile() async {
@@ -195,6 +228,24 @@ class EditProfileController extends GetxController {
     try {
       await _firestore.collection('users').doc(uuidUser).update({
         "bio": bioC.text == username ? username : bioC.text,
+      });
+
+      profileC.refresh();
+
+      showNotif('Success', 'Profile has updated');
+      isLoading.value = false;
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+      print(e.toString());
+    }
+    isLoading.value = false;
+  }
+
+  Future<void> updateAbout() async {
+    isLoading.value = true;
+    try {
+      await _firestore.collection('users').doc(uuidUser).update({
+        "about": aboutC.text == username ? username : aboutC.text,
       });
 
       profileC.refresh();

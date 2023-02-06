@@ -48,4 +48,21 @@ class NotificationController extends GetxController {
       print(e);
     }
   }
+
+  Future<void> deleteAllNotif() async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('notification')
+          .get()
+          .then((value) {
+        for (DocumentSnapshot ds in value.docs) {
+          ds.reference.delete();
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 }

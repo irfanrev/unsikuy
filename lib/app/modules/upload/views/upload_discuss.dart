@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -32,6 +33,7 @@ class UploadDiscuss extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: (kIsWeb) ? 320 : 0),
             child: GetBuilder<UploadController>(
                 init: UploadController(),
                 builder: (controller) {
@@ -127,42 +129,42 @@ class UploadDiscuss extends StatelessWidget {
                       const SizedBox(
                         height: 18,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          GetBuilder<UploadController>(
-                              init: UploadController(),
-                              builder: (value) {
-                                return Visibility(
-                                  visible: controller.file != null,
-                                  child: Container(
-                                    width: 150,
-                                    height: 150,
-                                    margin: const EdgeInsets.only(right: 22),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                          width: 1.0,
-                                          color: AppColors.grey.shade300),
-                                    ),
-                                    child: controller.file != null
-                                        ? ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            child: Image.memory(
-                                              controller.file!,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          )
-                                        : Container(),
-                                  ),
-                                );
-                              }),
-                          const SizedBox(
-                            width: 16,
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: [
+                      //     GetBuilder<UploadController>(
+                      //         init: UploadController(),
+                      //         builder: (value) {
+                      //           return Visibility(
+                      //             visible: controller.file != null,
+                      //             child: Container(
+                      //               width: 150,
+                      //               height: 150,
+                      //               margin: const EdgeInsets.only(right: 22),
+                      //               decoration: BoxDecoration(
+                      //                 borderRadius: BorderRadius.circular(12),
+                      //                 border: Border.all(
+                      //                     width: 1.0,
+                      //                     color: AppColors.grey.shade300),
+                      //               ),
+                      //               child: controller.file != null
+                      //                   ? ClipRRect(
+                      //                       borderRadius:
+                      //                           BorderRadius.circular(12),
+                      //                       child: Image.memory(
+                      //                         controller.file!,
+                      //                         fit: BoxFit.cover,
+                      //                       ),
+                      //                     )
+                      //                   : Container(),
+                      //             ),
+                      //           );
+                      //         }),
+                      //     const SizedBox(
+                      //       width: 16,
+                      //     ),
+                      //   ],
+                      // ),
                       const SizedBox(
                         height: 46,
                       ),

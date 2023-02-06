@@ -31,7 +31,7 @@ class UpdateBio extends StatelessWidget {
                 TextFormField(
                   controller: controller.bioC,
                   maxLines: 10,
-                  maxLength: 160,
+                  maxLength: 80,
                   decoration: InputDecoration(
                     hintText:
                         controller.bioC.text != '' ? controller.bioC.text : '',

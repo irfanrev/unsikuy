@@ -5,6 +5,9 @@ import 'package:unsikuy_app/app/routes/app_pages.dart';
 
 class ChatsController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  TextEditingController searchC = TextEditingController();
+
+  var isSearch = false.obs;
 
   Stream<QuerySnapshot<Map<String, dynamic>>> chatStream(String uuid) {
     return firestore
@@ -12,6 +15,16 @@ class ChatsController extends GetxController {
         .doc(uuid)
         .collection('chats')
         .orderBy('lastTime', descending: true)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> searchChat(String uuid) {
+    return firestore
+        .collection('users')
+        .doc(uuid)
+        .collection('chats')
+        .where("name", isGreaterThanOrEqualTo: searchC.text)
+        .where('name', isLessThan: searchC.text + 'z')
         .snapshots();
   }
 

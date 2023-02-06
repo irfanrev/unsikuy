@@ -39,11 +39,14 @@ class ViewAvatar extends StatelessWidget {
           padding: EdgeInsets.all(16),
           width: 350,
           height: 350,
-          child: ImageLoad(
-            shapeImage: ShapeImage.oval,
-            placeholder: AppImages.userPlaceholder.image().image,
-            image: photo,
-            fit: BoxFit.fitHeight,
+          child: Hero(
+            tag: 'pp',
+            child: ImageLoad(
+              shapeImage: ShapeImage.oval,
+              placeholder: AppImages.userPlaceholder.image().image,
+              image: photo,
+              fit: BoxFit.fitHeight,
+            ),
           ),
         ),
       ),

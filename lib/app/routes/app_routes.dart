@@ -26,6 +26,11 @@ abstract class Routes {
   static const MYDISCUSS = _Paths.MYDISCUSS;
   static const NOTIFICATION = _Paths.NOTIFICATION;
   static const TERMS_CONDITION = _Paths.TERMS_CONDITION;
+  static const ONBOARDING = _Paths.ONBOARDING;
+  static const SOSMED = _Paths.SOSMED;
+  static const ABOUT = _Paths.ABOUT;
+  static const COMMENT_DETAIL = _Paths.COMMENT_DETAIL;
+  static const CONTR_DETAIL = _Paths.CONTR_DETAIL;
 }
 
 abstract class _Paths {
@@ -53,4 +58,9 @@ abstract class _Paths {
   static const MYDISCUSS = '/mydiscuss';
   static const NOTIFICATION = '/notification';
   static const TERMS_CONDITION = '/terms-condition';
+  static const ONBOARDING = '/onboarding';
+  static const SOSMED = '/sosmed';
+  static const ABOUT = '/about';
+  static const COMMENT_DETAIL = '/comment-detail';
+  static const CONTR_DETAIL = '/contr-detail';
 }

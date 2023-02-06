@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -27,10 +28,12 @@ class PeopleView extends GetView<PeopleController> {
               .headline2!
               .copyWith(color: AppColors.textColour80),
         ),
+        centerTitle: false,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: (kIsWeb) ? 300 : 0),
           child: Column(
             children: [
               const SizedBox(

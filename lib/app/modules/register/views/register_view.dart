@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -23,6 +24,7 @@ class RegisterView extends GetView<RegisterController> {
         child: FormBuilder(
           key: controller.formKey,
           child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: (kIsWeb) ? 400 : 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -65,10 +67,10 @@ class RegisterView extends GetView<RegisterController> {
                   height: 16,
                 ),
                 FormRegister(
-                  title: 'Phone',
+                  title: 'Phone (62)',
                   name: 'phone',
                   textInputType: TextInputType.phone,
-                  hint: 'Ex : 0812345',
+                  hint: 'Ex : 62812345',
                 ),
                 const SizedBox(
                   height: 16,

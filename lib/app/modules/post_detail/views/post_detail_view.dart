@@ -71,13 +71,16 @@ class PostDetailView extends GetView<PostDetailController> {
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(shape: BoxShape.circle),
-                            child: ClipRRect(
-                              child: ImageLoad(
-                                shapeImage: ShapeImage.oval,
-                                image: Get.arguments['profImg'],
-                                placeholder:
-                                    AppImages.userPlaceholder.image().image,
-                                fit: BoxFit.cover,
+                            child: Hero(
+                              tag: 'pp',
+                              child: ClipRRect(
+                                child: ImageLoad(
+                                  shapeImage: ShapeImage.oval,
+                                  image: Get.arguments['profImg'],
+                                  placeholder:
+                                      AppImages.userPlaceholder.image().image,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
@@ -87,15 +90,30 @@ class PostDetailView extends GetView<PostDetailController> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                Get.arguments['username'],
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline4!
-                                    .copyWith(
-                                      color: AppColors.black,
-                                      fontWeight: FontWeight.bold,
+                              Row(
+                                children: [
+                                  Text(
+                                    Get.arguments['username'],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4!
+                                        .copyWith(
+                                          color: AppColors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  Visibility(
+                                    visible: Get.arguments['isVerify'] == true,
+                                    child: Icon(
+                                      CupertinoIcons.checkmark_seal_fill,
+                                      color: Colors.red[900],
+                                      size: 14,
                                     ),
+                                  ),
+                                ],
                               ),
                               const SizedBox(
                                 height: 4,
@@ -146,7 +164,8 @@ class PostDetailView extends GetView<PostDetailController> {
                       },
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             color: AppColors.black,
-                            height: 1.4,
+                            fontSize: 15,
+                            height: 1.5,
                           ),
                       linkStyle:
                           Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -170,9 +189,12 @@ class PostDetailView extends GetView<PostDetailController> {
                       },
                       child: Container(
                         width: 100.w,
-                        child: Image.network(
-                          Get.arguments['postUrl'],
-                          fit: BoxFit.fitWidth,
+                        child: Hero(
+                          tag: 'post',
+                          child: Image.network(
+                            Get.arguments['postUrl'],
+                            fit: BoxFit.fitWidth,
+                          ),
                         ),
                       ),
                     ),
@@ -181,7 +203,7 @@ class PostDetailView extends GetView<PostDetailController> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Text(
-                      'Total Like ${Get.arguments['like'].length}',
+                      '${Get.arguments['like'].length} people liked this share',
                       style: Theme.of(context)
                           .textTheme
                           .titleLarge!
@@ -297,7 +319,7 @@ class PostDetailView extends GetView<PostDetailController> {
                                 return CommentCardDetail(
                                   snap: snapshot.data!.docs[index],
                                   controller: postC,
-                                  postID: Get.arguments['postId'],
+                                  postId: Get.arguments['postId'],
                                 );
                               });
                         }
@@ -327,11 +349,31 @@ class PostDetailView extends GetView<PostDetailController> {
                       child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: TextFormField(
+                      minLines: 1,
+                      maxLines: 4,
                       controller: postC.commentC,
                       decoration: InputDecoration(
                         hintText: 'Comment as ${postC.username}',
                         border: InputBorder.none,
+                        filled: true,
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            width: 1.0,
+                            color: AppColors.grey.shade300,
+                          ),
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              width: 1,
+                              color: AppColors.primaryLight), //<-- SEE HERE
+                          borderRadius: BorderRadius.circular(32),
+                        ),
                       ),
+                      keyboardType: TextInputType.multiline,
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1!

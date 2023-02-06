@@ -16,6 +16,7 @@ class Discuss {
     this.publishedAt,
     this.uuid,
     this.profImg,
+    this.isVerify,
   });
 
   String? postId;
@@ -24,6 +25,7 @@ class Discuss {
   DateTime? publishedAt;
   String? uuid;
   String? profImg;
+  bool? isVerify;
 
   factory Discuss.fromJson(Map<String, dynamic> json) => Discuss(
         postId: json["postId"] == null ? null : json["postId"],
@@ -34,6 +36,7 @@ class Discuss {
             : DateTime.parse(json["published_at"]),
         uuid: json["uuid"] == null ? null : json["uuid"],
         profImg: json["profImg"] == null ? null : json["profImg"],
+        isVerify: json["isVerify"] == null ? null : json["isVerify"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -44,5 +47,6 @@ class Discuss {
             publishedAt == null ? null : publishedAt?.toIso8601String(),
         "uuid": uuid == null ? null : uuid,
         "profImg": profImg == null ? null : profImg,
+        "isVerify": isVerify == null ? null : isVerify,
       };
 }

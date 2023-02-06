@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -98,10 +99,9 @@ class PostView extends GetView<PostController> {
       appBar: AppBar(
         title: Text(
           'Unsika Connect',
-          style: Theme.of(context)
-              .textTheme
-              .headline2!
-              .copyWith(color: AppColors.textColour80),
+          style: Theme.of(context).textTheme.headline4!.copyWith(
+                color: AppColors.textColour80,
+              ),
         ),
         actions: [
           IconButton(
@@ -113,13 +113,16 @@ class PostView extends GetView<PostController> {
               color: AppColors.primaryDark,
             ),
           ),
-          IconButton(
-            onPressed: () {
-              Get.toNamed(Routes.UPLOAD);
-            },
-            icon: Icon(
-              CupertinoIcons.plus_app,
-              color: AppColors.primaryDark,
+          Visibility(
+            visible: (!kIsWeb),
+            child: IconButton(
+              onPressed: () {
+                Get.toNamed(Routes.UPLOAD);
+              },
+              icon: Icon(
+                CupertinoIcons.plus_app,
+                color: AppColors.primaryDark,
+              ),
             ),
           ),
           IconButton(
@@ -149,6 +152,8 @@ class PostView extends GetView<PostController> {
               return LoadingOverlay();
             }
             return ListView.builder(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: (kIsWeb) ? 370 : 0),
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   return PostCardItem(

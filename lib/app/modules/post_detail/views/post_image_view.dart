@@ -12,9 +12,12 @@ class PostImageView extends StatelessWidget {
       child: SizedBox.expand(
         child: InteractiveViewer(
           maxScale: 4.0,
-          child: Image.network(
-            image,
-            fit: BoxFit.fitWidth,
+          child: Hero(
+            tag: 'post',
+            child: Image.network(
+              image,
+              fit: BoxFit.fitWidth,
+            ),
           ),
         ),
       ),

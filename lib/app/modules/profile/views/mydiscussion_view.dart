@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:lottie/lottie.dart';
 import 'package:unsikuy_app/app/modules/profile/controllers/profile_controller.dart';
 import 'package:unsikuy_app/app/modules/profile/widgets/mydiscuss_card.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
@@ -35,14 +36,24 @@ class MydiscussionView extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return LoadingOverlay();
               }
-              return ListView.builder(
-                  itemCount: (snapshot.data! as dynamic).docs.length,
-                  itemBuilder: (context, index) {
-                    return MydiscussCard(
-                      snap: (snapshot.data! as dynamic).docs[index],
-                      controller: controller,
-                    );
-                  });
+              if ((snapshot.data! as dynamic).docs.length == 0) {
+                return Center(
+                  child: Container(
+                    width: 150,
+                    child:
+                        Lottie.asset('lib/app/resources/images/not-found.json'),
+                  ),
+                );
+              } else {
+                return ListView.builder(
+                    itemCount: (snapshot.data! as dynamic).docs.length,
+                    itemBuilder: (context, index) {
+                      return MydiscussCard(
+                        snap: (snapshot.data! as dynamic).docs[index],
+                        controller: controller,
+                      );
+                    });
+              }
             },
           ),
         );

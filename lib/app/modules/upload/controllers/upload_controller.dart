@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unsikuy_app/app/model/discuss.dart';
 import 'package:unsikuy_app/app/model/post.dart';
@@ -23,9 +25,11 @@ class UploadController extends GetxController {
   final TextEditingController desc = TextEditingController();
   var username;
   var photoUrl;
+  var isVerify;
   var displayName = ''.obs;
   var displayPhoto = ''.obs;
   RxBool isDismiss = false.obs;
+  var refId;
 
   Uint8List? file;
 
@@ -37,13 +41,13 @@ class UploadController extends GetxController {
   }
 
   void chooseCamera() async {
-    Uint8List source = await pickImage(ImageSource.camera);
+    Uint8List? source = await pickImage(ImageSource.camera);
     file = source;
     update();
   }
 
   void chooseGallery() async {
-    Uint8List source = await pickImage(ImageSource.gallery);
+    Uint8List? source = await pickImage(ImageSource.gallery);
     file = source;
     update();
   }
@@ -57,20 +61,22 @@ class UploadController extends GetxController {
     username = userData['username'];
     displayName.value = userData['username'];
     photoUrl = userData['photoUrl'];
+    isVerify = userData['isVerify'];
     displayPhoto.value = userData['photoUrl'];
   }
 
   Future<String> uploadImageToStorage(
-      String childname, Uint8List file, bool isPost) async {
+      String childname, Uint8List? file, bool isPost) async {
     Reference ref =
         firebaseStorage.ref().child(childname).child(_auth.currentUser!.uid);
 
     if (isPost) {
       String id = Uuid().v1();
       ref = ref.child(id);
+      refId = id;
     }
 
-    UploadTask uploadTask = ref.putData(file);
+    UploadTask uploadTask = ref.putData(file!);
 
     TaskSnapshot snap = await uploadTask;
     String downloadUrl = await snap.ref.getDownloadURL();
@@ -93,7 +99,10 @@ class UploadController extends GetxController {
           uuid: _auth.currentUser!.uid,
           postUrl: photo,
           profImg: photoUrl,
+          isVerify: isVerify,
           like: [],
+          upPost: [],
+          imgPath: refId ?? '',
         );
         await _firestore.collection('posts').doc(postId).set(post.toJson());
         showNotif('Success', 'Data is Posted!');
@@ -110,10 +119,13 @@ class UploadController extends GetxController {
           uuid: _auth.currentUser!.uid,
           postUrl: '',
           profImg: photoUrl,
+          isVerify: isVerify,
           like: [],
+          upPost: [],
+          imgPath: refId ?? '',
         );
         await _firestore.collection('posts').doc(postId).set(post.toJson());
-        showNotif('Success', 'Data is Posted!');
+        showNotif('Success', 'Sharing has uploaded');
         desc.text = '';
         isDismiss.value = false;
       }
@@ -127,23 +139,26 @@ class UploadController extends GetxController {
     try {
       isDismiss.value = true;
 
-      String discussId = Uuid().v1();
-      Discuss post = Discuss(
-        postId: discussId,
-        username: username,
-        title: desc.text,
-        publishedAt: DateTime.now(),
-        uuid: _auth.currentUser!.uid,
-        profImg: photoUrl,
-      );
-      await _firestore
-          .collection('discussion')
-          .doc(discussId)
-          .set(post.toJson());
-      showNotif('Success', 'Discussion successfully opened');
-      desc.text = '';
+      if (desc.text != '') {
+        String discussId = Uuid().v1();
+        Discuss post = Discuss(
+          postId: discussId,
+          username: username,
+          title: desc.text,
+          publishedAt: DateTime.now(),
+          uuid: _auth.currentUser!.uid,
+          profImg: photoUrl,
+          isVerify: isVerify,
+        );
+        await _firestore
+            .collection('discussion')
+            .doc(discussId)
+            .set(post.toJson());
+        showNotif('Success', 'Discussion successfully opened');
+        desc.text = '';
+        Get.back();
+      }
       isDismiss.value = false;
-      Get.back();
     } catch (e) {
       showError('Error', e.toString());
       isDismiss.value = false;
@@ -175,5 +190,5 @@ void dismissloading(bool? skip) {
 
 void showNotif(String title, String message) {
   Get.snackbar(title, message.toString(),
-      backgroundColor: AppColors.successMain, colorText: Colors.white);
+      backgroundColor: AppColors.primaryLight, colorText: Colors.white);
 }

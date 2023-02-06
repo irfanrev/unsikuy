@@ -17,6 +17,8 @@ class AuthController extends GetxController {
   UserCredential? userCredential;
   String mToken = '';
 
+  RxBool isLoading = false.obs;
+
   @override
   void onInit() {
     // TODO: implement onInit
@@ -94,7 +96,8 @@ class AuthController extends GetxController {
     }
   }
 
-  void addNewConnection(String friendEmail, String uuid) async {
+  void addNewConnection(String friendEmail, String uuid, String name) async {
+    isLoading.value = true;
     try {
       String date = DateTime.now().toString();
       bool flagNewConnection = false;
@@ -163,6 +166,7 @@ class AuthController extends GetxController {
               'lastTime': chatData['lastTime'],
               "uuid": uuid,
               "total_unread": 0,
+              "name": name,
             });
 
             chat_id = chatDataId;
@@ -186,6 +190,7 @@ class AuthController extends GetxController {
               'lastTime': date,
               "uuid": uuid,
               "total_unread": 0,
+              "name": name,
             });
 
             chat_id = newChatDoc.id;
@@ -224,6 +229,7 @@ class AuthController extends GetxController {
         showNotif('You mus be a connected',
             'Tap on Connect button to use Chat feature');
       }
+      isLoading.value = false;
 
       // fixing diatas
 

@@ -46,6 +46,14 @@ dependencies:
   http: 0.13.5
   readmore: 2.2.0
   flutter_html: any
+  flutter_onboarding_slider: 1.0.8
+  font_awesome_flutter: 10.3.0
+  eva_icons_flutter: 3.1.0
+  firebase_analytics: any
+  firebase_core_web: 2.1.0
+  flutter_email_sender: 5.2.0
+  chips_choice: any
+  mailer: 6.0.0
   flutter: 
     sdk: flutter
 

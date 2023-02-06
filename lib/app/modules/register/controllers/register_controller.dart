@@ -16,6 +16,7 @@ class RegisterController extends GetxController {
     'Alumni',
     'Lecturer',
     'Staff',
+    'Organization',
     'Other'
   ];
   bool isAggree = false;
@@ -27,11 +28,11 @@ class RegisterController extends GetxController {
 
   Future register() async {
     isLoading.value = true;
+
     try {
       UserCredential cred = await _auth.createUserWithEmailAndPassword(
           email: formKey.currentState?.value['email'],
           password: formKey.currentState?.value['password']);
-
       // model.User user = model.User(
       //   username: formKey.currentState?.value['username'],
       //   email: formKey.currentState?.value['email'],
@@ -60,6 +61,11 @@ class RegisterController extends GetxController {
         "createdAt": DateTime.now(),
         "updatedAt": DateTime.now(),
         "connecters": [],
+        "isVerify": false,
+        "ig": '',
+        "twitter": '',
+        "linkedin": '',
+        "web": '',
         // "chats": [],
       });
 
