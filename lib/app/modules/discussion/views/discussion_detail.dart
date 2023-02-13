@@ -237,10 +237,29 @@ class DiscussionDetail extends StatelessWidget {
                           child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: TextFormField(
+                          minLines: 1,
+                          maxLines: 4,
                           controller: controller.commentC,
                           decoration: InputDecoration(
                             hintText: 'Contribute as ${controller.username}',
                             border: InputBorder.none,
+                            filled: true,
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 1.0,
+                                color: AppColors.grey.shade300,
+                              ),
+                              borderRadius: BorderRadius.circular(32),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  width: 1,
+                                  color: AppColors.primaryLight), //<-- SEE HERE
+                              borderRadius: BorderRadius.circular(32),
+                            ),
                           ),
                           style: Theme.of(context)
                               .textTheme

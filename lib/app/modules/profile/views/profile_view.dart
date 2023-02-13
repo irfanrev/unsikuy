@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/controllers/auth_controller.dart';
@@ -41,6 +42,7 @@ class _ProfileViewState extends State<ProfileView>
   bool isLoading = false;
   bool isConnecters = false;
   bool checkIsConnected = false;
+  GetStorage box = GetStorage();
 
   @override
   void initState() {
@@ -121,12 +123,32 @@ class _ProfileViewState extends State<ProfileView>
         ? LoadingOverlay()
         : Scaffold(
             appBar: AppBar(
-              title: Text(
-                'Profile',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline2!
-                    .copyWith(color: AppColors.textColour80),
+              leadingWidth: 28,
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    userData['username'],
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4!
+                        .copyWith(color: AppColors.textColour80),
+                  ),
+                  Visibility(
+                    visible: userData['isVerify'] == true,
+                    child: const SizedBox(
+                      width: 4,
+                    ),
+                  ),
+                  Visibility(
+                    visible: userData['isVerify'] == true,
+                    child: Icon(
+                      CupertinoIcons.checkmark_seal_fill,
+                      color: Colors.red[900],
+                      size: 14,
+                    ),
+                  ),
+                ],
               ),
               centerTitle: false,
               actions: [
@@ -353,28 +375,16 @@ class _ProfileViewState extends State<ProfileView>
                                       children: [
                                         Row(
                                           children: [
-                                            Text(
-                                              userData['username'],
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline4!
-                                                  .copyWith(
-                                                    color:
-                                                        AppColors.textColour80,
-                                                  ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            const SizedBox(
-                                              width: 4,
-                                            ),
-                                            Visibility(
-                                              visible:
-                                                  userData['isVerify'] == true,
-                                              child: Icon(
-                                                CupertinoIcons
-                                                    .checkmark_seal_fill,
-                                                color: Colors.red[900],
-                                                size: 14,
+                                            Expanded(
+                                              child: Text(
+                                                userData['username'],
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4!
+                                                    .copyWith(
+                                                      color: AppColors
+                                                          .textColour80,
+                                                    ),
                                               ),
                                             ),
                                           ],
@@ -390,6 +400,9 @@ class _ProfileViewState extends State<ProfileView>
                                         )
                                       ],
                                     ),
+                                  ),
+                                  const SizedBox(
+                                    width: 2,
                                   ),
                                   Visibility(
                                     visible: widget.uuid !=
@@ -464,67 +477,73 @@ class _ProfileViewState extends State<ProfileView>
                               width: 100.w,
                               child: Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        postLen.toString(),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .copyWith(
-                                              color: AppColors.primaryDark,
-                                            ),
-                                      ),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
-                                      Text(
-                                        'Sharing',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge!
-                                            .copyWith(
-                                              color: AppColors.primaryDark,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    width: 16,
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Get.toNamed(Routes.MYDISCUSS,
-                                          arguments: userData['uuid']);
-                                    },
-                                    child: Row(
+                                  Chip(
+                                    backgroundColor: AppColors.grey.shade200,
+                                    label: Row(
                                       children: [
                                         Text(
-                                          discussLen.toString(),
+                                          postLen.toString(),
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline6!
                                               .copyWith(
-                                                color: AppColors.primaryDark,
+                                                color: AppColors.textColour60,
                                               ),
                                         ),
                                         const SizedBox(
                                           width: 4,
                                         ),
                                         Text(
-                                          'Discussion',
+                                          'Sharing',
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleLarge!
                                               .copyWith(
-                                                color: AppColors.primaryDark,
+                                                color: AppColors.textColour60,
                                               ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   const SizedBox(
-                                    width: 16,
+                                    width: 8,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Get.toNamed(Routes.MYDISCUSS,
+                                          arguments: userData['uuid']);
+                                    },
+                                    child: Chip(
+                                      backgroundColor: AppColors.grey.shade200,
+                                      label: Row(
+                                        children: [
+                                          Text(
+                                            discussLen.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .copyWith(
+                                                    color:
+                                                        AppColors.textColour60),
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text(
+                                            'Discussion',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge!
+                                                .copyWith(
+                                                    color:
+                                                        AppColors.textColour60),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
                                   ),
                                   // Text('|',
                                   //     style: Theme.of(context).textTheme.headline3),
@@ -536,30 +555,33 @@ class _ProfileViewState extends State<ProfileView>
                                       Get.toNamed(Routes.CONNECTED_VIEW,
                                           arguments: userData['uuid']);
                                     },
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          connecters.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .copyWith(
-                                                color: AppColors.primaryDark,
-                                              ),
-                                        ),
-                                        const SizedBox(
-                                          width: 4,
-                                        ),
-                                        Text(
-                                          'Connecters',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleLarge!
-                                              .copyWith(
-                                                color: AppColors.primaryDark,
-                                              ),
-                                        ),
-                                      ],
+                                    child: Chip(
+                                      backgroundColor: AppColors.grey.shade200,
+                                      label: Row(
+                                        children: [
+                                          Text(
+                                            connecters.toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .copyWith(
+                                                    color:
+                                                        AppColors.textColour60),
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text(
+                                            'Connecters',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge!
+                                                .copyWith(
+                                                    color:
+                                                        AppColors.textColour60),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -707,7 +729,10 @@ class _ProfileViewState extends State<ProfileView>
                                     Theme.of(context).textTheme.headline6,
                                 tabs: [
                                   Tab(
-                                    child: Text(userData['username']),
+                                    child: Text(
+                                      userData['username'],
+                                      maxLines: 1,
+                                    ),
                                   ),
                                   Tab(
                                     child: Text(
@@ -730,6 +755,8 @@ class _ProfileViewState extends State<ProfileView>
                                   children: [
                                     Container(
                                       child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Visibility(
                                             visible: userData['about'] != '',
@@ -830,211 +857,248 @@ class _ProfileViewState extends State<ProfileView>
                                           const SizedBox(
                                             height: 6,
                                           ),
-                                          Visibility(
-                                            visible: userData['phone'] != '',
-                                            child: InkWell(
-                                              onTap: () async {
-                                                Uri url = Uri.parse(
-                                                    'https://wa.me/${userData['phone']}');
-                                                if (await canLaunchUrl(url)) {
-                                                  await launchUrl(url,
-                                                      mode: LaunchMode
-                                                          .externalApplication);
-                                                } else {
-                                                  throw 'Could not launch';
-                                                }
-                                              },
-                                              child: Container(
-                                                margin:
-                                                    EdgeInsets.only(top: 12),
-                                                width: 100.w,
-                                                child: Row(
-                                                  children: [
-                                                    FaIcon(
-                                                      FontAwesomeIcons.whatsapp,
-                                                      color:
-                                                          AppColors.primaryDark,
-                                                      size: 28,
+                                          Wrap(
+                                            spacing: 10.0,
+                                            children: [
+                                              Visibility(
+                                                visible:
+                                                    box.hasData('whatsapp'),
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    Uri url = Uri.parse(
+                                                        'https://wa.me/${userData['phone']}');
+                                                    if (await canLaunchUrl(
+                                                        url)) {
+                                                      await launchUrl(url,
+                                                          mode: LaunchMode
+                                                              .externalApplication);
+                                                    } else {
+                                                      throw 'Could not launch';
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    child: Chip(
+                                                      backgroundColor: AppColors
+                                                          .shadesPrimaryDark10,
+                                                      label: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          FaIcon(
+                                                            FontAwesomeIcons
+                                                                .whatsapp,
+                                                            color: AppColors
+                                                                .primaryDark,
+                                                            size: 28,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            'WhatsApp',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .copyWith(),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      'WhatsApp',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyLarge!
-                                                          .copyWith(),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          Visibility(
-                                            visible: userData['ig'] != '',
-                                            child: InkWell(
-                                              onTap: () async {
-                                                Uri url =
-                                                    Uri.parse(userData['ig']);
-                                                if (await canLaunchUrl(url)) {
-                                                  await launchUrl(url,
-                                                      mode: LaunchMode
-                                                          .externalApplication);
-                                                } else {
-                                                  throw 'Could not launch';
-                                                }
-                                              },
-                                              child: Container(
-                                                margin:
-                                                    EdgeInsets.only(top: 12),
-                                                width: 100.w,
-                                                child: Row(
-                                                  children: [
-                                                    FaIcon(
-                                                      FontAwesomeIcons
-                                                          .instagram,
-                                                      color:
-                                                          AppColors.primaryDark,
-                                                      size: 28,
+                                              Visibility(
+                                                visible: userData['ig'] != '',
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    Uri url = Uri.parse(
+                                                        userData['ig']);
+                                                    if (await canLaunchUrl(
+                                                        url)) {
+                                                      await launchUrl(url,
+                                                          mode: LaunchMode
+                                                              .externalApplication);
+                                                    } else {
+                                                      throw 'Could not launch';
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    child: Chip(
+                                                      backgroundColor: AppColors
+                                                          .shadesPrimaryDark10,
+                                                      label: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          FaIcon(
+                                                            FontAwesomeIcons
+                                                                .instagram,
+                                                            color: AppColors
+                                                                .primaryDark,
+                                                            size: 28,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            'Instagram',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .copyWith(),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      'Instagram',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyLarge!
-                                                          .copyWith(),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          Visibility(
-                                            visible: userData['linkedin'] != '',
-                                            child: InkWell(
-                                              onTap: () async {
-                                                Uri url = Uri.parse(
-                                                    userData['linkedin']);
-                                                if (await canLaunchUrl(url)) {
-                                                  await launchUrl(url,
-                                                      mode: LaunchMode
-                                                          .externalApplication);
-                                                } else {
-                                                  throw 'Could not launch';
-                                                }
-                                              },
-                                              child: Container(
-                                                margin:
-                                                    EdgeInsets.only(top: 12),
-                                                width: 100.w,
-                                                child: Row(
-                                                  children: [
-                                                    FaIcon(
-                                                      FontAwesomeIcons.linkedin,
-                                                      color:
-                                                          AppColors.primaryDark,
-                                                      size: 28,
+                                              Visibility(
+                                                visible:
+                                                    userData['linkedin'] != '',
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    Uri url = Uri.parse(
+                                                        userData['linkedin']);
+                                                    if (await canLaunchUrl(
+                                                        url)) {
+                                                      await launchUrl(url,
+                                                          mode: LaunchMode
+                                                              .externalApplication);
+                                                    } else {
+                                                      throw 'Could not launch';
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    child: Chip(
+                                                      backgroundColor: AppColors
+                                                          .shadesPrimaryDark10,
+                                                      label: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          FaIcon(
+                                                            FontAwesomeIcons
+                                                                .linkedin,
+                                                            color: AppColors
+                                                                .primaryDark,
+                                                            size: 28,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            'LinkedIn',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .copyWith(),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      'LinkedIn',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyLarge!
-                                                          .copyWith(),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          Visibility(
-                                            visible: userData['twitter'] != '',
-                                            child: InkWell(
-                                              onTap: () async {
-                                                Uri url = Uri.parse(
-                                                    userData['twitter']);
-                                                if (await canLaunchUrl(url)) {
-                                                  await launchUrl(url,
-                                                      mode: LaunchMode
-                                                          .externalApplication);
-                                                } else {
-                                                  throw 'Could not launch';
-                                                }
-                                              },
-                                              child: Container(
-                                                margin:
-                                                    EdgeInsets.only(top: 12),
-                                                width: 100.w,
-                                                child: Row(
-                                                  children: [
-                                                    FaIcon(
-                                                      FontAwesomeIcons.twitter,
-                                                      color:
-                                                          AppColors.primaryDark,
-                                                      size: 28,
+                                              Visibility(
+                                                visible:
+                                                    userData['twitter'] != '',
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    Uri url = Uri.parse(
+                                                        userData['twitter']);
+                                                    if (await canLaunchUrl(
+                                                        url)) {
+                                                      await launchUrl(url,
+                                                          mode: LaunchMode
+                                                              .externalApplication);
+                                                    } else {
+                                                      throw 'Could not launch';
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    child: Chip(
+                                                      backgroundColor: AppColors
+                                                          .shadesPrimaryDark10,
+                                                      label: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          FaIcon(
+                                                            FontAwesomeIcons
+                                                                .twitter,
+                                                            color: AppColors
+                                                                .primaryDark,
+                                                            size: 28,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            'Twitter',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .copyWith(),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      'Twitter',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyLarge!
-                                                          .copyWith(),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          Visibility(
-                                            visible: userData['web'] != '',
-                                            child: InkWell(
-                                              onTap: () async {
-                                                Uri url =
-                                                    Uri.parse(userData['web']);
-                                                if (await canLaunchUrl(url)) {
-                                                  await launchUrl(url,
-                                                      mode: LaunchMode
-                                                          .externalApplication);
-                                                } else {
-                                                  throw 'Could not launch';
-                                                }
-                                              },
-                                              child: Container(
-                                                margin:
-                                                    EdgeInsets.only(top: 12),
-                                                width: 100.w,
-                                                child: Row(
-                                                  children: [
-                                                    FaIcon(
-                                                      FontAwesomeIcons.link,
-                                                      size: 20,
-                                                      color:
-                                                          AppColors.primaryDark,
+                                              Visibility(
+                                                visible: userData['web'] != '',
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    Uri url = Uri.parse(
+                                                        userData['web']);
+                                                    if (await canLaunchUrl(
+                                                        url)) {
+                                                      await launchUrl(url,
+                                                          mode: LaunchMode
+                                                              .externalApplication);
+                                                    } else {
+                                                      throw 'Could not launch';
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    child: Chip(
+                                                      backgroundColor: AppColors
+                                                          .shadesPrimaryDark10,
+                                                      label: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          FaIcon(
+                                                            FontAwesomeIcons
+                                                                .link,
+                                                            size: 20,
+                                                            color: AppColors
+                                                                .primaryDark,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            'Personal Website',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .copyWith(),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      'Personal Website',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyLarge!
-                                                          .copyWith(),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
+                                            ],
                                           ),
                                           const SizedBox(
                                             height: 10,

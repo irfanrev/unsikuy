@@ -31,6 +31,8 @@ class EditProfileController extends GetxController {
   TextEditingController webC = TextEditingController();
   TextEditingController aboutC = TextEditingController();
   RxBool isLoading = false.obs;
+  RxString waStatus = 'Private by default'.obs;
+  RxString waStatusPublic = 'Public'.obs;
   var uuidUser;
   var photoUrl;
   var username;
@@ -129,6 +131,22 @@ class EditProfileController extends GetxController {
     } catch (e) {
       showError('Error', e.toString());
     }
+  }
+
+  Future updateWaPrivate() async {
+    await box.remove('whatsapp');
+    waStatus.value = 'Private by default';
+    Get.back();
+    refresh();
+    update();
+  }
+
+  Future updateWaPublic() async {
+    await box.write('whatsapp', 'Public');
+    waStatusPublic.value = 'Public';
+    Get.back();
+    refresh();
+    update();
   }
 
   Future updateProfile() async {

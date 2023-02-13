@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,6 +12,7 @@ class LoginController extends GetxController {
   //TODO: Implement LoginController
   final TextEditingController emailC = TextEditingController();
   final TextEditingController passC = TextEditingController();
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   bool isSecure = true;
   RxBool isLoading = false.obs;
 
@@ -27,6 +29,7 @@ class LoginController extends GetxController {
       print(box.read('token').toString());
       Get.offAllNamed(Routes.HOME);
       isLoading.value = false;
+      await analytics.logLogin(loginMethod: 'email');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showError('Error', 'No user found for that email.');

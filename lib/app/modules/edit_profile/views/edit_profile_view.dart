@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/views/update_bio.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/views/update_profile.dart';
@@ -13,6 +14,7 @@ import 'package:unsikuy_app/app/modules/profile/views/profile_view.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
 import 'package:unsikuy_app/app/theme/app_theme.dart';
+import 'package:unsikuy_app/app/utils/widgets/bottom_sheet_helper.dart';
 import 'package:unsikuy_app/app/utils/widgets/form/form_image_picker.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
 import 'package:unsikuy_app/app/utils/widgets/loading_overlay.dart';
@@ -30,6 +32,7 @@ class EditProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(EditProfileController());
     final profC = Get.put(ProfileController);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -111,57 +114,150 @@ class EditProfileView extends StatelessWidget {
                         title: 'Change Theme',
                         icon: CupertinoIcons.color_filter,
                         onTap: () {
-                          Get.defaultDialog(
-                            title: 'Stay tune for this feature!',
-                            titlePadding: EdgeInsets.only(top: 20, bottom: 10),
-                            titleStyle:
-                                Theme.of(context).textTheme.headline3!.copyWith(
-                                      color: AppColors.textColour70,
-                                    ),
-                            content: Text(
-                                'This feature will be added in the next release'),
-                            // content: Row(
-                            //   mainAxisAlignment:
-                            //       MainAxisAlignment.spaceAround,
-                            //   children: [
-                            //     TextButton(
-                            //       onPressed: () {
-                            //         Get.changeTheme(
-                            //             AppTheme.buildThemeData(false));
-                            //         Get.back();
-                            //       },
-                            //       child: Text(
-                            //         'Light',
-                            //         style: Theme.of(context)
-                            //             .textTheme
-                            //             .headline3!
-                            //             .copyWith(),
-                            //       ),
-                            //     ),
-                            //     TextButton(
-                            //       onPressed: () {
-                            //         Get.changeTheme(
-                            //             AppTheme.buildThemeData(true));
-                            //         Get.back();
-                            //       },
-                            //       child: Text(
-                            //         'Dark',
-                            //         style: Theme.of(context)
-                            //             .textTheme
-                            //             .headline3!
-                            //             .copyWith(),
-                            //       ),
-                            //     ),
-                            //   ],
-                            // )
-                          );
+                          showBarModalBottomSheet(
+                              //constraints: BoxConstraints(maxHeight: 300),
+                              context: context,
+                              builder: (context) {
+                                return Container(
+                                  width: 100.w,
+                                  height: 200,
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Stay tuned for the dark mode feature in the next version',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4!
+                                            .copyWith(
+                                              color: AppColors.black,
+                                              fontSize: 18,
+                                            ),
+                                      ),
+                                      const SizedBox(
+                                        height: 18,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Get.back();
+                                        },
+                                        child: Container(
+                                          width: 100.w,
+                                          height: 45,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(22),
+                                            color: AppColors.primaryLight,
+                                          ),
+                                          child: Center(
+                                              child: Text(
+                                            'Oke',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!
+                                                .copyWith(
+                                                  color: AppColors.white,
+                                                ),
+                                          )),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              });
                         },
                       ),
                       const SizedBox(height: 32),
                       PrimaryButton(
                         title: 'Logout',
                         onPressed: () {
-                          controller.logout();
+                          showBarModalBottomSheet(
+                              //constraints: BoxConstraints(maxHeight: 300),
+                              context: context,
+                              builder: (context) {
+                                return Container(
+                                  width: 100.w,
+                                  height: 300,
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Are you sure you want to log out of the app?',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline4!
+                                            .copyWith(
+                                              color: AppColors.black,
+                                              fontSize: 18,
+                                            ),
+                                      ),
+                                      const SizedBox(
+                                        height: 18,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          controller.logout();
+                                        },
+                                        child: Container(
+                                          width: 100.w,
+                                          height: 45,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(22),
+                                            color: AppColors.primaryLight,
+                                          ),
+                                          child: Center(
+                                              child: Text(
+                                            'Oke',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!
+                                                .copyWith(
+                                                  color: AppColors.white,
+                                                ),
+                                          )),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          Get.back();
+                                        },
+                                        child: Container(
+                                          width: 100.w,
+                                          height: 45,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(22),
+                                            color: AppColors.primaryOrange,
+                                          ),
+                                          child: Center(
+                                              child: Text(
+                                            'Cancel',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5!
+                                                .copyWith(
+                                                  color: AppColors.white,
+                                                ),
+                                          )),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              });
                         },
                       ),
                     ],

@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/controllers/edit_profile_controller.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/widgets/form_edit_profile.dart';
@@ -21,6 +22,11 @@ class AddSocialMedia extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(Icons.close)),
           title: Text(
             'Social Media',
             style: Theme.of(context)
@@ -38,6 +44,143 @@ class AddSocialMedia extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "WhatsApp Status",
+                            style:
+                                Theme.of(context).textTheme.headline5!.copyWith(
+                                      color: AppColors.textColour70,
+                                      fontSize: 18,
+                                    ),
+                            textAlign: TextAlign.left,
+                          ),
+                          SizedBox(height: 6),
+                          InkWell(
+                            onTap: () {
+                              showBarModalBottomSheet(
+                                  //constraints: BoxConstraints(maxHeight: 300),
+                                  context: context,
+                                  builder: (context) {
+                                    return Container(
+                                      width: 100.w,
+                                      height: 260,
+                                      padding: EdgeInsets.all(16),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Change your WhastApp information to public or private!',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4!
+                                                .copyWith(
+                                                  color: AppColors.black,
+                                                  fontSize: 18,
+                                                ),
+                                          ),
+                                          const SizedBox(
+                                            height: 18,
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              controller.updateWaPrivate();
+                                            },
+                                            child: Container(
+                                              width: 100.w,
+                                              height: 45,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(22),
+                                                color: AppColors.primaryLight,
+                                              ),
+                                              child: Center(
+                                                  child: Text(
+                                                'Private',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5!
+                                                    .copyWith(
+                                                      color: AppColors.white,
+                                                    ),
+                                              )),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              controller.updateWaPublic();
+                                            },
+                                            child: Container(
+                                              width: 100.w,
+                                              height: 45,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(22),
+                                                color: AppColors.primaryOrange,
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  'Public',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline5!
+                                                      .copyWith(
+                                                        color: AppColors.white,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              width: 100.w,
+                              decoration: BoxDecoration(
+                                color: AppColors.grey.shade100,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  FaIcon(
+                                    FontAwesomeIcons.whatsapp,
+                                    size: 32,
+                                    color: AppColors.grey.shade600,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Obx(
+                                    () => Text(
+                                      controller.box.hasData('whatsapp')
+                                          ? controller.waStatusPublic.value
+                                          : controller.waStatus.value,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge!
+                                          .copyWith(fontSize: 16),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       const SizedBox(
                         height: 20,
                       ),

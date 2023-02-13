@@ -182,12 +182,15 @@ class CommentDetail extends GetView<PostController> {
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text(
-                      '${Get.arguments['like'].length} people liked this comment',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(color: AppColors.textColour50),
+                    child: Chip(
+                      backgroundColor: AppColors.shadesPrimaryDark10,
+                      label: Text(
+                        '${Get.arguments['like'].length} people liked this comment',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge!
+                            .copyWith(color: AppColors.textColour70),
+                      ),
                     ),
                   ),
                   const SizedBox(

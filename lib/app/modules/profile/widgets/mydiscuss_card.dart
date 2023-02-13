@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/discussion/controllers/discussion_controller.dart';
 import 'package:unsikuy_app/app/modules/profile/controllers/profile_controller.dart';
@@ -114,34 +115,64 @@ class MydiscussCard extends StatelessWidget {
                   child: InkWell(
                     onTap: () {
                       if (controller.uuidUser == snap['uuid']) {
-                        Get.defaultDialog(
-                          titlePadding: EdgeInsets.only(top: 16),
-                          title: 'Delete Discussion?',
-                          titleStyle: Theme.of(context).textTheme.headline2,
-                          content: Column(
-                            children: [
-                              Container(
-                                width: 160,
+                        showBarModalBottomSheet(
+                            //constraints: BoxConstraints(maxHeight: 300),
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                width: 100.w,
                                 height: 160,
-                                child: Lottie.asset(
-                                    'lib/app/resources/images/delete-post.json'),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  controller.deleteDiscussion(snap['postId']);
-                                  Get.back();
-                                },
-                                child: Text('Delete',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4!
-                                        .copyWith(
-                                          color: AppColors.red,
+                                padding: EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Delete this Discussion?',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline4!
+                                          .copyWith(
+                                            color: AppColors.black,
+                                            fontSize: 18,
+                                          ),
+                                    ),
+                                    const SizedBox(
+                                      height: 18,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        controller
+                                            .deleteDiscussion(snap['postId']);
+                                        Get.back();
+                                      },
+                                      child: Container(
+                                        width: 100.w,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(22),
+                                          color: AppColors.primaryLight,
+                                        ),
+                                        child: Center(
+                                            child: Text(
+                                          'Oke',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5!
+                                              .copyWith(
+                                                color: AppColors.white,
+                                              ),
                                         )),
-                              )
-                            ],
-                          ),
-                        );
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            });
                       }
                     },
                     child: Icon(

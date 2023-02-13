@@ -58,6 +58,7 @@ class UploadView extends GetView<UploadController> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
                 height: 12,
@@ -93,13 +94,13 @@ class UploadView extends GetView<UploadController> {
                       ),
                       Container(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                            EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                               width: 0.8, color: AppColors.grey.shade300),
                         ),
-                        child: Text('Public',
+                        child: Text('Posts are set public by default',
                             style:
                                 Theme.of(context).textTheme.bodyText2?.copyWith(
                                       color: AppColors.textColour70,
@@ -115,7 +116,7 @@ class UploadView extends GetView<UploadController> {
               TextFormField(
                 controller: controller.desc,
                 textCapitalization: TextCapitalization.sentences,
-                maxLines: 12,
+                maxLines: 14,
                 decoration: InputDecoration(
                   fillColor: AppColors.white,
                   hintText: "What do you think?",
@@ -130,99 +131,103 @@ class UploadView extends GetView<UploadController> {
                   hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontSize: 18, color: AppColors.textColour50, height: 1.3),
                 ),
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(fontSize: 18, height: 1.4),
                 keyboardType: TextInputType.multiline,
               ),
               const SizedBox(
                 height: 18,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+              GetBuilder<UploadController>(
+                  init: UploadController(),
+                  builder: (value) {
+                    return Visibility(
+                      visible: controller.file != null,
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        margin: const EdgeInsets.only(right: 22),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              width: 1.0, color: AppColors.grey.shade300),
+                        ),
+                        child: controller.file != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.memory(
+                                  controller.file!,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Container(),
+                      ),
+                    );
+                  }),
+              const SizedBox(
+                height: 8,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GetBuilder<UploadController>(
-                      init: UploadController(),
-                      builder: (value) {
-                        return Visibility(
-                          visible: controller.file != null,
-                          child: Container(
-                            width: 150,
-                            height: 150,
-                            margin: const EdgeInsets.only(right: 22),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                  width: 1.0, color: AppColors.grey.shade300),
-                            ),
-                            child: controller.file != null
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Image.memory(
-                                      controller.file!,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                : Container(),
-                          ),
-                        );
-                      }),
-                  Row(
-                    children: [
-                      const Icon(
-                        CupertinoIcons.photo_on_rectangle,
-                        size: 32,
-                        color: AppColors.textColour50,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Get.defaultDialog(
-                            title: 'Create a Post',
-                            content: Column(
-                              children: [
-                                ListTile(
-                                  leading:
-                                      const Icon(CupertinoIcons.photo_camera),
-                                  title: Text(
-                                    'Take a Photo',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
-                                  ),
-                                  onTap: () {
-                                    controller.chooseCamera();
-                                    Get.back();
-                                  },
-                                ),
-                                ListTile(
-                                  leading:
-                                      Icon(CupertinoIcons.photo_on_rectangle),
-                                  title: Text(
-                                    'Choose from gallery',
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
-                                  ),
-                                  onTap: () {
-                                    controller.chooseGallery();
-                                    Get.back();
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        child: Text('Add Images',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5!
-                                .copyWith(color: AppColors.textColour80)),
-                      ),
-                    ],
+                  Chip(
+                    backgroundColor: AppColors.shadesPrimaryDark10,
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          CupertinoIcons.photo_camera,
+                          size: 24,
+                          color: AppColors.primaryDark,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            controller.chooseCamera();
+                          },
+                          child: Text('Add Images from Camera',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(color: AppColors.primaryDark)),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(
-                    width: 16,
+                  Chip(
+                    backgroundColor: AppColors.shadesPrimaryDark10,
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          CupertinoIcons.photo_on_rectangle,
+                          size: 24,
+                          color: AppColors.primaryDark,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            controller.chooseGallery();
+                          },
+                          child: Text('Add Images from Gallery',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(color: AppColors.primaryDark)),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
+              ),
+              const SizedBox(
+                width: 16,
               ),
               const SizedBox(
                 height: 46,

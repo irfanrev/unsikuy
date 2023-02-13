@@ -15,6 +15,11 @@ class EditAbout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(Icons.close)),
           title: Text(
             'Edit About',
             style: Theme.of(context)

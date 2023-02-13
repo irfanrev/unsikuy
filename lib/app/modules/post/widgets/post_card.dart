@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:like_button/like_button.dart';
 import 'package:lottie/lottie.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/modules/profile/views/profile_view.dart';
@@ -179,41 +183,77 @@ class _PostCardItemState extends State<PostCardItem> {
                                     onTap: () {
                                       if (widget.controller.uuidUser ==
                                           widget.snap['uuid']) {
-                                        Get.defaultDialog(
-                                          titlePadding:
-                                              EdgeInsets.only(top: 16),
-                                          title: 'Delete Post?',
-                                          titleStyle: Theme.of(context)
-                                              .textTheme
-                                              .headline2,
-                                          content: Column(
-                                            children: [
-                                              Container(
-                                                width: 160,
+                                        showBarModalBottomSheet(
+                                            //constraints: BoxConstraints(maxHeight: 300),
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                width: 100.w,
                                                 height: 160,
-                                                child: Lottie.asset(
-                                                    'lib/app/resources/images/delete-post.json'),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  widget.controller.deletePost(
-                                                    widget.snap['postId'],
-                                                    widget.snap['uuid'],
-                                                    widget.snap['postUrl'],
-                                                  );
-                                                  Get.back();
-                                                },
-                                                child: Text('Delete',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headline4!
-                                                        .copyWith(
-                                                          color: AppColors.red,
+                                                padding: EdgeInsets.all(16),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'Delete this Post?',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline4!
+                                                          .copyWith(
+                                                            color:
+                                                                AppColors.black,
+                                                            fontSize: 18,
+                                                          ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 18,
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        widget.controller
+                                                            .deletePost(
+                                                          widget.snap['postId'],
+                                                          widget.snap['uuid'],
+                                                          widget
+                                                              .snap['postUrl'],
+                                                        );
+                                                        Get.back();
+                                                      },
+                                                      child: Container(
+                                                        width: 100.w,
+                                                        height: 45,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(22),
+                                                          color: AppColors
+                                                              .primaryLight,
+                                                        ),
+                                                        child: Center(
+                                                            child: Text(
+                                                          'Oke',
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline5!
+                                                                  .copyWith(
+                                                                    color: AppColors
+                                                                        .white,
+                                                                  ),
                                                         )),
-                                              )
-                                            ],
-                                          ),
-                                        );
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            });
                                       }
                                     },
                                     child: Padding(
@@ -502,26 +542,27 @@ class _PostCardItemState extends State<PostCardItem> {
                           Row(
                             children: [
                               InkWell(
-                                  onTap: () {
-                                    widget.controller.likePost(
-                                      widget.snap['postId'],
-                                      widget.controller.auth.currentUser!.uid,
-                                      widget.snap['like'],
-                                      widget.snap['uuid'],
-                                    );
-                                  },
-                                  child: widget.snap['like'].contains(widget
-                                          .controller.auth.currentUser!.uid)
-                                      ? const Icon(
-                                          CupertinoIcons.hand_thumbsup_fill,
-                                          color: AppColors.primaryLight,
-                                          size: 18,
-                                        )
-                                      : Icon(
-                                          CupertinoIcons.hand_thumbsup,
-                                          color: AppColors.grey.shade500,
-                                          size: 18,
-                                        )),
+                                onTap: () {
+                                  widget.controller.likePost(
+                                    widget.snap['postId'],
+                                    widget.controller.auth.currentUser!.uid,
+                                    widget.snap['like'],
+                                    widget.snap['uuid'],
+                                  );
+                                },
+                                child: widget.snap['like'].contains(
+                                        widget.controller.auth.currentUser!.uid)
+                                    ? const Icon(
+                                        CupertinoIcons.hand_thumbsup_fill,
+                                        color: AppColors.primaryLight,
+                                        size: 20,
+                                      )
+                                    : Icon(
+                                        CupertinoIcons.hand_thumbsup,
+                                        color: AppColors.grey.shade500,
+                                        size: 20,
+                                      ),
+                              ),
                               const SizedBox(width: 8),
                               Text(
                                 '${widget.snap['like'].length}',
@@ -548,12 +589,12 @@ class _PostCardItemState extends State<PostCardItem> {
                                       ? const Icon(
                                           CupertinoIcons.arrow_up_circle_fill,
                                           color: AppColors.primaryLight,
-                                          size: 18,
+                                          size: 20,
                                         )
                                       : Icon(
                                           CupertinoIcons.arrow_up_circle,
                                           color: AppColors.grey.shade500,
-                                          size: 18,
+                                          size: 20,
                                         )),
                               const SizedBox(width: 8),
                               Text(
@@ -578,7 +619,7 @@ class _PostCardItemState extends State<PostCardItem> {
                                 child: Icon(
                                   CupertinoIcons.chat_bubble,
                                   color: AppColors.grey.shade500,
-                                  size: 18,
+                                  size: 20,
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -586,10 +627,10 @@ class _PostCardItemState extends State<PostCardItem> {
                                 lengthOfComment.toString(),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodySmall!
+                                    .titleLarge!
                                     .copyWith(
-                                        color: AppColors.textColour50,
-                                        fontSize: 12),
+                                      color: AppColors.textColour50,
+                                    ),
                               ),
                             ],
                           ),
@@ -610,7 +651,7 @@ class _PostCardItemState extends State<PostCardItem> {
                           //   child: Icon(
                           //     CupertinoIcons.bookmark,
                           //     color: AppColors.grey.shade500,
-                          //     size: 18,
+                          //     size: 20,
                           //   ),
                           // ),
                           const SizedBox(

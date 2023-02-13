@@ -20,6 +20,11 @@ class UpdateProfile extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(Icons.close)),
           title: Text(
             'Edit Profile',
             style: Theme.of(context)

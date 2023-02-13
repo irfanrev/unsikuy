@@ -8,13 +8,16 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sizer/sizer.dart';
+import 'package:unsikuy_app/app/modules/people/widgets/user_card.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/modules/post_detail/views/post_image_view.dart';
 import 'package:unsikuy_app/app/modules/post_detail/widget/comment_card_detail.dart';
 import 'package:unsikuy_app/app/modules/profile/views/profile_view.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
+import 'package:unsikuy_app/app/utils/widgets/bottom_sheet_helper.dart';
 import 'package:unsikuy_app/app/utils/widgets/image_load.dart';
 import 'package:unsikuy_app/app/utils/widgets/loading_overlay.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -202,12 +205,229 @@ class PostDetailView extends GetView<PostDetailController> {
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text(
-                      '${Get.arguments['like'].length} people liked this share',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(color: AppColors.textColour50),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            final postID = Get.arguments['postId'];
+                            showBarModalBottomSheet(
+                                //constraints: BoxConstraints(maxHeight: 300),
+                                expand: false,
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                      width: 100.w,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 20),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  ' Liked by',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline4!
+                                                      .copyWith(
+                                                        color: AppColors
+                                                            .textColour80,
+                                                      ),
+                                                ),
+                                                IconButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    icon: Icon(Icons.close)),
+                                              ],
+                                            ),
+                                          ),
+                                          const Divider(
+                                            indent: 1.5,
+                                            thickness: 1.3,
+                                          ),
+                                          const SizedBox(
+                                            height: 12,
+                                          ),
+                                          Expanded(
+                                            child: FutureBuilder(
+                                                future: FirebaseFirestore
+                                                    .instance
+                                                    .collection("posts")
+                                                    .doc(postID)
+                                                    .collection('listLike')
+                                                    .get(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return LoadingOverlay();
+                                                  }
+                                                  if ((snapshot.data!
+                                                              as dynamic)
+                                                          .docs
+                                                          .length ==
+                                                      0) {
+                                                    return Center(
+                                                      child: Container(
+                                                        width: 150,
+                                                        child: Lottie.asset(
+                                                            'lib/app/resources/images/not-found.json'),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return ListView.builder(
+                                                        itemCount:
+                                                            (snapshot.data!
+                                                                    as dynamic)
+                                                                .docs
+                                                                .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return UserCard(
+                                                            snap: (snapshot
+                                                                        .data!
+                                                                    as dynamic)
+                                                                .docs[index],
+                                                          );
+                                                          // return Text((snapshot.data! as dynamic)
+                                                          //     .docs[index]['username']
+                                                          //     .toString());
+                                                        });
+                                                  }
+                                                }),
+                                          ),
+                                        ],
+                                      ));
+                                });
+                          },
+                          child: Chip(
+                            backgroundColor: AppColors.shadesPrimaryDark10,
+                            label: Text(
+                              '${Get.arguments['like'].length} Likes',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(color: AppColors.primaryDark),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            final postID = Get.arguments['postId'];
+                            showBarModalBottomSheet(
+                                //constraints: BoxConstraints(maxHeight: 300),
+                                expand: false,
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                      width: 100.w,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 20),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  ' This post was boosted by',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline4!
+                                                      .copyWith(
+                                                        color: AppColors
+                                                            .textColour80,
+                                                      ),
+                                                ),
+                                                IconButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    icon: Icon(Icons.close)),
+                                              ],
+                                            ),
+                                          ),
+                                          const Divider(
+                                            indent: 1.5,
+                                            thickness: 1.3,
+                                          ),
+                                          const SizedBox(
+                                            height: 12,
+                                          ),
+                                          Expanded(
+                                            child: FutureBuilder(
+                                                future: FirebaseFirestore
+                                                    .instance
+                                                    .collection("posts")
+                                                    .doc(postID)
+                                                    .collection('listBoosted')
+                                                    .get(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return LoadingOverlay();
+                                                  }
+                                                  if ((snapshot.data!
+                                                              as dynamic)
+                                                          .docs
+                                                          .length ==
+                                                      0) {
+                                                    return Center(
+                                                      child: Container(
+                                                        width: 150,
+                                                        child: Lottie.asset(
+                                                            'lib/app/resources/images/not-found.json'),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return ListView.builder(
+                                                        itemCount:
+                                                            (snapshot.data!
+                                                                    as dynamic)
+                                                                .docs
+                                                                .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return UserCard(
+                                                            snap: (snapshot
+                                                                        .data!
+                                                                    as dynamic)
+                                                                .docs[index],
+                                                          );
+                                                          // return Text((snapshot.data! as dynamic)
+                                                          //     .docs[index]['username']
+                                                          //     .toString());
+                                                        });
+                                                  }
+                                                }),
+                                          ),
+                                        ],
+                                      ));
+                                });
+                          },
+                          child: Chip(
+                            backgroundColor: AppColors.shadesPrimaryDark10,
+                            label: Text(
+                              '${Get.arguments['upPost'].length} boosted this Share ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(color: AppColors.primaryDark),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(

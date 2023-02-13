@@ -137,13 +137,14 @@ class DiscussionController extends GetxController {
             .update({
           "like": FieldValue.arrayUnion([uuid]),
         });
+        DocumentSnapshot docSnap = await FirebaseFirestore.instance
+            .collection('userToken')
+            .doc(friendUuid)
+            .get();
+        String mToken = docSnap['token'];
+        authC.sendPustNotification(
+            mToken, '', '$username like your contribution');
       }
-      DocumentSnapshot docSnap = await FirebaseFirestore.instance
-          .collection('userToken')
-          .doc(uuid)
-          .get();
-      String mToken = docSnap['token'];
-      authC.sendPustNotification(mToken, '', '$username like your comment');
     } catch (e) {
       print(e.toString());
     }
@@ -170,13 +171,14 @@ class DiscussionController extends GetxController {
             .update({
           "dislike": FieldValue.arrayUnion([uuid]),
         });
+        DocumentSnapshot docSnap = await FirebaseFirestore.instance
+            .collection('userToken')
+            .doc(friendUuid)
+            .get();
+        String mToken = docSnap['token'];
+        authC.sendPustNotification(
+            mToken, '', '$username dislike your contribution');
       }
-      DocumentSnapshot docSnap = await FirebaseFirestore.instance
-          .collection('userToken')
-          .doc(uuid)
-          .get();
-      String mToken = docSnap['token'];
-      authC.sendPustNotification(mToken, '', '$username dislike your comment');
     } catch (e) {
       print(e.toString());
     }

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/modules/notification/notif_card.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/utils/widgets/loading_overlay.dart';
@@ -28,7 +30,85 @@ class NotificationView extends GetView<NotificationController> {
         actions: [
           IconButton(
               onPressed: () {
-                controller.deleteAllNotif();
+                showBarModalBottomSheet(
+                    //constraints: BoxConstraints(maxHeight: 300),
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        width: 100.w,
+                        height: 250,
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Are you sure you want to delete all notifications?',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4!
+                                  .copyWith(
+                                    color: AppColors.black,
+                                    fontSize: 18,
+                                  ),
+                            ),
+                            const SizedBox(
+                              height: 18,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                controller.deleteAllNotif();
+                                Get.back();
+                              },
+                              child: Container(
+                                width: 100.w,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(22),
+                                  color: AppColors.primaryLight,
+                                ),
+                                child: Center(
+                                    child: Text(
+                                  'Oke',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: AppColors.white,
+                                      ),
+                                )),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: Container(
+                                width: 100.w,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(22),
+                                  color: AppColors.primaryOrange,
+                                ),
+                                child: Center(
+                                    child: Text(
+                                  'Cancel',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(
+                                        color: AppColors.white,
+                                      ),
+                                )),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
               },
               icon: Icon(
                 CupertinoIcons.delete,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -19,6 +20,7 @@ class PostController extends GetxController {
   final storageRef = FirebaseStorage.instance.ref();
   final FirebaseAuth auth = FirebaseAuth.instance;
   final authC = Get.find<AuthController>();
+  final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   ScrollController scrollC = ScrollController();
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
@@ -145,17 +147,36 @@ class PostController extends GetxController {
         await _firestore.collection('posts').doc(postId).update({
           "like": FieldValue.arrayRemove([uuid]),
         });
+        await _firestore
+            .collection('posts')
+            .doc(postId)
+            .collection('listLike')
+            .doc(auth.currentUser!.email.toString())
+            .delete();
       } else {
         await _firestore.collection('posts').doc(postId).update({
           "like": FieldValue.arrayUnion([uuid]),
         });
+        await _firestore
+            .collection('posts')
+            .doc(postId)
+            .collection('listLike')
+            .doc(auth.currentUser!.email.toString())
+            .set({
+          'username': username,
+          'photoUrl': photoUrl,
+          'status': status,
+          'uuid': uuidUser,
+          'isVerify': isVerify,
+          'bio': bio,
+        });
+        DocumentSnapshot docSnap = await FirebaseFirestore.instance
+            .collection('userToken')
+            .doc(friendUuid)
+            .get();
+        String mToken = docSnap['token'];
+        authC.sendPustNotification(mToken, '', '$username Like your sharing');
       }
-      DocumentSnapshot docSnap = await FirebaseFirestore.instance
-          .collection('userToken')
-          .doc(uuid)
-          .get();
-      String mToken = docSnap['token'];
-      authC.sendPustNotification(mToken, '', '$username Like your sharing');
     } catch (e) {
       print(e.toString());
     }
@@ -182,13 +203,13 @@ class PostController extends GetxController {
             .update({
           "like": FieldValue.arrayUnion([uuid]),
         });
+        DocumentSnapshot docSnap = await FirebaseFirestore.instance
+            .collection('userToken')
+            .doc(friendUuid)
+            .get();
+        String mToken = docSnap['token'];
+        authC.sendPustNotification(mToken, '', '$username like your comment');
       }
-      DocumentSnapshot docSnap = await FirebaseFirestore.instance
-          .collection('userToken')
-          .doc(uuid)
-          .get();
-      String mToken = docSnap['token'];
-      authC.sendPustNotification(mToken, '', '$username like your comment');
     } catch (e) {
       print(e.toString());
     }
@@ -215,13 +236,14 @@ class PostController extends GetxController {
             .update({
           "dislike": FieldValue.arrayUnion([uuid]),
         });
+        DocumentSnapshot docSnap = await FirebaseFirestore.instance
+            .collection('userToken')
+            .doc(friendUuid)
+            .get();
+        String mToken = docSnap['token'];
+        authC.sendPustNotification(
+            mToken, '', '$username disklike your comment');
       }
-      DocumentSnapshot docSnap = await FirebaseFirestore.instance
-          .collection('userToken')
-          .doc(uuid)
-          .get();
-      String mToken = docSnap['token'];
-      authC.sendPustNotification(mToken, '', '$username disklike your comment');
     } catch (e) {
       print(e.toString());
     }
@@ -234,17 +256,37 @@ class PostController extends GetxController {
         await _firestore.collection('posts').doc(postId).update({
           "upPost": FieldValue.arrayRemove([uuid]),
         });
+        await _firestore
+            .collection('posts')
+            .doc(postId)
+            .collection('listBoosted')
+            .doc(auth.currentUser!.email.toString())
+            .delete();
       } else {
         await _firestore.collection('posts').doc(postId).update({
           "upPost": FieldValue.arrayUnion([uuid]),
         });
+        await _firestore
+            .collection('posts')
+            .doc(postId)
+            .collection('listBoosted')
+            .doc(auth.currentUser!.email.toString())
+            .set({
+          'username': username,
+          'photoUrl': photoUrl,
+          'status': status,
+          'uuid': uuidUser,
+          'isVerify': isVerify,
+          'bio': bio,
+        });
+        DocumentSnapshot docSnap = await FirebaseFirestore.instance
+            .collection('userToken')
+            .doc(friendUuid)
+            .get();
+        String mToken = docSnap['token'];
+        authC.sendPustNotification(
+            mToken, '', '$username Boosted your sharing');
       }
-      DocumentSnapshot docSnap = await FirebaseFirestore.instance
-          .collection('userToken')
-          .doc(uuid)
-          .get();
-      String mToken = docSnap['token'];
-      authC.sendPustNotification(mToken, '', '$username Like your sharing');
     } catch (e) {
       print(e.toString());
     }
@@ -327,6 +369,9 @@ class PostController extends GetxController {
           'time': DateTime.now().toString(),
           'notifId': notifId,
         });
+        await analytics.logEvent(name: 'Post Comment', parameters: {
+          'title': 'post_comment',
+        });
         commentC.text = '';
         // showNotif('Success', 'Comment is posted');
       } else {
@@ -382,6 +427,9 @@ class PostController extends GetxController {
           'notifId': notifId,
         });
         commentC.text = '';
+        await analytics.logEvent(name: 'Reply Comment', parameters: {
+          'title': 'reply_comment',
+        });
         // showNotif('Success', 'Comment is posted');
       } else {
         showError('Text is empty', 'Please enter your comment below');
@@ -465,6 +513,9 @@ class PostController extends GetxController {
         'notifId': notifId,
       });
       commentC.text = '';
+      await analytics.logEvent(name: 'Connect User', parameters: {
+        'title': 'connect_user',
+      });
     } catch (e) {
       print(e);
     }
@@ -485,6 +536,9 @@ class PostController extends GetxController {
           .collection('connected')
           .doc(email)
           .delete();
+      await analytics.logEvent(name: 'Disconnect user', parameters: {
+        'title': 'disconnect user',
+      });
     } catch (e) {
       print(e);
     }
@@ -496,6 +550,10 @@ class PostController extends GetxController {
       if (imgPath != '') {
         await FirebaseStorage.instance.refFromURL(imgPath).delete();
       }
+      analytics.logEvent(name: 'Delete Post', parameters: {
+        'title': 'delete_post',
+        'postId': postId,
+      });
     } catch (e) {
       print(e);
     }
@@ -509,6 +567,10 @@ class PostController extends GetxController {
           .collection('comments')
           .doc(commentId)
           .delete();
+      await analytics.logEvent(name: 'Delete Comment', parameters: {
+        'title': 'delete_comment',
+        'commentId': commentId,
+      });
     } catch (e) {
       print(e);
     }
@@ -525,6 +587,10 @@ class PostController extends GetxController {
           .collection('reply')
           .doc(replyId)
           .delete();
+      await analytics.logEvent(name: 'Delete Reply', parameters: {
+        'title': 'delete_reply',
+        'postId': postId,
+      });
     } catch (e) {
       print(e);
     }
