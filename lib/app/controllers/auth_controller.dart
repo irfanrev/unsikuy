@@ -4,12 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:unsikuy_app/app/model/chat.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
 import 'package:unsikuy_app/app/routes/app_pages.dart';
 import 'package:http/http.dart' as http;
+
+import '../../main.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -22,6 +25,7 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
+    initFirst();
     requestPermission();
     getToken();
     super.onInit();
@@ -48,6 +52,33 @@ class AuthController extends GetxController {
     } else {
       print('User declined or has not accepted permission');
     }
+  }
+
+  void initFirst() async {
+    await FirebaseMessaging.instance.subscribeToTopic('all');
+    var initialzationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings =
+        InitializationSettings(android: initialzationSettingsAndroid);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification notification = message.notification!;
+      AndroidNotification android = message.notification!.android!;
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                icon: android.smallIcon,
+              ),
+            ));
+      }
+    });
   }
 
   void getToken() async {
@@ -88,6 +119,38 @@ class AuthController extends GetxController {
             'sound': 'default',
           },
           'to': token,
+        }),
+      );
+      print('Notifikasi has sended');
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void sendPostNotif(String body, String title) async {
+    try {
+      await FirebaseMessaging.instance.subscribeToTopic('all');
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization':
+              'key=AAAAiySsgPE:APA91bFImNrylFdUbkA5WjIKqZ1oDjG42Xtfc4inm5K8xouoZ8BrmMe82Sy-0du7znCb8iyesYsJcEB38Ro87-S4HFWJBenxqldwxeRvZqQRXJSswIPptrysSOMsSOvmkgPCVhwmTPmL',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'priority': 'high',
+          'topic': 'all',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'status': 'done',
+            'title': title,
+            'body': body,
+          },
+          'notification': <String, dynamic>{
+            'title': title,
+            'body': body,
+            'sound': 'default',
+          },
         }),
       );
       print('Notifikasi has sended');

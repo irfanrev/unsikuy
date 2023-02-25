@@ -3,12 +3,14 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:unsikuy_app/app/controllers/auth_controller.dart';
 import 'package:unsikuy_app/app/model/discuss.dart';
 import 'package:unsikuy_app/app/model/post.dart';
 import 'package:unsikuy_app/app/model/user.dart' as model;
@@ -23,6 +25,8 @@ class UploadController extends GetxController {
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
   final TextEditingController desc = TextEditingController();
+  final FirebaseMessaging messaging = FirebaseMessaging.instance;
+  final authC = Get.find<AuthController>();
   var username;
   var photoUrl;
   var isVerify;
@@ -104,6 +108,7 @@ class UploadController extends GetxController {
           upPost: [],
           imgPath: refId ?? '',
         );
+        authC.sendPostNotif(desc.text, username);
         await _firestore.collection('posts').doc(postId).set(post.toJson());
         showNotif('Success', 'Data is Posted!');
         resetImage();
@@ -124,6 +129,7 @@ class UploadController extends GetxController {
           upPost: [],
           imgPath: refId ?? '',
         );
+        authC.sendPostNotif(desc.text, username);
         await _firestore.collection('posts').doc(postId).set(post.toJson());
         showNotif('Success', 'Sharing has uploaded');
         desc.text = '';

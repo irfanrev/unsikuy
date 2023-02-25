@@ -95,6 +95,49 @@ class DiscussionController extends GetxController {
     Get.back();
   }
 
+  Future<void> likeDiscussion(
+      String postId, String uuid, List like, String friendUuid) async {
+    try {
+      if (like.contains(uuid)) {
+        await _firestore.collection('discussion').doc(postId).update({
+          "like": FieldValue.arrayRemove([uuid]),
+        });
+        await _firestore
+            .collection('discussion')
+            .doc(postId)
+            .collection('listLike')
+            .doc(auth.currentUser!.email.toString())
+            .delete();
+      } else {
+        await _firestore.collection('discussion').doc(postId).update({
+          "like": FieldValue.arrayUnion([uuid]),
+        });
+        await _firestore
+            .collection('discussion')
+            .doc(postId)
+            .collection('listLike')
+            .doc(auth.currentUser!.email.toString())
+            .set({
+          'username': username,
+          'photoUrl': photoUrl,
+          'status': status,
+          'uuid': uuidUser,
+          'isVerify': isVerify,
+          'bio': bio,
+        });
+        DocumentSnapshot docSnap = await FirebaseFirestore.instance
+            .collection('userToken')
+            .doc(friendUuid)
+            .get();
+        String mToken = docSnap['token'];
+        authC.sendPustNotification(
+            mToken, '', '$username Like your Discussion');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<void> deleteDiscussion(String postId) async {
     try {
       await _firestore.collection('discussion').doc(postId).delete();

@@ -255,6 +255,9 @@ class UploadView extends GetView<UploadController> {
                   },
                 );
               }),
+              const SizedBox(
+                height: 46,
+              ),
             ],
           ),
         ),

@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfire_ui/firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:get/get.dart';
@@ -10,6 +12,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 import 'package:unsikuy_app/app/controllers/auth_controller.dart';
+import 'package:unsikuy_app/app/model/post.dart';
 import 'package:unsikuy_app/app/modules/edit_profile/views/edit_profile_view.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/modules/post/widgets/post_card.dart';
@@ -349,19 +352,37 @@ class _ProfileViewState extends State<ProfileView>
                                         photo: userData['photoUrl'],
                                       ));
                                     },
-                                    child: Container(
-                                      width: 60,
-                                      height: 60,
-                                      child: Hero(
-                                        tag: 'pp',
-                                        child: ImageLoad(
-                                            shapeImage: ShapeImage.oval,
-                                            placeholder: AppImages
-                                                .userPlaceholder
-                                                .image()
-                                                .image,
-                                            image: userData['photoUrl'],
-                                            fit: BoxFit.cover),
+                                    child: CachedNetworkImage(
+                                      imageUrl: userData['photoUrl'],
+                                      imageBuilder: (context, imgProvider) =>
+                                          Container(
+                                        width: 60,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle),
+                                        child: Hero(
+                                          tag: 'pp',
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                  image: imgProvider,
+                                                  fit: BoxFit.cover),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      placeholder: (context, url) => Container(
+                                        width: 60,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              image: AppImages.userPlaceholder
+                                                  .image()
+                                                  .image,
+                                              fit: BoxFit.cover),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -1115,50 +1136,71 @@ class _ProfileViewState extends State<ProfileView>
                                       padding:
                                           EdgeInsets.symmetric(vertical: 16),
                                       width: 100.w,
-                                      child: FutureBuilder(
-                                          future: FirebaseFirestore.instance
+                                      child: FirestoreListView<Post>(
+                                          query: FirebaseFirestore.instance
                                               .collection('posts')
                                               .where('uuid',
                                                   isEqualTo: widget.uuid)
-                                              .get(),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 60),
-                                                child: LoadingOverlay(),
-                                              );
-                                            }
-                                            if ((snapshot.data! as dynamic)
-                                                    .docs
-                                                    .length ==
-                                                0) {
-                                              return Center(
-                                                child: Container(
-                                                  width: 150,
-                                                  child: Lottie.asset(
-                                                      'lib/app/resources/images/not-found.json'),
-                                                ),
-                                              );
-                                            } else {
-                                              return ListView.builder(
-                                                  shrinkWrap: true,
-                                                  primary: false,
-                                                  itemCount: (snapshot.data!
-                                                          as dynamic)
-                                                      .docs
-                                                      .length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return PostCardItem(
-                                                        snap: (snapshot.data!
-                                                                as dynamic)
-                                                            .docs[index],
-                                                        controller: c);
-                                                  });
-                                            }
+                                              .orderBy('published_at',
+                                                  descending: true)
+                                              .withConverter<Post>(
+                                                  fromFirestore:
+                                                      (snapshot, _) =>
+                                                          Post.fromJson(
+                                                              snapshot.data()!),
+                                                  toFirestore: (post, _) =>
+                                                      post.toJson()),
+                                          itemBuilder: (context, snaphot) {
+                                            final post = snaphot.data();
+                                            return PostCardItem(
+                                              snap: post,
+                                              controller: c,
+                                            );
                                           }),
+                                      // child: FutureBuilder(
+                                      //     future: FirebaseFirestore.instance
+                                      //         .collection('posts')
+                                      //         .where('uuid',
+                                      //             isEqualTo: widget.uuid)
+                                      //         .get(),
+                                      //     builder: (context, snapshot) {
+                                      //       if (snapshot.connectionState ==
+                                      //           ConnectionState.waiting) {
+                                      //         return Padding(
+                                      //           padding: const EdgeInsets.only(
+                                      //               top: 60),
+                                      //           child: LoadingOverlay(),
+                                      //         );
+                                      //       }
+                                      //       if ((snapshot.data! as dynamic)
+                                      //               .docs
+                                      //               .length ==
+                                      //           0) {
+                                      //         return Center(
+                                      //           child: Container(
+                                      //             width: 150,
+                                      //             child: Lottie.asset(
+                                      //                 'lib/app/resources/images/not-found.json'),
+                                      //           ),
+                                      //         );
+                                      //       } else {
+                                      //         return ListView.builder(
+                                      //             shrinkWrap: true,
+                                      //             primary: false,
+                                      //             itemCount: (snapshot.data!
+                                      //                     as dynamic)
+                                      //                 .docs
+                                      //                 .length,
+                                      //             itemBuilder:
+                                      //                 (context, index) {
+                                      //               return PostCardItem(
+                                      //                   snap: (snapshot.data!
+                                      //                           as dynamic)
+                                      //                       .docs[index],
+                                      //                   controller: c);
+                                      //             });
+                                      //       }
+                                      //     }),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(

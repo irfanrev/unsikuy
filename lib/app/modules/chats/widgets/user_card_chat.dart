@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
@@ -36,14 +37,29 @@ class UserCardChat extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 22),
         child: Row(
           children: [
-            Container(
-              width: 60,
-              height: 60,
-              child: ImageLoad(
-                fit: BoxFit.cover,
-                shapeImage: ShapeImage.oval,
-                placeholder: AppImages.userPlaceholder.image().image,
-                image: data['photoUrl'],
+            CachedNetworkImage(
+              imageUrl: data['photoUrl'],
+              imageBuilder: (context, imgProvider) => Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(shape: BoxShape.circle),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image:
+                        DecorationImage(image: imgProvider, fit: BoxFit.cover),
+                  ),
+                ),
+              ),
+              placeholder: (context, url) => Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      image: AppImages.userPlaceholder.image().image,
+                      fit: BoxFit.cover),
+                ),
               ),
             ),
             const SizedBox(

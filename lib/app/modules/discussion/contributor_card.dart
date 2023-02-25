@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -76,17 +77,30 @@ class _ContributorCardState extends State<ContributorCard> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      width: 42,
-                      height: 42,
-                      decoration: BoxDecoration(shape: BoxShape.circle),
-                      child: ClipRRect(
-                          child: ImageLoad(
-                        shapeImage: ShapeImage.oval,
-                        placeholder: AppImages.userPlaceholder.image().image,
-                        image: widget.snap['profilePict'] ?? '',
-                        fit: BoxFit.cover,
-                      )),
+                    CachedNetworkImage(
+                      imageUrl: widget.snap['profilePict'],
+                      imageBuilder: (context, imgProvider) => Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: imgProvider, fit: BoxFit.cover),
+                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) => Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: AppImages.userPlaceholder.image().image,
+                              fit: BoxFit.cover),
+                        ),
+                      ),
                     ),
                     const SizedBox(
                       height: 2,

@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -72,6 +74,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
           'uuid': widget.snap['uuid'].toString(),
           'isVerify': widget.snap['isVerify'],
           'date': dateTime,
+          'like': widget.snap['like'].length.toString(),
         });
       },
       child: Container(
@@ -85,16 +88,28 @@ class _DiscussionCardState extends State<DiscussionCard> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 42,
-                      height: 42,
-                      decoration: BoxDecoration(shape: BoxShape.circle),
-                      child: ClipRRect(
-                        child: ImageLoad(
-                          shapeImage: ShapeImage.oval,
-                          image: widget.snap['profImg'],
-                          placeholder: AppImages.userPlaceholder.image().image,
-                          fit: BoxFit.cover,
+                    CachedNetworkImage(
+                      imageUrl: widget.snap['profImg'],
+                      imageBuilder: (context, imgProvider) => Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(shape: BoxShape.circle),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: imgProvider, fit: BoxFit.cover),
+                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) => Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: AppImages.userPlaceholder.image().image,
+                              fit: BoxFit.cover),
                         ),
                       ),
                     ),
@@ -440,6 +455,7 @@ class _DiscussionCardState extends State<DiscussionCard> {
               height: 12,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   // padding: EdgeInsets.symmetric(horizontal: 16, vertical: 3),
@@ -475,6 +491,49 @@ class _DiscussionCardState extends State<DiscussionCard> {
                             ),
                       ),
                     ],
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    widget.controller.likeDiscussion(
+                        widget.snap['postId'],
+                        FirebaseAuth.instance.currentUser!.uid,
+                        widget.snap['like'],
+                        widget.snap['uuid']);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.grey.shade100,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        widget.snap['like'].contains(
+                                FirebaseAuth.instance.currentUser!.uid)
+                            ? const Icon(
+                                CupertinoIcons.heart_fill,
+                                size: 22,
+                                color: AppColors.red,
+                              )
+                            : Icon(
+                                CupertinoIcons.heart,
+                                size: 22,
+                                color: AppColors.grey.shade500,
+                              ),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        Text(
+                          '${widget.snap['like'].length}',
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    color: AppColors.textColour60,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ import 'package:like_button/like_button.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sizer/sizer.dart';
+import 'package:unsikuy_app/app/model/post.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/modules/profile/views/profile_view.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
@@ -24,7 +26,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PostCardItem extends StatefulWidget {
-  final snap;
+  final Post snap;
   final PostController controller;
   PostCardItem({super.key, required this.snap, required this.controller});
 
@@ -50,18 +52,11 @@ class _PostCardItemState extends State<PostCardItem> {
     print('init post');
   }
 
-  @override
-  void dispose() {
-    getCommentLength();
-    // TODO: implement dispose
-    super.dispose();
-  }
-
   void getCommentLength() async {
     try {
       QuerySnapshot qSnap = await FirebaseFirestore.instance
           .collection('posts')
-          .doc(widget.snap['postId'])
+          .doc(widget.snap.postId)
           .collection('comments')
           .get();
       lengthOfComment = qSnap.docs.length;
@@ -76,7 +71,7 @@ class _PostCardItemState extends State<PostCardItem> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime dateTime = DateTime.parse(widget.snap['published_at']);
+    DateTime dateTime = DateTime.parse(widget.snap.publishedAt.toString());
 
     return InkWell(
       hoverColor: AppColors.white,
@@ -103,23 +98,29 @@ class _PostCardItemState extends State<PostCardItem> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(shape: BoxShape.circle),
-                  child: ClipRRect(
-                    child: (kIsWeb)
-                        ? Image.asset(
-                            widget.snap['profImg'],
-                            fit: BoxFit.cover,
-                          )
-                        : ImageLoad(
-                            shapeImage: ShapeImage.oval,
-                            image: widget.snap['profImg'],
-                            placeholder:
-                                AppImages.userPlaceholder.image().image,
-                            fit: BoxFit.cover,
-                          ),
+                CachedNetworkImage(
+                  imageUrl: widget.snap.profImg.toString(),
+                  imageBuilder: (context, imgProvider) => Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(shape: BoxShape.circle),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: imgProvider, fit: BoxFit.cover),
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: AppImages.userPlaceholder.image().image,
+                          fit: BoxFit.cover),
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -138,7 +139,7 @@ class _PostCardItemState extends State<PostCardItem> {
                               Row(
                                 children: [
                                   Text(
-                                    widget.snap['username'],
+                                    widget.snap.username!,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline5!
@@ -151,7 +152,7 @@ class _PostCardItemState extends State<PostCardItem> {
                                     width: 4,
                                   ),
                                   Visibility(
-                                    visible: widget.snap['isVerify'] == true,
+                                    visible: widget.snap.isVerify == true,
                                     child: Icon(
                                       CupertinoIcons.checkmark_seal_fill,
                                       color: Colors.red[900],
@@ -175,14 +176,14 @@ class _PostCardItemState extends State<PostCardItem> {
                               ),
                             ],
                           ),
-                          widget.controller.uuidUser == widget.snap['uuid']
+                          widget.controller.uuidUser == widget.snap.uuid
                               ? Visibility(
                                   visible: widget.controller.uuidUser ==
-                                      widget.snap['uuid'],
+                                      widget.snap.uuid,
                                   child: InkWell(
                                     onTap: () {
                                       if (widget.controller.uuidUser ==
-                                          widget.snap['uuid']) {
+                                          widget.snap.uuid) {
                                         showBarModalBottomSheet(
                                             //constraints: BoxConstraints(maxHeight: 300),
                                             context: context,
@@ -215,10 +216,9 @@ class _PostCardItemState extends State<PostCardItem> {
                                                       onTap: () {
                                                         widget.controller
                                                             .deletePost(
-                                                          widget.snap['postId'],
-                                                          widget.snap['uuid'],
-                                                          widget
-                                                              .snap['postUrl'],
+                                                          widget.snap.postId!,
+                                                          widget.snap.uuid!,
+                                                          widget.snap.postUrl!,
                                                         );
                                                         Get.back();
                                                       },
@@ -403,10 +403,10 @@ class _PostCardItemState extends State<PostCardItem> {
                                                       onPressed: () => widget
                                                           .controller
                                                           .sendEmail(
-                                                              widget.snap[
-                                                                  'username'],
-                                                              widget.snap[
-                                                                  'description']),
+                                                              widget.snap
+                                                                  .username!,
+                                                              widget.snap
+                                                                  .description!),
                                                     ),
                                                   ],
                                                 ),
@@ -457,8 +457,8 @@ class _PostCardItemState extends State<PostCardItem> {
                                             confirm: TextButton(
                                               onPressed: () {
                                                 widget.controller.blockSharing(
-                                                    widget.snap['username'],
-                                                    widget.snap['description']);
+                                                    widget.snap.username!,
+                                                    widget.snap.description!);
                                                 Get.back();
                                               },
                                               child: Text(
@@ -484,7 +484,7 @@ class _PostCardItemState extends State<PostCardItem> {
                         ],
                       ),
                       Linkify(
-                        text: widget.snap['description'],
+                        text: widget.snap.description!,
                         onOpen: (value) async {
                           Uri url = Uri.parse(value.url);
                           if (await canLaunchUrl(url)) {
@@ -505,31 +505,40 @@ class _PostCardItemState extends State<PostCardItem> {
                                   fontWeight: FontWeight.bold,
                                   height: 1.4,
                                 ),
-                        maxLines: 2,
+                        maxLines: 4,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(
                         height: 8,
                       ),
                       Visibility(
-                        visible: widget.snap['postUrl'] != '',
+                        visible: widget.snap.postUrl.toString() != '',
                         child: Container(
                           width: Get.width,
                           height: Get.height * 0.35,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: (kIsWeb)
-                                ? Image.asset(
-                                    widget.snap['postUrl'],
-                                    fit: BoxFit.cover,
-                                  )
-                                : ImageLoad(
-                                    image: widget.snap['postUrl'],
-                                    placeholder: AppImages.imgPlaceholderPrimary
-                                        .image()
-                                        .image,
-                                    fit: BoxFit.cover,
-                                  ),
+                          child: CachedNetworkImage(
+                            imageUrl: widget.snap.postUrl.toString(),
+                            imageBuilder: (context, imageProvider) => ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                width: Get.width,
+                                height: Get.height * 0.35,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover),
+                                ),
+                              ),
+                            ),
+                            placeholder: (context, url) => ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: AppImages.imgPlaceholderPrimary.image(
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                AppImages.imgPlaceholderPrimary.image(
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
@@ -544,13 +553,13 @@ class _PostCardItemState extends State<PostCardItem> {
                               InkWell(
                                 onTap: () {
                                   widget.controller.likePost(
-                                    widget.snap['postId'],
+                                    widget.snap.postId!,
                                     widget.controller.auth.currentUser!.uid,
-                                    widget.snap['like'],
-                                    widget.snap['uuid'],
+                                    widget.snap.like!,
+                                    widget.snap.uuid!,
                                   );
                                 },
-                                child: widget.snap['like'].contains(
+                                child: widget.snap.like.contains(
                                         widget.controller.auth.currentUser!.uid)
                                     ? const Icon(
                                         CupertinoIcons.hand_thumbsup_fill,
@@ -565,7 +574,7 @@ class _PostCardItemState extends State<PostCardItem> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                '${widget.snap['like'].length}',
+                                '${widget.snap.like.length}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge!
@@ -578,13 +587,13 @@ class _PostCardItemState extends State<PostCardItem> {
                               InkWell(
                                   onTap: () async {
                                     widget.controller.upPost(
-                                      widget.snap['postId'],
+                                      widget.snap.postId!,
                                       widget.controller.auth.currentUser!.uid,
-                                      widget.snap['upPost'],
-                                      widget.snap['uuid'],
+                                      widget.snap.upPost!,
+                                      widget.snap.uuid!,
                                     );
                                   },
-                                  child: widget.snap['upPost'].contains(widget
+                                  child: widget.snap.upPost.contains(widget
                                           .controller.auth.currentUser!.uid)
                                       ? const Icon(
                                           CupertinoIcons.arrow_up_circle_fill,
@@ -598,7 +607,7 @@ class _PostCardItemState extends State<PostCardItem> {
                                         )),
                               const SizedBox(width: 8),
                               Text(
-                                '${widget.snap['upPost'].length}',
+                                '${widget.snap.upPost.length}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleLarge!
@@ -611,8 +620,8 @@ class _PostCardItemState extends State<PostCardItem> {
                               InkWell(
                                 onTap: () {
                                   Get.toNamed(Routes.COMMENT, arguments: {
-                                    'postId': widget.snap['postId'].toString(),
-                                    'uuid': widget.snap['uuid'].toString(),
+                                    'postId': widget.snap.postId.toString(),
+                                    'uuid': widget.snap.uuid.toString(),
                                   });
                                   print(Get.arguments.toString());
                                 },
@@ -639,7 +648,7 @@ class _PostCardItemState extends State<PostCardItem> {
                           //     widget.controller.savePost(
                           //         widget.snap['postId'],
                           //         widget.snap['username'],
-                          //         widget.snap['description'],
+                          //         widget.snap.description!,
                           //         widget.snap['published_at'],
                           //         widget.snap['uuid'],
                           //         widget.snap['postUrl'],

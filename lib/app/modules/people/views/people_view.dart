@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfire_ui/firestore.dart';
 
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
+import 'package:unsikuy_app/app/model/user.dart';
 import 'package:unsikuy_app/app/modules/people/widgets/status_list.dart';
 import 'package:unsikuy_app/app/modules/people/widgets/user_card.dart';
 import 'package:unsikuy_app/app/resources/resource.dart';
@@ -32,135 +33,178 @@ class PeopleView extends GetView<PeopleController> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: (kIsWeb) ? 300 : 0),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 12,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: FormInputFieldWithIcon(
-                      keyboardType: TextInputType.text,
-                      controller: controller.searchC,
-                      labelText: 'Search user by first keyword',
-                      onCompleted: (value) {
-                        if (value != '') {
-                          controller.isSearch.value = true;
-                          controller.parsingStatus.value = '';
-                          controller.update();
-                          print(value.toString());
-                        } else {
-                          controller.isSearch.value = false;
-                        }
-                      },
-                      onClear: () {
-                        controller.searchC.clear();
-                        controller.isSearch.value = false;
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: FormInputFieldWithIcon(
+                    keyboardType: TextInputType.text,
+                    controller: controller.searchC,
+                    labelText: 'Search user by first keyword',
+                    onCompleted: (value) {
+                      if (value != '') {
+                        controller.isSearch.value = true;
+                        controller.parsingStatus.value = '';
                         controller.update();
-                      },
-                    ),
+                        print(value.toString());
+                      } else {
+                        controller.isSearch.value = false;
+                      }
+                    },
+                    onClear: () {
+                      controller.searchC.clear();
+                      controller.isSearch.value = false;
+                      controller.update();
+                    },
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 18,
-              ),
-              StatusList(),
-              const SizedBox(
-                height: 24,
-              ),
-              Obx(() => controller.isSearch.value == true
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            StatusList(),
+            const SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: Obx(() => controller.isSearch.value == true
                   ? Container(
                       width: 100.w,
-                      child: FutureBuilder(
-                          future: FirebaseFirestore.instance
-                              .collection("users")
+                      child: FirestoreListView<User>(
+                          query: FirebaseFirestore.instance
+                              .collection('users')
                               .where("username",
                                   isGreaterThanOrEqualTo:
                                       controller.searchC.text)
                               .where('username',
                                   isLessThan: controller.searchC.text + 'z')
                               .orderBy("username", descending: true)
-                              .get(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return LoadingOverlay();
-                            }
-                            return ListView.builder(
-                                shrinkWrap: true,
-                                primary: false,
-                                itemCount:
-                                    (snapshot.data! as dynamic).docs.length,
-                                itemBuilder: (context, index) {
-                                  return UserCard(
-                                    snap:
-                                        (snapshot.data! as dynamic).docs[index],
-                                  );
-                                });
+                              .withConverter<User>(
+                                  fromFirestore: (snapshot, _) =>
+                                      User.fromJson(snapshot.data()!),
+                                  toFirestore: (post, _) => post.toJson()),
+                          itemBuilder: (context, snaphot) {
+                            final users = snaphot.data();
+                            return UserCard(
+                              snap: users,
+                            );
                           }),
+                      // child: FutureBuilder(
+                      //     future: FirebaseFirestore.instance
+                      //         .collection("users")
+                      //         .where("username",
+                      //             isGreaterThanOrEqualTo:
+                      //                 controller.searchC.text)
+                      //         .where('username',
+                      //             isLessThan: controller.searchC.text + 'z')
+                      //         .orderBy("username", descending: true)
+                      //         .get(),
+                      //     builder: (context, snapshot) {
+                      //       if (!snapshot.hasData) {
+                      //         return LoadingOverlay();
+                      //       }
+                      //       return ListView.builder(
+                      //           shrinkWrap: true,
+                      //           primary: false,
+                      //           itemCount:
+                      //               (snapshot.data! as dynamic).docs.length,
+                      //           itemBuilder: (context, index) {
+                      //             return UserCard(
+                      //               snap:
+                      //                   (snapshot.data! as dynamic).docs[index],
+                      //             );
+                      //           });
+                      //     }),
                     )
                   : controller.parsingStatus.value == ''
                       ? Container(
                           width: 100.w,
-                          child: FutureBuilder(
-                              future: FirebaseFirestore.instance
-                                  .collection("users")
-                                  .get(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return LoadingOverlay();
-                                }
-                                return ListView.builder(
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    itemCount:
-                                        (snapshot.data! as dynamic).docs.length,
-                                    itemBuilder: (context, index) {
-                                      return UserCard(
-                                        snap: (snapshot.data! as dynamic)
-                                            .docs[index],
-                                      );
-                                      // return Text((snapshot.data! as dynamic)
-                                      //     .docs[index]['username']
-                                      //     .toString());
-                                    });
+                          child: FirestoreListView<User>(
+                              query: FirebaseFirestore.instance
+                                  .collection('users')
+                                  .withConverter<User>(
+                                      fromFirestore: (snapshot, _) =>
+                                          User.fromJson(snapshot.data()!),
+                                      toFirestore: (post, _) => post.toJson()),
+                              itemBuilder: (context, snaphot) {
+                                final users = snaphot.data();
+                                return UserCard(
+                                  snap: users,
+                                );
                               }),
+                          // child: FutureBuilder(
+                          //     future: FirebaseFirestore.instance
+                          //         .collection("users")
+                          //         .get(),
+                          //     builder: (context, snapshot) {
+                          //       if (snapshot.connectionState ==
+                          //           ConnectionState.waiting) {
+                          //         return LoadingOverlay();
+                          //       }
+                          //       return ListView.builder(
+                          //           shrinkWrap: true,
+                          //           primary: false,
+                          //           itemCount:
+                          //               (snapshot.data! as dynamic).docs.length,
+                          //           itemBuilder: (context, index) {
+                          //             return UserCard(
+                          //               snap: (snapshot.data! as dynamic)
+                          //                   .docs[index],
+                          //             );
+                          //             // return Text((snapshot.data! as dynamic)
+                          //             //     .docs[index]['username']
+                          //             //     .toString());
+                          //           });
+                          //     }),
                         )
                       : Container(
                           width: 100.w,
-                          child: FutureBuilder(
-                              future: FirebaseFirestore.instance
-                                  .collection("users")
+                          child: FirestoreListView<User>(
+                              query: FirebaseFirestore.instance
+                                  .collection('users')
                                   .where('status',
                                       isEqualTo: controller.parsingStatus.value)
-                                  .get(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return LoadingOverlay();
-                                }
-                                return ListView.builder(
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    itemCount:
-                                        (snapshot.data! as dynamic).docs.length,
-                                    itemBuilder: (context, index) {
-                                      return UserCard(
-                                        snap: (snapshot.data! as dynamic)
-                                            .docs[index],
-                                      );
-                                      // return Text((snapshot.data! as dynamic)
-                                      //     .docs[index]['username']
-                                      //     .toString());
-                                    });
+                                  .withConverter<User>(
+                                      fromFirestore: (snapshot, _) =>
+                                          User.fromJson(snapshot.data()!),
+                                      toFirestore: (post, _) => post.toJson()),
+                              itemBuilder: (context, snaphot) {
+                                final users = snaphot.data();
+                                return UserCard(
+                                  snap: users,
+                                );
                               }),
+                          // child: FutureBuilder(
+                          //     future: FirebaseFirestore.instance
+                          //         .collection("users")
+                          //         .where('status',
+                          //             isEqualTo: controller.parsingStatus.value)
+                          //         .get(),
+                          //     builder: (context, snapshot) {
+                          //       if (snapshot.connectionState ==
+                          //           ConnectionState.waiting) {
+                          //         return LoadingOverlay();
+                          //       }
+                          //       return ListView.builder(
+                          //           shrinkWrap: true,
+                          //           primary: false,
+                          //           itemCount:
+                          //               (snapshot.data! as dynamic).docs.length,
+                          //           itemBuilder: (context, index) {
+                          //             return UserCard(
+                          //               snap: (snapshot.data! as dynamic)
+                          //                   .docs[index],
+                          //             );
+                          //             // return Text((snapshot.data! as dynamic)
+                          //             //     .docs[index]['username']
+                          //             //     .toString());
+                          //           });
+                          //     }),
                         )),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

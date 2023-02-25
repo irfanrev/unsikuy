@@ -1,15 +1,18 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:flutterfire_ui/firestore.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sizer/sizer.dart';
+import 'package:unsikuy_app/app/model/user.dart';
 import 'package:unsikuy_app/app/modules/people/widgets/user_card.dart';
 import 'package:unsikuy_app/app/modules/post/controllers/post_controller.dart';
 import 'package:unsikuy_app/app/modules/post_detail/views/post_image_view.dart';
@@ -28,7 +31,7 @@ class PostDetailView extends GetView<PostDetailController> {
   const PostDetailView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    DateTime dateTime = DateTime.parse(Get.arguments['published_at']);
+    DateTime dateTime = DateTime.parse(Get.arguments.publishedAt.toString());
 
     final postC = Get.put(PostController());
     return Scaffold(
@@ -65,7 +68,7 @@ class PostDetailView extends GetView<PostDetailController> {
                     child: InkWell(
                       onTap: () {
                         Get.to(ProfileView(
-                          uuid: Get.arguments['uuid'],
+                          uuid: Get.arguments.uuid,
                         ));
                       },
                       child: Row(
@@ -79,7 +82,7 @@ class PostDetailView extends GetView<PostDetailController> {
                               child: ClipRRect(
                                 child: ImageLoad(
                                   shapeImage: ShapeImage.oval,
-                                  image: Get.arguments['profImg'],
+                                  image: Get.arguments.profImg,
                                   placeholder:
                                       AppImages.userPlaceholder.image().image,
                                   fit: BoxFit.cover,
@@ -96,7 +99,7 @@ class PostDetailView extends GetView<PostDetailController> {
                               Row(
                                 children: [
                                   Text(
-                                    Get.arguments['username'],
+                                    Get.arguments.username,
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline4!
@@ -109,7 +112,7 @@ class PostDetailView extends GetView<PostDetailController> {
                                     width: 4,
                                   ),
                                   Visibility(
-                                    visible: Get.arguments['isVerify'] == true,
+                                    visible: Get.arguments.isVerify == true,
                                     child: Icon(
                                       CupertinoIcons.checkmark_seal_fill,
                                       color: Colors.red[900],
@@ -155,7 +158,7 @@ class PostDetailView extends GetView<PostDetailController> {
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     width: 100.w,
                     child: Linkify(
-                      text: Get.arguments['description'],
+                      text: Get.arguments.description,
                       onOpen: (value) async {
                         Uri url = Uri.parse(value.url);
                         if (await canLaunchUrl(url)) {
@@ -182,22 +185,43 @@ class PostDetailView extends GetView<PostDetailController> {
                     height: 20,
                   ),
                   Visibility(
-                    visible: Get.arguments['postUrl'] != '',
+                    visible: Get.arguments.postUrl != '',
                     child: InkWell(
                       onTap: () {
-                        Get.to(PostImageView(image: Get.arguments['postUrl']));
+                        Get.to(PostImageView(image: Get.arguments.postUrl));
                         // Get.defaultDialog(
                         //   content: PostImageView(image: Get.arguments['postUrl']),
                         // );
                       },
-                      child: Container(
-                        width: 100.w,
-                        child: Hero(
-                          tag: 'post',
-                          child: Image.network(
-                            Get.arguments['postUrl'],
-                            fit: BoxFit.fitWidth,
+                      child: CachedNetworkImage(
+                        imageUrl: Get.arguments.postUrl.toString(),
+                        imageBuilder: (context, imgProvider) => Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          width: 100.w,
+                          height: Get.height * 0.35,
+                          child: Hero(
+                              tag: 'post',
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  image: DecorationImage(
+                                      image: imgProvider, fit: BoxFit.fitWidth),
+                                ),
+                              )),
+                        ),
+                        placeholder: (context, url) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AppImages.imgPlaceholderPrimary
+                                    .image(
+                                      width: 100.w,
+                                    )
+                                    .image),
                           ),
+                        ),
+                        errorWidget: (context, url, error) =>
+                            AppImages.imgPlaceholderPrimary.image(
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -210,7 +234,7 @@ class PostDetailView extends GetView<PostDetailController> {
                       children: [
                         InkWell(
                           onTap: () {
-                            final postID = Get.arguments['postId'];
+                            final postID = Get.arguments.postId;
                             showBarModalBottomSheet(
                                 //constraints: BoxConstraints(maxHeight: 300),
                                 expand: false,
@@ -254,52 +278,75 @@ class PostDetailView extends GetView<PostDetailController> {
                                             height: 12,
                                           ),
                                           Expanded(
-                                            child: FutureBuilder(
-                                                future: FirebaseFirestore
+                                            child: FirestoreListView<User>(
+                                                query: FirebaseFirestore
                                                     .instance
                                                     .collection("posts")
                                                     .doc(postID)
                                                     .collection('listLike')
-                                                    .get(),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot
-                                                          .connectionState ==
-                                                      ConnectionState.waiting) {
-                                                    return LoadingOverlay();
-                                                  }
-                                                  if ((snapshot.data!
-                                                              as dynamic)
-                                                          .docs
-                                                          .length ==
-                                                      0) {
-                                                    return Center(
-                                                      child: Container(
-                                                        width: 150,
-                                                        child: Lottie.asset(
-                                                            'lib/app/resources/images/not-found.json'),
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    return ListView.builder(
-                                                        itemCount:
-                                                            (snapshot.data!
-                                                                    as dynamic)
-                                                                .docs
-                                                                .length,
-                                                        itemBuilder:
-                                                            (context, index) {
-                                                          return UserCard(
-                                                            snap: (snapshot
-                                                                        .data!
-                                                                    as dynamic)
-                                                                .docs[index],
-                                                          );
-                                                          // return Text((snapshot.data! as dynamic)
-                                                          //     .docs[index]['username']
-                                                          //     .toString());
-                                                        });
-                                                  }
+                                                    .withConverter<User>(
+                                                        fromFirestore: (snapshot,
+                                                                _) =>
+                                                            User.fromJson(
+                                                                snapshot
+                                                                    .data()!),
+                                                        toFirestore:
+                                                            (post, _) =>
+                                                                post.toJson()),
+                                                itemBuilder:
+                                                    (context, snaphot) {
+                                                  final users = snaphot.data();
+
+                                                  return UserCard(
+                                                    snap: users,
+                                                  );
                                                 }),
+                                            // child: FutureBuilder(
+                                            //     future: FirebaseFirestore
+                                            //         .instance
+                                            //         .collection("posts")
+                                            //         .doc(postID)
+                                            //         .collection('listLike')
+                                            //         .get(),
+                                            //     builder: (context, snapshot) {
+                                            //       if (snapshot
+                                            //               .connectionState ==
+                                            //           ConnectionState.waiting) {
+                                            //         return LoadingOverlay();
+                                            //       }
+                                            //       if ((snapshot.data!
+                                            //                   as dynamic)
+                                            //               .docs
+                                            //               .length ==
+                                            //           0) {
+                                            //         return Center(
+                                            //           child: Container(
+                                            //             width: 150,
+                                            //             child: Lottie.asset(
+                                            //                 'lib/app/resources/images/not-found.json'),
+                                            //           ),
+                                            //         );
+                                            //       } else {
+                                            //         return ListView.builder(
+                                            //             itemCount:
+                                            //                 (snapshot.data!
+                                            //                         as dynamic)
+                                            //                     .docs
+                                            //                     .length,
+                                            //             itemBuilder:
+                                            //                 (context, index) {
+                                            //               return UserCard(
+                                            //                 snap: (snapshot
+                                            //                             .data!
+                                            //                         as dynamic)
+                                            //                     .docs[index],
+                                            //               );
+                                            //               // return Text((snapshot.data! as dynamic)
+                                            //               //     .docs[index]['username']
+                                            //               //     .toString());
+                                            //             });
+                                            //       }
+                                            //     }),
                                           ),
                                         ],
                                       ));
@@ -308,7 +355,7 @@ class PostDetailView extends GetView<PostDetailController> {
                           child: Chip(
                             backgroundColor: AppColors.shadesPrimaryDark10,
                             label: Text(
-                              '${Get.arguments['like'].length} Likes',
+                              '${Get.arguments.like.length} Likes',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge!
@@ -321,7 +368,7 @@ class PostDetailView extends GetView<PostDetailController> {
                         ),
                         InkWell(
                           onTap: () {
-                            final postID = Get.arguments['postId'];
+                            final postID = Get.arguments.postId;
                             showBarModalBottomSheet(
                                 //constraints: BoxConstraints(maxHeight: 300),
                                 expand: false,
@@ -365,52 +412,75 @@ class PostDetailView extends GetView<PostDetailController> {
                                             height: 12,
                                           ),
                                           Expanded(
-                                            child: FutureBuilder(
-                                                future: FirebaseFirestore
+                                            child: FirestoreListView<User>(
+                                                query: FirebaseFirestore
                                                     .instance
                                                     .collection("posts")
                                                     .doc(postID)
                                                     .collection('listBoosted')
-                                                    .get(),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot
-                                                          .connectionState ==
-                                                      ConnectionState.waiting) {
-                                                    return LoadingOverlay();
-                                                  }
-                                                  if ((snapshot.data!
-                                                              as dynamic)
-                                                          .docs
-                                                          .length ==
-                                                      0) {
-                                                    return Center(
-                                                      child: Container(
-                                                        width: 150,
-                                                        child: Lottie.asset(
-                                                            'lib/app/resources/images/not-found.json'),
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    return ListView.builder(
-                                                        itemCount:
-                                                            (snapshot.data!
-                                                                    as dynamic)
-                                                                .docs
-                                                                .length,
-                                                        itemBuilder:
-                                                            (context, index) {
-                                                          return UserCard(
-                                                            snap: (snapshot
-                                                                        .data!
-                                                                    as dynamic)
-                                                                .docs[index],
-                                                          );
-                                                          // return Text((snapshot.data! as dynamic)
-                                                          //     .docs[index]['username']
-                                                          //     .toString());
-                                                        });
-                                                  }
+                                                    .withConverter<User>(
+                                                        fromFirestore: (snapshot,
+                                                                _) =>
+                                                            User.fromJson(
+                                                                snapshot
+                                                                    .data()!),
+                                                        toFirestore:
+                                                            (post, _) =>
+                                                                post.toJson()),
+                                                itemBuilder:
+                                                    (context, snaphot) {
+                                                  final users = snaphot.data();
+
+                                                  return UserCard(
+                                                    snap: users,
+                                                  );
                                                 }),
+                                            // child: FutureBuilder(
+                                            //     future: FirebaseFirestore
+                                            //         .instance
+                                            //         .collection("posts")
+                                            //         .doc(postID)
+                                            //         .collection('listBoosted')
+                                            //         .get(),
+                                            //     builder: (context, snapshot) {
+                                            //       if (snapshot
+                                            //               .connectionState ==
+                                            //           ConnectionState.waiting) {
+                                            //         return LoadingOverlay();
+                                            //       }
+                                            //       if ((snapshot.data!
+                                            //                   as dynamic)
+                                            //               .docs
+                                            //               .length ==
+                                            //           0) {
+                                            //         return Center(
+                                            //           child: Container(
+                                            //             width: 150,
+                                            //             child: Lottie.asset(
+                                            //                 'lib/app/resources/images/not-found.json'),
+                                            //           ),
+                                            //         );
+                                            //       } else {
+                                            //         return ListView.builder(
+                                            //             itemCount:
+                                            //                 (snapshot.data!
+                                            //                         as dynamic)
+                                            //                     .docs
+                                            //                     .length,
+                                            //             itemBuilder:
+                                            //                 (context, index) {
+                                            //               return UserCard(
+                                            //                 snap: (snapshot
+                                            //                             .data!
+                                            //                         as dynamic)
+                                            //                     .docs[index],
+                                            //               );
+                                            //               // return Text((snapshot.data! as dynamic)
+                                            //               //     .docs[index]['username']
+                                            //               //     .toString());
+                                            //             });
+                                            //       }
+                                            //     }),
                                           ),
                                         ],
                                       ));
@@ -419,7 +489,7 @@ class PostDetailView extends GetView<PostDetailController> {
                           child: Chip(
                             backgroundColor: AppColors.shadesPrimaryDark10,
                             label: Text(
-                              '${Get.arguments['upPost'].length} boosted this Share ',
+                              '${Get.arguments.upPost.length} boosted this Share ',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge!
@@ -510,7 +580,7 @@ class PostDetailView extends GetView<PostDetailController> {
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection('posts')
-                          .doc(Get.arguments['postId'])
+                          .doc(Get.arguments.postId)
                           .collection('comments')
                           .orderBy('published_at', descending: true)
                           .snapshots(),
@@ -539,7 +609,7 @@ class PostDetailView extends GetView<PostDetailController> {
                                 return CommentCardDetail(
                                   snap: snapshot.data!.docs[index],
                                   controller: postC,
-                                  postId: Get.arguments['postId'],
+                                  postId: Get.arguments.postId,
                                 );
                               });
                         }
@@ -603,7 +673,7 @@ class PostDetailView extends GetView<PostDetailController> {
                   InkWell(
                     onTap: () {
                       postC.postComment(
-                          Get.arguments['postId'], Get.arguments['uuid']);
+                          Get.arguments.postId, Get.arguments.uuid);
 
                       FocusManager.instance.primaryFocus?.unfocus();
                     },

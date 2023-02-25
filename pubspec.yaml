@@ -1,5 +1,5 @@
 name: unsikuy_app
-version: 1.0.0+4
+version: 1.0.0+5
 publish_to: none
 description: A new Flutter project.
 environment: 
@@ -55,6 +55,8 @@ dependencies:
   chips_choice: any
   mailer: 6.0.0
   like_button: 2.0.5
+  cached_network_image: any
+  flutterfire_ui: 0.4.3+20
   flutter: 
     sdk: flutter
 
