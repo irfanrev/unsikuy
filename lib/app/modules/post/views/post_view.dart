@@ -17,8 +17,14 @@ import 'package:unsikuy_app/app/utils/widgets/state_handle_widget.dart';
 
 import '../controllers/post_controller.dart';
 
-class PostView extends GetView<PostController> {
+class PostView extends StatefulWidget {
   const PostView({Key? key}) : super(key: key);
+
+  @override
+  State<PostView> createState() => _PostViewState();
+}
+
+class _PostViewState extends State<PostView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final queryPost = FirebaseFirestore.instance
@@ -27,6 +33,16 @@ class PostView extends GetView<PostController> {
         .withConverter<Post>(
             fromFirestore: (snapshot, _) => Post.fromJson(snapshot.data()!),
             toFirestore: (post, _) => post.toJson());
+    final queryAcademy =  FirebaseFirestore.instance
+        .collection('posts')
+        .orderBy('published_at', descending: true).where('isInsight', isEqualTo: true)
+        .withConverter<Post>(
+            fromFirestore: (snapshot, _) => Post.fromJson(snapshot.data()!),
+            toFirestore: (post, _) => post.toJson());
+
+  TabController tabController = TabController(length: 2, vsync: this);
+
+  final controller = Get.find<PostController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -73,17 +89,66 @@ class PostView extends GetView<PostController> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        child: FirestoreListView<Post>(
-            query: queryPost,
-            itemBuilder: (context, snaphot) {
-              final post = snaphot.data();
-              return PostCardItem(
-                snap: post,
-                controller: controller,
-              );
-            }),
-      ),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              Container(
+                child: TabBar(
+                  controller: tabController,
+                  labelColor: AppColors.black,
+                  unselectedLabelColor: AppColors.textColour50,
+                  indicatorColor: AppColors.primaryLight,
+                  labelStyle: Theme.of(context).textTheme.headline6,
+                 indicatorSize: TabBarIndicatorSize.label,
+                  
+                  tabs: [
+                    Tab(
+                      child: Text('Home'),
+                    ),
+                    Tab(
+                      child: Text(
+                        'New Insights',
+                      ),
+                    ),
+                
+                  ],
+                ),
+              ),
+              Expanded(child: Container(
+                width: 100.w,
+                child: TabBarView(
+                  controller: tabController,
+                  children: [
+                  Container(
+                    margin:const EdgeInsets.only(top: 12),
+                    child: FirestoreListView<Post>(
+                    query: queryPost,
+                    itemBuilder: (context, snaphot) {
+                      final post = snaphot.data();
+                      return PostCardItem(
+                        snap: post,
+                        controller: controller,
+                      );
+                    }),
+                  ),
+                  Container(
+                    margin:const EdgeInsets.only(top: 8),
+                    child: FirestoreListView<Post>(
+                    query: queryAcademy,
+                    itemBuilder: (context, snaphot) {
+                      final post = snaphot.data();
+                      return PostCardItem(
+                        snap: post,
+                        controller: controller,
+                      );
+                    }),
+                  ),
+                 
+                  
+                ]),
+              ))
+            ],
+          )),
       // body: Padding(
       //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       //   child: StreamBuilder(

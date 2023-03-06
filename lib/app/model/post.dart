@@ -18,6 +18,7 @@ class Post {
     this.postUrl,
     this.profImg,
     this.isVerify,
+    this.isInsight,
     this.like,
     this.upPost,
     this.imgPath,
@@ -31,6 +32,7 @@ class Post {
   String? postUrl;
   String? profImg;
   bool? isVerify;
+  bool? isInsight;
   final like;
   final upPost;
   String? imgPath;
@@ -46,6 +48,7 @@ class Post {
         postUrl: json["postUrl"] == null ? null : json["postUrl"],
         profImg: json["profImg"] == null ? null : json["profImg"],
         isVerify: json["isVerify"] == null ? null : json["isVerify"],
+        isInsight: json["isInsight"] == null ? null : json["isInsight"],
         like: json["like"] == null ? null : json["like"],
         upPost: json["upPost"] == null ? null : json["upPost"],
         imgPath: json["imgPath"] == null ? null : json["imgPath"],
@@ -61,6 +64,7 @@ class Post {
         "postUrl": postUrl == null ? null : postUrl,
         "profImg": profImg == null ? null : profImg,
         "isVerify": isVerify == null ? null : isVerify,
+        "isInsight": isInsight == null ? null : isInsight,
         "like": like == null ? null : like,
         "upPost": upPost == null ? null : upPost,
         "imgPath": imgPath == null ? null : imgPath,

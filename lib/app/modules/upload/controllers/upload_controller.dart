@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:unsikuy_app/app/controllers/auth_controller.dart';
+import 'package:unsikuy_app/app/model/academy.dart';
 import 'package:unsikuy_app/app/model/discuss.dart';
 import 'package:unsikuy_app/app/model/post.dart';
 import 'package:unsikuy_app/app/model/user.dart' as model;
@@ -104,6 +105,7 @@ class UploadController extends GetxController {
           postUrl: photo,
           profImg: photoUrl,
           isVerify: isVerify,
+          isInsight: false,
           like: [],
           upPost: [],
           imgPath: refId ?? '',
@@ -125,6 +127,64 @@ class UploadController extends GetxController {
           postUrl: '',
           profImg: photoUrl,
           isVerify: isVerify,
+          isInsight: false,
+          like: [],
+          upPost: [],
+          imgPath: refId ?? '',
+        );
+        authC.sendPostNotif(desc.text, username);
+        await _firestore.collection('posts').doc(postId).set(post.toJson());
+        showNotif('Success', 'Sharing has uploaded');
+        desc.text = '';
+        isDismiss.value = false;
+      }
+    } catch (e) {
+      showError('Error', e.toString());
+      isDismiss.value = false;
+    }
+  }
+
+  
+  Future uploadAcademy() async {
+    try {
+      isDismiss.value = true;
+
+      if (file != null) {
+        String photo = await uploadImageToStorage('post', file!, true);
+
+        String postId = Uuid().v1();
+        Post post = Post(
+          postId: postId,
+          username: username,
+          description: desc.text,
+          publishedAt: DateTime.now(),
+          uuid: _auth.currentUser!.uid,
+          postUrl: photo,
+          profImg: photoUrl,
+          isVerify: isVerify,
+          isInsight: true,
+          like: [],
+          upPost: [],
+          imgPath: refId ?? '',
+        );
+        authC.sendPostNotif(desc.text, username);
+        await _firestore.collection('posts').doc(postId).set(post.toJson());
+        showNotif('Success', 'Data is Posted!');
+        resetImage();
+        desc.text = '';
+        isDismiss.value = false;
+      } else {
+        String postId = Uuid().v1();
+        Post post = Post(
+          postId: postId,
+          username: username,
+          description: desc.text,
+          publishedAt: DateTime.now(),
+          uuid: _auth.currentUser!.uid,
+          postUrl: '',
+          profImg: photoUrl,
+          isVerify: isVerify,
+          isInsight: true,
           like: [],
           upPost: [],
           imgPath: refId ?? '',
@@ -155,6 +215,7 @@ class UploadController extends GetxController {
           uuid: _auth.currentUser!.uid,
           profImg: photoUrl,
           isVerify: isVerify,
+          like: [],
         );
         await _firestore
             .collection('discussion')

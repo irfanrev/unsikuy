@@ -1,5 +1,5 @@
 name: unsikuy_app
-version: 1.0.0+5
+version: 1.0.0+6
 publish_to: none
 description: A new Flutter project.
 environment: 
@@ -16,7 +16,7 @@ dependencies:
   json_annotation: ^4.0.1
   json_serializable: ^6.1.4
   logger: any
-  path_provider: ^2.0.2
+  path_provider: 
   pull_to_refresh: ^2.0.0
   shimmer: ^2.0.0
   sizer: ^2.0.13
