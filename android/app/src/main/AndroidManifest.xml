@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.unsikuyapps.unsikuy_app">
+    package="com.unsika_connect">
     <uses-permission android:name="android.permission.INTERNET" />
     <queries>
          <intent>
