@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chips_choice/chips_choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

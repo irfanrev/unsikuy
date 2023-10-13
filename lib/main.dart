@@ -1,6 +1,7 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,9 @@ import 'package:unsikuy_app/app/utils/widgets/loading_view.dart';
 import 'app/routes/app_pages.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   print('Handling a background message ${message.messageId}');
   print(message.data);
   flutterLocalNotificationsPlugin.show(
@@ -65,7 +68,9 @@ void main() async {
       ),
     );
   } else {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
