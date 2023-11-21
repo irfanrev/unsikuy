@@ -57,15 +57,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) {
     await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: 'AIzaSyCSiN5CRA0ZMjQW1JyvMxFedLc9q7YuCzQ',
-        appId: '1:597615739121:web:927e9f37437206fc0e2950',
-        messagingSenderId: '597615739121',
-        projectId: 'unsika-connect',
-        authDomain: 'unsika-connect.firebaseapp.com',
-        storageBucket: 'unsika-connect.appspot.com',
-        measurementId: 'G-F3XL1S8VQG',
-      ),
+      // options: const FirebaseOptions(
+      //   apiKey: 'AIzaSyCSiN5CRA0ZMjQW1JyvMxFedLc9q7YuCzQ',
+      //   appId: '1:597615739121:web:927e9f37437206fc0e2950',
+      //   messagingSenderId: '597615739121',
+      //   projectId: 'unsika-connect',
+      //   authDomain: 'unsika-connect.firebaseapp.com',
+      //   storageBucket: 'unsika-connect.appspot.com',
+      //   measurementId: 'G-F3XL1S8VQG',
+      // ),
+      options: DefaultFirebaseOptions.currentPlatform
     );
   } else {
     await Firebase.initializeApp(

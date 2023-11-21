@@ -96,31 +96,43 @@ class _PostCardItemState extends State<PostCardItem> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CachedNetworkImage(
-                  imageUrl: widget.snap.profImg.toString(),
-                  imageBuilder: (context, imgProvider) => Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(shape: BoxShape.circle),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: imgProvider, fit: BoxFit.cover),
+                (!kIsWeb)
+                    ? CachedNetworkImage(
+                        imageUrl: widget.snap.profImg.toString(),
+                        imageBuilder: (context, imgProvider) => Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(shape: BoxShape.circle),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: imgProvider, fit: BoxFit.cover),
+                            ),
+                          ),
+                        ),
+                        placeholder: (context, url) => Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: AppImages.userPlaceholder.image().image,
+                                fit: BoxFit.cover),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: Image.network(
+                          widget.snap.profImg.toString(),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                  ),
-                  placeholder: (context, url) => Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: AppImages.userPlaceholder.image().image,
-                          fit: BoxFit.cover),
-                    ),
-                  ),
-                ),
                 const SizedBox(
                   width: 12,
                 ),
@@ -514,30 +526,45 @@ class _PostCardItemState extends State<PostCardItem> {
                         child: Container(
                           width: Get.width,
                           height: Get.height * 0.35,
-                          child: CachedNetworkImage(
-                            imageUrl: widget.snap.postUrl.toString(),
-                            imageBuilder: (context, imageProvider) => ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                width: Get.width,
-                                height: Get.height * 0.35,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: imageProvider, fit: BoxFit.cover),
+                          child: (!kIsWeb)
+                              ? CachedNetworkImage(
+                                  imageUrl: widget.snap.postUrl.toString(),
+                                  imageBuilder: (context, imageProvider) =>
+                                      ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Container(
+                                      width: Get.width,
+                                      height: Get.height * 0.35,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                  ),
+                                  placeholder: (context, url) => ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child:
+                                        AppImages.imgPlaceholderPrimary.image(
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      AppImages.imgPlaceholderPrimary.image(
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Container(
+                                    width: Get.width,
+                                    height: Get.height * 0.35,
+                                    child: Image.network(
+                                      widget.snap.postUrl.toString(),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            placeholder: (context, url) => ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: AppImages.imgPlaceholderPrimary.image(
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            errorWidget: (context, url, error) =>
-                                AppImages.imgPlaceholderPrimary.image(
-                              fit: BoxFit.cover,
-                            ),
-                          ),
                         ),
                       ),
                       const SizedBox(
