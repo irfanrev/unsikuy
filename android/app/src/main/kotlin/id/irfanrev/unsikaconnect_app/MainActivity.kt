@@ -1,4 +1,4 @@
-package com.unsika_connect
+package id.irfanrev.unsikaconnect_app
 
 import io.flutter.embedding.android.FlutterActivity
 

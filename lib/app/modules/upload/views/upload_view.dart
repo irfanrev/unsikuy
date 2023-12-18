@@ -249,109 +249,99 @@ class UploadView extends GetView<UploadController> {
                         ),
                   onPressed: () {
                     if (controller.desc.text.isNotEmpty ||
-                        controller.file != null && controller.isVerify != false) {
-                          showBarModalBottomSheet(
-                                            //constraints: BoxConstraints(maxHeight: 300),
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                width: 100.w,
-                                                height: 250,
-                                                padding: EdgeInsets.all(16),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      'Where will you upload this content?',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline4!
-                                                          .copyWith(
-                                                            color:
-                                                                AppColors.black,
-                                                            fontSize: 18,
-                                                          ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 18,
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                     controller.upload();
-                                                     Get.back();
-                                                      },
-                                                      child: Container(
-                                                        width: 100.w,
-                                                        height: 45,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(22),
-                                                          color: AppColors
-                                                              .primaryLight,
-                                                        ),
-                                                        child: Center(
-                                                            child: Text(
-                                                          'Upload to Sharing room',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .headline5!
-                                                                  .copyWith(
-                                                                    color: AppColors
-                                                                        .white,
-                                                                  ),
-                                                        )),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                     controller.uploadAcademy();
-                                                     Get.back();
-                                                      },
-                                                      child: Container(
-                                                        width: 100.w,
-                                                        height: 45,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(22),
-                                                          color: AppColors
-                                                              .primaryOrange,
-                                                        ),
-                                                        child: Center(
-                                                            child: Text(
-                                                          'Upload as New Insight',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .headline5!
-                                                                  .copyWith(
-                                                                    color: AppColors
-                                                                        .white,
-                                                                  ),
-                                                        )),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            });
-                     
+                        controller.file != null) {
+                      if (controller.isVerify == true) {
+                        showBarModalBottomSheet(
+                            //constraints: BoxConstraints(maxHeight: 300),
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                width: 100.w,
+                                height: 250,
+                                padding: EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Where will you upload this content?',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline4!
+                                          .copyWith(
+                                            color: AppColors.black,
+                                            fontSize: 18,
+                                          ),
+                                    ),
+                                    const SizedBox(
+                                      height: 18,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        controller.upload();
+                                        Get.back();
+                                      },
+                                      child: Container(
+                                        width: 100.w,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(22),
+                                          color: AppColors.primaryLight,
+                                        ),
+                                        child: Center(
+                                            child: Text(
+                                          'Upload to Sharing room',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5!
+                                              .copyWith(
+                                                color: AppColors.white,
+                                              ),
+                                        )),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        controller.uploadAcademy();
+                                        Get.back();
+                                      },
+                                      child: Container(
+                                        width: 100.w,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(22),
+                                          color: AppColors.primaryOrange,
+                                        ),
+                                        child: Center(
+                                            child: Text(
+                                          'Upload as New Insight',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5!
+                                              .copyWith(
+                                                color: AppColors.white,
+                                              ),
+                                        )),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            });
+                      } else {
+                        controller.upload();
+                        Get.back();
+                      }
                     }
                     //controller.formKey.currentState?.reset();
                   },
                 );
               }),
-              
               const SizedBox(
                 height: 46,
               ),
